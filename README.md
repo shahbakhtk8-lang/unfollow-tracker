@@ -51,7 +51,7 @@ Static hosting only (no backend):
 
 ## Privacy
 
-See in-app [Privacy Policy](/privacy). Your ZIP never leaves the browser; snapshots store username lists locally only.
+See the in-app Privacy page. Your ZIP never leaves the browser; snapshots store username lists locally only.
 
 ## License
 

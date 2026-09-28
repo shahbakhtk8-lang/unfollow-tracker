@@ -19,6 +19,14 @@ export function downloadTextFile(filename: string, content: string) {
   URL.revokeObjectURL(url);
 }
 
+export function formatSnapshotDate(timestamp: number): string {
+  return new Date(timestamp).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export function formatFollowDate(timestamp?: number): string | null {
   if (timestamp == null || Number.isNaN(timestamp)) return null;
   const ms = timestamp < 1e12 ? timestamp * 1000 : timestamp;

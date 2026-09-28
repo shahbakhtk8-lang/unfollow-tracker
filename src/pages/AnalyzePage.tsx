@@ -11,8 +11,9 @@ import { StatCard } from "@/components/analyzer/StatCard";
 import { VirtualUserList } from "@/components/analyzer/VirtualUserList";
 import { ParseProgressBar } from "@/components/analyzer/ParseProgressBar";
 import { SnapshotPanel } from "@/components/analyzer/SnapshotPanel";
-import { computeDiffLocal, parseZipFile, parseZipWithDiff } from "@/lib/parseClient";
-import { exportUsernamesCsv } from "@/lib/utils";
+import { parseZipFile } from "@/lib/parseClient";
+import { diffSnapshots, orderComparison } from "@/lib/diff";
+import { exportUsernamesCsv, formatSnapshotDate } from "@/lib/utils";
 import {
   saveSnapshot,
   getSnapshot,
@@ -58,6 +59,10 @@ export default function AnalyzePage() {
   const followerTimestamps = useAnalyzerStore((s) => s.followerTimestamps);
   const followingTimestamps = useAnalyzerStore((s) => s.followingTimestamps);
   const baselineFollowerTimestamps = useAnalyzerStore((s) => s.baselineFollowerTimestamps);
+  const newerFollowerTimestamps = useAnalyzerStore((s) => s.newerFollowerTimestamps);
+  const analyzedAt = useAnalyzerStore((s) => s.analyzedAt);
+  const comparisonFrom = useAnalyzerStore((s) => s.comparisonFrom);
+  const comparisonTo = useAnalyzerStore((s) => s.comparisonTo);
   const diff = useAnalyzerStore((s) => s.diff);
   const activeTab = useAnalyzerStore((s) => s.activeTab);
   const compareSnapshotId = useAnalyzerStore((s) => s.compareSnapshotId);
@@ -91,6 +96,10 @@ export default function AnalyzePage() {
       followerTimestamps,
       followingTimestamps,
       baselineFollowerTimestamps,
+      newerFollowerTimestamps,
+      analyzedAt,
+      comparisonFrom,
+      comparisonTo,
       diff,
       activeTab,
       compareSnapshotId,
@@ -117,6 +126,10 @@ export default function AnalyzePage() {
     followerTimestamps,
     followingTimestamps,
     baselineFollowerTimestamps,
+    newerFollowerTimestamps,
+    analyzedAt,
+    comparisonFrom,
+    comparisonTo,
     diff,
     activeTab,
     compareSnapshotId,
@@ -131,11 +144,16 @@ export default function AnalyzePage() {
 
     try {
       if (compareSnapshot) {
-        const result = await parseZipWithDiff(
-          file,
-          compareSnapshot.followerUsernames,
-          (p) => setProgress(p),
-        );
+        const result = await parseZipFile(file, (p) => setProgress(p));
+        const currentAt = Date.now();
+        const ordered = orderComparison({
+          snapshotAt: compareSnapshot.createdAt,
+          currentAt,
+          snapshotFollowers: compareSnapshot.followerUsernames,
+          currentFollowers: result.followerUsernames,
+          snapshotTimestamps: compareSnapshot.followerTimestamps,
+          currentTimestamps: result.followerTimestamps,
+        });
         setResults({
           fileName: file.name,
           insights: result.insights,
@@ -143,8 +161,12 @@ export default function AnalyzePage() {
           followingUsernames: result.followingUsernames,
           followerTimestamps: result.followerTimestamps,
           followingTimestamps: result.followingTimestamps,
-          baselineFollowerTimestamps: compareSnapshot.followerTimestamps ?? {},
-          diff: result.diff,
+          baselineFollowerTimestamps: ordered.oldTimestamps,
+          newerFollowerTimestamps: ordered.newTimestamps,
+          analyzedAt: currentAt,
+          comparisonFrom: ordered.oldAt,
+          comparisonTo: ordered.newAt,
+          diff: diffSnapshots(ordered.oldFollowers, ordered.newFollowers),
         });
         setTab("unfollowed");
       } else {
@@ -201,13 +223,24 @@ export default function AnalyzePage() {
       setDiff(null);
       return;
     }
-    setDiff(
-      computeDiffLocal(snapshot.followerUsernames, followerUsernames),
-      snapshot.followerTimestamps ?? {},
-    );
+    const currentAt = analyzedAt ?? Date.now();
+    const ordered = orderComparison({
+      snapshotAt: snapshot.createdAt,
+      currentAt,
+      snapshotFollowers: snapshot.followerUsernames,
+      currentFollowers: followerUsernames,
+      snapshotTimestamps: snapshot.followerTimestamps,
+      currentTimestamps: followerTimestamps,
+    });
+    setDiff(diffSnapshots(ordered.oldFollowers, ordered.newFollowers), {
+      baselineFollowerTimestamps: ordered.oldTimestamps,
+      newerFollowerTimestamps: ordered.newTimestamps,
+      from: ordered.oldAt,
+      to: ordered.newAt,
+    });
     setTab("unfollowed");
     setNotice(
-      `Comparing ${fileName ?? "this export"} against “${snapshot.label}”. Unfollowed means they were in the older snapshot and are missing now.`,
+      `Comparing ${formatSnapshotDate(ordered.oldAt)} -> ${formatSnapshotDate(ordered.newAt)}.`,
     );
   };
 
@@ -358,9 +391,10 @@ export default function AnalyzePage() {
                 </p>
               ) : null}
 
-              {diff ? (
+              {diff && comparisonFrom != null && comparisonTo != null ? (
                 <p className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted">
-                  Unfollowed / new lists compare your upload against an older saved snapshot.
+                  Comparing {formatSnapshotDate(comparisonFrom)} -&gt; {formatSnapshotDate(comparisonTo)}.
+                  Unfollowed means they were in the older list and are missing from the newer one.
                   Username changes and incomplete exports can affect results — review manually in
                   Instagram.
                 </p>

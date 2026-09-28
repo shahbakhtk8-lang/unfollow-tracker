@@ -28,6 +28,10 @@ interface AnalyzerState {
   followerTimestamps: Record<string, number>;
   followingTimestamps: Record<string, number>;
   baselineFollowerTimestamps: Record<string, number>;
+  newerFollowerTimestamps: Record<string, number>;
+  analyzedAt: number | null;
+  comparisonFrom: number | null;
+  comparisonTo: number | null;
   diff: SnapshotDiff | null;
   activeTab: ResultTab;
   compareSnapshotId: number | null;
@@ -44,9 +48,21 @@ interface AnalyzerState {
     followerTimestamps?: Record<string, number>;
     followingTimestamps?: Record<string, number>;
     baselineFollowerTimestamps?: Record<string, number>;
+    newerFollowerTimestamps?: Record<string, number>;
+    analyzedAt?: number;
+    comparisonFrom?: number | null;
+    comparisonTo?: number | null;
     diff?: SnapshotDiff | null;
   }) => void;
-  setDiff: (diff: SnapshotDiff | null, baselineFollowerTimestamps?: Record<string, number>) => void;
+  setDiff: (
+    diff: SnapshotDiff | null,
+    meta?: {
+      baselineFollowerTimestamps?: Record<string, number>;
+      newerFollowerTimestamps?: Record<string, number>;
+      from?: number;
+      to?: number;
+    },
+  ) => void;
   reset: () => void;
 }
 
@@ -61,6 +77,10 @@ const initial = {
   followerTimestamps: {} as Record<string, number>,
   followingTimestamps: {} as Record<string, number>,
   baselineFollowerTimestamps: {} as Record<string, number>,
+  newerFollowerTimestamps: {} as Record<string, number>,
+  analyzedAt: null as number | null,
+  comparisonFrom: null as number | null,
+  comparisonTo: null as number | null,
   diff: null as SnapshotDiff | null,
   activeTab: "notFollowingBack" as ResultTab,
   compareSnapshotId: null as number | null,
@@ -85,12 +105,19 @@ export const useAnalyzerStore = create<AnalyzerState>((set) => ({
       followerTimestamps: payload.followerTimestamps ?? {},
       followingTimestamps: payload.followingTimestamps ?? {},
       baselineFollowerTimestamps: payload.baselineFollowerTimestamps ?? {},
+      newerFollowerTimestamps: payload.newerFollowerTimestamps ?? {},
+      analyzedAt: payload.analyzedAt ?? Date.now(),
+      comparisonFrom: payload.comparisonFrom ?? null,
+      comparisonTo: payload.comparisonTo ?? null,
       diff: payload.diff ?? null,
     }),
-  setDiff: (diff, baselineFollowerTimestamps) =>
+  setDiff: (diff, meta) =>
     set({
       diff,
-      baselineFollowerTimestamps: diff ? (baselineFollowerTimestamps ?? {}) : {},
+      baselineFollowerTimestamps: diff ? (meta?.baselineFollowerTimestamps ?? {}) : {},
+      newerFollowerTimestamps: diff ? (meta?.newerFollowerTimestamps ?? {}) : {},
+      comparisonFrom: diff ? (meta?.from ?? null) : null,
+      comparisonTo: diff ? (meta?.to ?? null) : null,
     }),
   reset: () => set({ ...initial }),
 }));
@@ -121,6 +148,7 @@ export function getActiveList(state: AnalyzerState): ListedUser[] {
     followerTimestamps,
     followingTimestamps,
     baselineFollowerTimestamps,
+    newerFollowerTimestamps,
     diff,
     activeTab,
   } = state;
@@ -135,7 +163,7 @@ export function getActiveList(state: AnalyzerState): ListedUser[] {
     case "unfollowed":
       return withTimestamps(diff?.unfollowed ?? [], baselineFollowerTimestamps);
     case "newFollowers":
-      return withTimestamps(diff?.newFollowers ?? [], followerTimestamps);
+      return withTimestamps(diff?.newFollowers ?? [], newerFollowerTimestamps);
     case "allFollowers":
       return withTimestamps(followerUsernames, followerTimestamps);
     case "allFollowing":
