@@ -62,13 +62,14 @@ export function SnapshotPanel({
             {snapshots.map((s) => {
               const exportMs = snapshotExportDate(s);
               return (
-              <li
-                key={s.id}
-                className="flex flex-col gap-2 rounded-xl border border-border p-3 sm:flex-row sm:items-center"
-              >
+              <li key={s.id} className="@container rounded-xl border border-border p-3">
+                <div className="flex flex-col gap-3 @[28rem]:flex-row @[28rem]:items-start">
                 <div className="min-w-0 flex-1">
-                  <input
-                    className="w-full bg-transparent font-medium text-sm outline-none focus:underline"
+                  <textarea
+                    title={s.label}
+                    rows={2}
+                    aria-label="Snapshot name"
+                    className="w-full resize-none break-words bg-transparent text-sm font-medium leading-5 outline-none focus:underline"
                     defaultValue={s.label}
                     onBlur={(e) => {
                       if (s.id != null && e.target.value.trim()) {
@@ -76,16 +77,19 @@ export function SnapshotPanel({
                       }
                     }}
                   />
-                  <p className="text-xs text-muted">
-                    {formatNumber(s.followerCount)} followers ·{" "}
-                    {exportMs != null
-                      ? `Export ${formatSnapshotDate(exportMs)}`
-                      : "Export date unknown"}
-                    {" · "}
-                    Saved {formatSnapshotDate(s.savedAt ?? s.createdAt)}
+                  <p className="mt-1 text-xs leading-relaxed text-pretty text-muted">
+                    {formatNumber(s.followerCount)} followers
+                    <span className="mt-0.5 block">
+                      {exportMs != null
+                        ? `Export ${formatSnapshotDate(exportMs)}`
+                        : "Export date unknown"}
+                    </span>
+                    <span className="mt-0.5 block">
+                      Saved {formatSnapshotDate(s.savedAt ?? s.createdAt)}
+                    </span>
                   </p>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex shrink-0 gap-1">
                   <Button
                     type="button"
                     size="sm"
@@ -111,6 +115,7 @@ export function SnapshotPanel({
                   >
                     <Trash2 className="h-4 w-4 text-danger" />
                   </Button>
+                </div>
                 </div>
               </li>
               );

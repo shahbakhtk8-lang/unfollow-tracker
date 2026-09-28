@@ -460,6 +460,8 @@ export default function AnalyzePage() {
                     <Button
                       type="button"
                       size="sm"
+                      variant="outline"
+                      aria-pressed={false}
                       onClick={() => choiceSnapshot && applyCompare(choiceSnapshot, "snapshot")}
                     >
                       Saved snapshot
@@ -468,6 +470,7 @@ export default function AnalyzePage() {
                       type="button"
                       size="sm"
                       variant="outline"
+                      aria-pressed={false}
                       onClick={() => choiceSnapshot && applyCompare(choiceSnapshot, "current")}
                     >
                       Current upload
