@@ -12,7 +12,8 @@ import { VirtualUserList } from "@/components/analyzer/VirtualUserList";
 import { ParseProgressBar } from "@/components/analyzer/ParseProgressBar";
 import { SnapshotPanel } from "@/components/analyzer/SnapshotPanel";
 import { parseZipFile } from "@/lib/parseClient";
-import { diffSnapshots, orderComparison } from "@/lib/diff";
+import { diffSnapshots, orderComparison, type OlderChoice } from "@/lib/diff";
+import { describeExportDate, snapshotExportDate } from "@/lib/exportDate";
 import { exportUsernamesCsv, formatSnapshotDate } from "@/lib/utils";
 import {
   saveSnapshot,
@@ -60,9 +61,14 @@ export default function AnalyzePage() {
   const followingTimestamps = useAnalyzerStore((s) => s.followingTimestamps);
   const baselineFollowerTimestamps = useAnalyzerStore((s) => s.baselineFollowerTimestamps);
   const newerFollowerTimestamps = useAnalyzerStore((s) => s.newerFollowerTimestamps);
-  const analyzedAt = useAnalyzerStore((s) => s.analyzedAt);
+  const exportDate = useAnalyzerStore((s) => s.exportDate);
+  const exportDateSource = useAnalyzerStore((s) => s.exportDateSource);
   const comparisonFrom = useAnalyzerStore((s) => s.comparisonFrom);
   const comparisonTo = useAnalyzerStore((s) => s.comparisonTo);
+  const comparisonOldSource = useAnalyzerStore((s) => s.comparisonOldSource);
+  const comparisonNewSource = useAnalyzerStore((s) => s.comparisonNewSource);
+  const comparisonManual = useAnalyzerStore((s) => s.comparisonManual);
+  const needsOlderChoice = useAnalyzerStore((s) => s.needsOlderChoice);
   const diff = useAnalyzerStore((s) => s.diff);
   const activeTab = useAnalyzerStore((s) => s.activeTab);
   const compareSnapshotId = useAnalyzerStore((s) => s.compareSnapshotId);
@@ -81,6 +87,7 @@ export default function AnalyzePage() {
   const [snapshotVersion, setSnapshotVersion] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
   const [replaceOldest, setReplaceOldest] = useState<StoredSnapshot | null>(null);
+  const [choiceSnapshot, setChoiceSnapshot] = useState<StoredSnapshot | null>(null);
 
   const debounceSearch = useDebouncedCallback((v: string) => setDebouncedSearch(v), 200);
 
@@ -97,9 +104,14 @@ export default function AnalyzePage() {
       followingTimestamps,
       baselineFollowerTimestamps,
       newerFollowerTimestamps,
-      analyzedAt,
+      exportDate,
+      exportDateSource,
       comparisonFrom,
       comparisonTo,
+      comparisonOldSource,
+      comparisonNewSource,
+      comparisonManual,
+      needsOlderChoice,
       diff,
       activeTab,
       compareSnapshotId,
@@ -127,9 +139,14 @@ export default function AnalyzePage() {
     followingTimestamps,
     baselineFollowerTimestamps,
     newerFollowerTimestamps,
-    analyzedAt,
+    exportDate,
+    exportDateSource,
     comparisonFrom,
     comparisonTo,
+    comparisonOldSource,
+    comparisonNewSource,
+    comparisonManual,
+    needsOlderChoice,
     diff,
     activeTab,
     compareSnapshotId,
@@ -143,17 +160,35 @@ export default function AnalyzePage() {
     setProgress({ stage: "reading", percent: 0, message: "Starting…" });
 
     try {
+      const result = await parseZipFile(file, (p) => setProgress(p));
       if (compareSnapshot) {
-        const result = await parseZipFile(file, (p) => setProgress(p));
-        const currentAt = Date.now();
-        const ordered = orderComparison({
-          snapshotAt: compareSnapshot.createdAt,
-          currentAt,
+        const decision = orderComparison({
+          snapshotDate: snapshotExportDate(compareSnapshot),
+          currentDate: result.exportDate,
+          snapshotSource: compareSnapshot.exportDateSource ?? null,
+          currentSource: result.exportDateSource,
           snapshotFollowers: compareSnapshot.followerUsernames,
           currentFollowers: result.followerUsernames,
           snapshotTimestamps: compareSnapshot.followerTimestamps,
           currentTimestamps: result.followerTimestamps,
         });
+        if (decision.status === "needs-choice") {
+          setChoiceSnapshot(compareSnapshot);
+          setResults({
+            fileName: file.name,
+            insights: result.insights,
+            followerUsernames: result.followerUsernames,
+            followingUsernames: result.followingUsernames,
+            followerTimestamps: result.followerTimestamps,
+            followingTimestamps: result.followingTimestamps,
+            exportDate: result.exportDate,
+            exportDateSource: result.exportDateSource,
+            needsOlderChoice: true,
+          });
+          return;
+        }
+        const ordered = decision.ordered;
+        setChoiceSnapshot(null);
         setResults({
           fileName: file.name,
           insights: result.insights,
@@ -163,14 +198,18 @@ export default function AnalyzePage() {
           followingTimestamps: result.followingTimestamps,
           baselineFollowerTimestamps: ordered.oldTimestamps,
           newerFollowerTimestamps: ordered.newTimestamps,
-          analyzedAt: currentAt,
+          exportDate: result.exportDate,
+          exportDateSource: result.exportDateSource,
           comparisonFrom: ordered.oldAt,
           comparisonTo: ordered.newAt,
+          comparisonOldSource: ordered.oldSource,
+          comparisonNewSource: ordered.newSource,
+          comparisonManual: ordered.chosenManually,
           diff: diffSnapshots(ordered.oldFollowers, ordered.newFollowers),
         });
         setTab("unfollowed");
       } else {
-        const result = await parseZipFile(file, (p) => setProgress(p));
+        setChoiceSnapshot(null);
         setResults({
           fileName: file.name,
           insights: result.insights,
@@ -178,6 +217,8 @@ export default function AnalyzePage() {
           followingUsernames: result.followingUsernames,
           followerTimestamps: result.followerTimestamps,
           followingTimestamps: result.followingTimestamps,
+          exportDate: result.exportDate,
+          exportDateSource: result.exportDateSource,
         });
       }
     } catch (e) {
@@ -200,6 +241,8 @@ export default function AnalyzePage() {
         followingTimestamps,
         followerCount: insights.followerCount,
         followingCount: insights.followingCount,
+        exportDate,
+        exportDateSource,
       },
       { replaceOldest: replace },
     );
@@ -218,30 +261,43 @@ export default function AnalyzePage() {
     await persistSnapshot(false);
   };
 
-  const applyCompare = (snapshot: StoredSnapshot | null) => {
+  const applyCompare = (snapshot: StoredSnapshot | null, olderChoice: OlderChoice | null = null) => {
     if (!snapshot || followerUsernames.length === 0) {
+      setChoiceSnapshot(null);
       setDiff(null);
       return;
     }
-    const currentAt = analyzedAt ?? Date.now();
-    const ordered = orderComparison({
-      snapshotAt: snapshot.createdAt,
-      currentAt,
+    const decision = orderComparison({
+      snapshotDate: snapshotExportDate(snapshot),
+      currentDate: exportDate,
+      snapshotSource: snapshot.exportDateSource ?? null,
+      currentSource: exportDateSource,
       snapshotFollowers: snapshot.followerUsernames,
       currentFollowers: followerUsernames,
       snapshotTimestamps: snapshot.followerTimestamps,
       currentTimestamps: followerTimestamps,
+      olderChoice,
     });
+    if (decision.status === "needs-choice") {
+      setChoiceSnapshot(snapshot);
+      setDiff(null, { needsOlderChoice: true });
+      setNotice(null);
+      return;
+    }
+    const ordered = decision.ordered;
+    setChoiceSnapshot(null);
     setDiff(diffSnapshots(ordered.oldFollowers, ordered.newFollowers), {
       baselineFollowerTimestamps: ordered.oldTimestamps,
       newerFollowerTimestamps: ordered.newTimestamps,
       from: ordered.oldAt,
       to: ordered.newAt,
+      oldSource: ordered.oldSource,
+      newSource: ordered.newSource,
+      manual: ordered.chosenManually,
+      needsOlderChoice: false,
     });
     setTab("unfollowed");
-    setNotice(
-      `Comparing ${formatSnapshotDate(ordered.oldAt)} -> ${formatSnapshotDate(ordered.newAt)}.`,
-    );
+    setNotice(null);
   };
 
   const tabItems: { id: ResultTab; label: string; count: number; needsDiff?: boolean }[] =
@@ -391,9 +447,53 @@ export default function AnalyzePage() {
                 </p>
               ) : null}
 
-              {diff && comparisonFrom != null && comparisonTo != null ? (
+              {needsOlderChoice ? (
+                <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-sm">
+                  <p>
+                    These exports do not have dates far enough apart to tell which is older. Pick
+                    the older file. Nothing is guessed.
+                  </p>
+                  <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted">
+                    Which export is older?
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => choiceSnapshot && applyCompare(choiceSnapshot, "snapshot")}
+                    >
+                      Saved snapshot
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => choiceSnapshot && applyCompare(choiceSnapshot, "current")}
+                    >
+                      Current upload
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
+
+              {diff ? (
                 <p className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted">
-                  Comparing {formatSnapshotDate(comparisonFrom)} -&gt; {formatSnapshotDate(comparisonTo)}.
+                  {comparisonFrom != null && comparisonTo != null ? (
+                    <>
+                      Comparing {formatSnapshotDate(comparisonFrom)} -&gt;{" "}
+                      {formatSnapshotDate(comparisonTo)}. Older export{" "}
+                      {describeExportDate(comparisonOldSource)}. Newer export{" "}
+                      {describeExportDate(comparisonNewSource)}.
+                      {comparisonManual
+                        ? " The dates were too close or missing, so this order uses your choice."
+                        : null}{" "}
+                    </>
+                  ) : (
+                    <>
+                      Order set by your choice. Export dates were not available, so this was not
+                      estimated from follow activity.{" "}
+                    </>
+                  )}
                   Unfollowed means they were in the older list and are missing from the newer one.
                   Username changes and incomplete exports can affect results — review manually in
                   Instagram.

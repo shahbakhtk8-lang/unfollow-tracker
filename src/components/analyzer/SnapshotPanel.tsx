@@ -9,7 +9,8 @@ import {
   MAX_SNAPSHOTS,
   type StoredSnapshot,
 } from "@/db/snapshots";
-import { formatNumber } from "@/lib/utils";
+import { snapshotExportDate } from "@/lib/exportDate";
+import { formatNumber, formatSnapshotDate } from "@/lib/utils";
 
 interface SnapshotPanelProps {
   compareId: number | null;
@@ -58,7 +59,9 @@ export function SnapshotPanel({
           <p className="text-sm text-muted">No snapshots yet. Analyze a ZIP and save it for later comparison.</p>
         ) : (
           <ul className="space-y-2">
-            {snapshots.map((s) => (
+            {snapshots.map((s) => {
+              const exportMs = snapshotExportDate(s);
+              return (
               <li
                 key={s.id}
                 className="flex flex-col gap-2 rounded-xl border border-border p-3 sm:flex-row sm:items-center"
@@ -75,7 +78,11 @@ export function SnapshotPanel({
                   />
                   <p className="text-xs text-muted">
                     {formatNumber(s.followerCount)} followers ·{" "}
-                    {new Date(s.createdAt).toLocaleDateString()}
+                    {exportMs != null
+                      ? `Export ${formatSnapshotDate(exportMs)}`
+                      : "Export date unknown"}
+                    {" · "}
+                    Saved {formatSnapshotDate(s.savedAt ?? s.createdAt)}
                   </p>
                 </div>
                 <div className="flex gap-1">
@@ -106,7 +113,8 @@ export function SnapshotPanel({
                   </Button>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
       </CardContent>

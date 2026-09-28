@@ -15,6 +15,7 @@ import {
   parseFollowingHtml,
   parseFollowingJson,
 } from "./extractUsers";
+import { getExportDate, type ExportDateSource } from "./exportDate";
 import { computeInsights, type ParsedLists } from "./sets";
 import { timestampMapFromEntries, usernamesFromEntries } from "./normalize";
 
@@ -41,6 +42,8 @@ export interface ParseResult {
   followingUsernames: string[];
   followerTimestamps: Record<string, number>;
   followingTimestamps: Record<string, number>;
+  exportDate: number | null;
+  exportDateSource: ExportDateSource | null;
 }
 
 function isFileEntry(entry: Entry): entry is FileEntry {
@@ -67,6 +70,14 @@ export async function parseZipBlob(
 
   const followerFiles: { path: string; entry: FileEntry }[] = [];
   let followingEntry: FileEntry | null = null;
+  const zipModifiedDates: number[] = [];
+
+  const rememberModified = (entry: FileEntry) => {
+    const modified = entry.lastModDate;
+    if (modified instanceof Date && !Number.isNaN(modified.getTime())) {
+      zipModifiedDates.push(modified.getTime());
+    }
+  };
 
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
@@ -74,8 +85,10 @@ export async function parseZipBlob(
     const path = entry.filename.replace(/\\/g, "/");
     if (isFollowersPath(path)) {
       followerFiles.push({ path, entry });
+      rememberModified(entry);
     } else if (isFollowingPath(path)) {
       followingEntry = entry;
+      rememberModified(entry);
     }
     if (i % 50 === 0) {
       report("reading", 5 + Math.round((i / total) * 25), "Scanning archive…");
@@ -96,10 +109,16 @@ export async function parseZipBlob(
         isFileEntry(e) && !!e.filename && /following\.(json|html)$/i.test(e.filename),
     );
     for (const e of fuzzyFollowers) {
-      if (e.filename) followerFiles.push({ path: e.filename, entry: e });
+      if (e.filename) {
+        followerFiles.push({ path: e.filename, entry: e });
+        rememberModified(e);
+      }
     }
     followerFiles.sort((a, b) => followerFileSortKey(a.path) - followerFileSortKey(b.path));
-    if (fuzzyFollowing) followingEntry = fuzzyFollowing;
+    if (fuzzyFollowing) {
+      followingEntry = fuzzyFollowing;
+      rememberModified(fuzzyFollowing);
+    }
   }
 
   if (followerFiles.length === 0 && !followingEntry) {
@@ -150,6 +169,9 @@ export async function parseZipBlob(
   const insights = computeInsights(lists);
   const followerUsernames = usernamesFromEntries(lists.followers);
   const followingUsernames = usernamesFromEntries(lists.following);
+  const followerTimestamps = timestampMapFromEntries(lists.followers);
+  const followingTimestamps = timestampMapFromEntries(lists.following);
+  const dated = getExportDate({ followerTimestamps, followingTimestamps, zipModifiedDates });
 
   report("done", 100, "Done");
 
@@ -158,7 +180,9 @@ export async function parseZipBlob(
     insights,
     followerUsernames,
     followingUsernames,
-    followerTimestamps: timestampMapFromEntries(lists.followers),
-    followingTimestamps: timestampMapFromEntries(lists.following),
+    followerTimestamps,
+    followingTimestamps,
+    exportDate: dated.exportDate,
+    exportDateSource: dated.source,
   };
 }

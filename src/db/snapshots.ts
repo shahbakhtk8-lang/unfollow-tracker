@@ -1,9 +1,13 @@
 import Dexie, { type EntityTable } from "dexie";
+import type { ExportDateSource } from "@/lib/exportDate";
 
 export interface StoredSnapshot {
   id?: number;
   label: string;
   createdAt: number;
+  savedAt?: number;
+  exportDate?: number | null;
+  exportDateSource?: ExportDateSource | null;
   followerUsernames: string[];
   followingUsernames: string[];
   followerTimestamps?: Record<string, number>;
@@ -50,6 +54,7 @@ export async function saveSnapshot(
       await db.snapshots.delete(oldest.id);
     }
   }
+  const savedAt = data.savedAt ?? data.createdAt ?? Date.now();
   const id = await db.snapshots.add({
     label: data.label,
     followerUsernames: data.followerUsernames,
@@ -58,7 +63,10 @@ export async function saveSnapshot(
     followingTimestamps: data.followingTimestamps,
     followerCount: data.followerCount,
     followingCount: data.followingCount,
-    createdAt: data.createdAt ?? Date.now(),
+    createdAt: savedAt,
+    savedAt,
+    exportDate: data.exportDate ?? null,
+    exportDateSource: data.exportDateSource ?? null,
   });
   if (id == null) {
     throw new Error("Could not save snapshot on this device.");

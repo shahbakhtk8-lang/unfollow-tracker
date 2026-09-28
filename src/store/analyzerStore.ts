@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { Insights } from "@/lib/sets";
 import type { SnapshotDiff } from "@/lib/diff";
+import type { ExportDateSource } from "@/lib/exportDate";
 import type { ParseProgress } from "@/lib/parseZip";
 
 export interface ListedUser {
@@ -29,9 +30,14 @@ interface AnalyzerState {
   followingTimestamps: Record<string, number>;
   baselineFollowerTimestamps: Record<string, number>;
   newerFollowerTimestamps: Record<string, number>;
-  analyzedAt: number | null;
+  exportDate: number | null;
+  exportDateSource: ExportDateSource | null;
   comparisonFrom: number | null;
   comparisonTo: number | null;
+  comparisonOldSource: ExportDateSource | null;
+  comparisonNewSource: ExportDateSource | null;
+  comparisonManual: boolean;
+  needsOlderChoice: boolean;
   diff: SnapshotDiff | null;
   activeTab: ResultTab;
   compareSnapshotId: number | null;
@@ -49,9 +55,14 @@ interface AnalyzerState {
     followingTimestamps?: Record<string, number>;
     baselineFollowerTimestamps?: Record<string, number>;
     newerFollowerTimestamps?: Record<string, number>;
-    analyzedAt?: number;
+    exportDate?: number | null;
+    exportDateSource?: ExportDateSource | null;
     comparisonFrom?: number | null;
     comparisonTo?: number | null;
+    comparisonOldSource?: ExportDateSource | null;
+    comparisonNewSource?: ExportDateSource | null;
+    comparisonManual?: boolean;
+    needsOlderChoice?: boolean;
     diff?: SnapshotDiff | null;
   }) => void;
   setDiff: (
@@ -59,8 +70,12 @@ interface AnalyzerState {
     meta?: {
       baselineFollowerTimestamps?: Record<string, number>;
       newerFollowerTimestamps?: Record<string, number>;
-      from?: number;
-      to?: number;
+      from?: number | null;
+      to?: number | null;
+      oldSource?: ExportDateSource | null;
+      newSource?: ExportDateSource | null;
+      manual?: boolean;
+      needsOlderChoice?: boolean;
     },
   ) => void;
   reset: () => void;
@@ -78,9 +93,14 @@ const initial = {
   followingTimestamps: {} as Record<string, number>,
   baselineFollowerTimestamps: {} as Record<string, number>,
   newerFollowerTimestamps: {} as Record<string, number>,
-  analyzedAt: null as number | null,
+  exportDate: null as number | null,
+  exportDateSource: null as ExportDateSource | null,
   comparisonFrom: null as number | null,
   comparisonTo: null as number | null,
+  comparisonOldSource: null as ExportDateSource | null,
+  comparisonNewSource: null as ExportDateSource | null,
+  comparisonManual: false,
+  needsOlderChoice: false,
   diff: null as SnapshotDiff | null,
   activeTab: "notFollowingBack" as ResultTab,
   compareSnapshotId: null as number | null,
@@ -106,9 +126,14 @@ export const useAnalyzerStore = create<AnalyzerState>((set) => ({
       followingTimestamps: payload.followingTimestamps ?? {},
       baselineFollowerTimestamps: payload.baselineFollowerTimestamps ?? {},
       newerFollowerTimestamps: payload.newerFollowerTimestamps ?? {},
-      analyzedAt: payload.analyzedAt ?? Date.now(),
+      exportDate: payload.exportDate ?? null,
+      exportDateSource: payload.exportDateSource ?? null,
       comparisonFrom: payload.comparisonFrom ?? null,
       comparisonTo: payload.comparisonTo ?? null,
+      comparisonOldSource: payload.comparisonOldSource ?? null,
+      comparisonNewSource: payload.comparisonNewSource ?? null,
+      comparisonManual: payload.comparisonManual ?? false,
+      needsOlderChoice: payload.needsOlderChoice ?? false,
       diff: payload.diff ?? null,
     }),
   setDiff: (diff, meta) =>
@@ -118,6 +143,10 @@ export const useAnalyzerStore = create<AnalyzerState>((set) => ({
       newerFollowerTimestamps: diff ? (meta?.newerFollowerTimestamps ?? {}) : {},
       comparisonFrom: diff ? (meta?.from ?? null) : null,
       comparisonTo: diff ? (meta?.to ?? null) : null,
+      comparisonOldSource: diff ? (meta?.oldSource ?? null) : null,
+      comparisonNewSource: diff ? (meta?.newSource ?? null) : null,
+      comparisonManual: diff ? (meta?.manual ?? false) : false,
+      needsOlderChoice: meta?.needsOlderChoice ?? false,
     }),
   reset: () => set({ ...initial }),
 }));
