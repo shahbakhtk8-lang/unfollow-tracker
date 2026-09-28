@@ -1,0 +1,25 @@
+{
+  "relationships_following": [
+    {
+      "title": "",
+      "media_list_data": [],
+      "string_list_data": [
+        { "href": "https://www.instagram.com/demo_mutual", "value": "demo_mutual", "timestamp": 1700000000 }
+      ]
+    },
+    {
+      "title": "",
+      "media_list_data": [],
+      "string_list_data": [
+        { "href": "https://www.instagram.com/demo_not_back", "value": "demo_not_back", "timestamp": 1700000100 }
+      ]
+    },
+    {
+      "title": "",
+      "media_list_data": [],
+      "string_list_data": [
+        { "href": "https://www.instagram.com/demo_creator", "value": "demo_creator", "timestamp": 1700000200 }
+      ]
+    }
+  ]
+}

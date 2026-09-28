@@ -1,0 +1,12 @@
+{
+  "relationships_followers": [
+    {
+      "title": "",
+      "string_list_data": [{ "value": "stays", "href": "https://www.instagram.com/stays" }]
+    },
+    {
+      "title": "",
+      "string_list_data": [{ "value": "left_user", "href": "https://www.instagram.com/left_user" }]
+    }
+  ]
+}

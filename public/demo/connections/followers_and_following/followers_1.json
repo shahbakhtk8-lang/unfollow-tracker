@@ -1,0 +1,18 @@
+{
+  "relationships_followers": [
+    {
+      "title": "",
+      "media_list_data": [],
+      "string_list_data": [
+        { "href": "https://www.instagram.com/demo_mutual", "value": "demo_mutual", "timestamp": 1699000000 }
+      ]
+    },
+    {
+      "title": "",
+      "media_list_data": [],
+      "string_list_data": [
+        { "href": "https://www.instagram.com/demo_fan", "value": "demo_fan", "timestamp": 1699000100 }
+      ]
+    }
+  ]
+}
