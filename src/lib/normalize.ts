@@ -7,7 +7,7 @@ export interface UserEntry {
 export function normalizeUsername(raw: string | undefined | null): string | null {
   if (raw == null) return null;
   const trimmed = raw.trim().toLowerCase();
-  if (!trimmed || trimmed === "instagram user") return null;
+  if (!trimmed || trimmed === "instagram" || trimmed === "instagram user") return null;
   return trimmed;
 }
 
