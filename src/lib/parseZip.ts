@@ -7,14 +7,14 @@ import {
   type FileEntry,
 } from "@zip.js/zip.js";
 import {
+  createFollowersHtmlParser,
   followerFileSortKey,
   isFollowersPath,
   isFollowingPath,
-  parseFollowersHtml,
   parseFollowersJson,
-  parseFollowingHtml,
   parseFollowingJson,
 } from "./extractUsers";
+import type { UserEntry } from "./normalize";
 import { getExportDate, type ExportDateSource } from "./exportDate";
 import { computeInsights, type ParsedLists } from "./sets";
 import { timestampMapFromEntries, usernamesFromEntries } from "./normalize";
@@ -52,6 +52,40 @@ function isFileEntry(entry: Entry): entry is FileEntry {
 
 async function readEntryText(entry: FileEntry): Promise<string> {
   return entry.getData(new TextWriter());
+}
+
+function formatMb(bytes: number): string {
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+async function parseHtmlEntry(
+  entry: FileEntry,
+  onBytes?: (done: number, total: number) => void,
+): Promise<UserEntry[]> {
+  const html = createFollowersHtmlParser();
+  const decoder = new TextDecoder("utf-8");
+  let lastReported = 0;
+
+  await entry.getData(
+    new WritableStream<Uint8Array>({
+      write(chunk) {
+        html.write(decoder.decode(chunk, { stream: true }));
+      },
+      close() {
+        html.write(decoder.decode());
+      },
+    }),
+    {
+      onprogress(done, total) {
+        if (total <= 0) return;
+        if (done - lastReported < 256 * 1024 && done < total) return;
+        lastReported = done;
+        onBytes?.(done, total);
+      },
+    },
+  );
+
+  return html.end();
 }
 
 function keepParseError(error: unknown): boolean {
@@ -153,17 +187,26 @@ async function readExportZip(
   report("parsing_followers", 35, "Parsing followers…");
 
   const followersAccum: ReturnType<typeof parseFollowersJson> = [];
+  const followerFileCount = Math.max(followerFiles.length, 1);
   for (let i = 0; i < followerFiles.length; i++) {
     const { path, entry } = followerFiles[i];
-    const text = await readEntryText(entry);
     const lower = path.toLowerCase();
+    const fileStart = 35 + Math.round((i / followerFileCount) * 25);
+    const fileEnd = 35 + Math.round(((i + 1) / followerFileCount) * 25);
     const chunk = lower.endsWith(".html")
-      ? parseFollowersHtml(text)
-      : parseFollowersJson(text);
+      ? await parseHtmlEntry(entry, (done, total) => {
+          const span = Math.max(fileEnd - fileStart, 1);
+          report(
+            "parsing_followers",
+            fileStart + Math.round((done / total) * span),
+            `Parsing followers (${formatMb(done)} of ${formatMb(total)})…`,
+          );
+        })
+      : parseFollowersJson(await readEntryText(entry));
     followersAccum.push(...chunk);
     report(
       "parsing_followers",
-      35 + Math.round(((i + 1) / Math.max(followerFiles.length, 1)) * 25),
+      fileEnd,
       `Parsing followers (${i + 1}/${followerFiles.length})…`,
     );
   }
@@ -172,11 +215,16 @@ async function readExportZip(
 
   let followingAccum: ReturnType<typeof parseFollowingJson> = [];
   if (followingEntry?.filename) {
-    const text = await readEntryText(followingEntry);
     const lower = followingEntry.filename.toLowerCase();
     followingAccum = lower.endsWith(".html")
-      ? parseFollowingHtml(text)
-      : parseFollowingJson(text);
+      ? await parseHtmlEntry(followingEntry, (done, total) => {
+          report(
+            "parsing_following",
+            65 + Math.round((done / total) * 20),
+            `Parsing following (${formatMb(done)} of ${formatMb(total)})…`,
+          );
+        })
+      : parseFollowingJson(await readEntryText(followingEntry));
   }
 
   await reader.close();

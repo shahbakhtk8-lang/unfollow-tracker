@@ -9,6 +9,7 @@ import {
   parseFollowersJson,
   parseFollowingHtml,
   parseFollowingJson,
+  createFollowersHtmlParser,
 } from "../src/lib/extractUsers";
 import { normalizeUsername } from "../src/lib/normalize";
 
@@ -99,5 +100,17 @@ describe("parseFollowersHtml", () => {
     `;
     expect(parseFollowersHtml(html).map((u) => u.username)).toEqual(["test_user_003"]);
     expect(parseFollowingHtml(html).map((u) => u.username)).toEqual(["test_user_003"]);
+  });
+
+  it("matches the full-string result when the same HTML is written in small chunks", () => {
+    const html =
+      '<a href="https://www.instagram.com/chunk_user_a/">a</a>' +
+      '<div class="pam _3-95">padding</div>'.repeat(40) +
+      '<a href="https://www.instagram.com/chunk_user_b/">b</a>';
+    const streamed = createFollowersHtmlParser();
+    for (let i = 0; i < html.length; i += 17) streamed.write(html.slice(i, i + 17));
+    expect(streamed.end().map((u) => u.username)).toEqual(
+      parseFollowersHtml(html).map((u) => u.username),
+    );
   });
 });

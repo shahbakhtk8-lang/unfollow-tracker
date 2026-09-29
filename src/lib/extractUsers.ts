@@ -78,7 +78,10 @@ const RESERVED_PATHS = new Set([
   "locations",
 ]);
 
-export function parseFollowersHtml(html: string): UserEntry[] {
+export function createFollowersHtmlParser(): {
+  write: (chunk: string) => void;
+  end: () => UserEntry[];
+} {
   const out: UserEntry[] = [];
   const parser = new Parser(
     {
@@ -93,9 +96,21 @@ export function parseFollowersHtml(html: string): UserEntry[] {
     },
     { decodeEntities: true },
   );
+  return {
+    write(chunk: string) {
+      parser.write(chunk);
+    },
+    end() {
+      parser.end();
+      return dedupeUsers(out);
+    },
+  };
+}
+
+export function parseFollowersHtml(html: string): UserEntry[] {
+  const parser = createFollowersHtmlParser();
   parser.write(html);
-  parser.end();
-  return dedupeUsers(out);
+  return parser.end();
 }
 
 export function parseFollowingHtml(html: string): UserEntry[] {
