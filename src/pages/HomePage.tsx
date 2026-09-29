@@ -53,6 +53,7 @@ export default function HomePage() {
     navigate("/analyze");
     store.setParsing(true);
     store.setError(null);
+    store.setProgress({ stage: "reading", percent: 0, message: "Starting…" });
     try {
       const result = await parseZipFile(file, (p) => store.setProgress(p));
       store.setResults({
@@ -60,10 +61,15 @@ export default function HomePage() {
         insights: result.insights,
         followerUsernames: result.followerUsernames,
         followingUsernames: result.followingUsernames,
+        followerTimestamps: result.followerTimestamps,
+        followingTimestamps: result.followingTimestamps,
+        exportDate: result.exportDate,
+        exportDateSource: result.exportDateSource,
       });
     } catch (e) {
       store.setError(e instanceof Error ? e.message : "Parse failed");
       store.setParsing(false);
+      store.setProgress(null);
     }
   };
 
