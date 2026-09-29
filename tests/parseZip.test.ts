@@ -35,6 +35,14 @@ describe("parseZipBlob", () => {
     expect(result.followerTimestamps.alice_demo).toBe(1699000000);
     expect(result.followingTimestamps.charlie_demo).toBe(1700000200);
 
+    const empty = await zipWith({
+      "connections/followers_and_following/followers_1.json": Buffer.from("[]"),
+      "connections/followers_and_following/following.json": Buffer.from(
+        JSON.stringify({ relationships_following: [] }),
+      ),
+    });
+    await expect(parseZipBlob(empty)).rejects.toThrow(/no followers or following accounts/);
+
     const notZip = new Blob(["this is plain text, not a zip archive"]);
     await expect(parseZipBlob(notZip)).rejects.toThrow(
       /could not be read as an Instagram export ZIP/,

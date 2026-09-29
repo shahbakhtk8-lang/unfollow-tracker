@@ -56,7 +56,10 @@ async function readEntryText(entry: FileEntry): Promise<string> {
 
 function keepParseError(error: unknown): boolean {
   if (!(error instanceof Error)) return false;
-  return error.message.startsWith("Could not find followers or following files.");
+  return (
+    error.message.startsWith("Could not find followers or following files.") ||
+    error.message.startsWith("This export has no followers or following accounts.")
+  );
 }
 
 export async function parseZipBlob(
@@ -177,6 +180,12 @@ async function readExportZip(
   }
 
   await reader.close();
+
+  if (followersAccum.length === 0 && followingAccum.length === 0) {
+    throw new Error(
+      "This export has no followers or following accounts. Check that you included Followers and following in the Meta download.",
+    );
+  }
 
   report("computing", 90, "Computing insights…");
 
