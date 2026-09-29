@@ -26,8 +26,9 @@ export default function PrivacyPage() {
       <h2 className="font-display text-xl font-bold">Local storage on your device</h2>
       <p className="mt-2 text-muted">
         If you choose to save a snapshot, username lists and counts are stored in IndexedDB on
-        your browser only. You can delete snapshots anytime from the Analyze page. Clearing site
-        data removes this information.
+        your browser only. Reviewed marks and the ignore list are stored the same way — only on
+        this device, never on our servers. You can delete snapshots anytime from the Analyze page.
+        Clearing site data removes this information.
       </p>
       </section>
 

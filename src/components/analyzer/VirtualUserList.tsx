@@ -1,7 +1,6 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ExternalLink, Copy, Check } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn, formatFollowDate } from "@/lib/utils";
 import type { ListedUser } from "@/store/analyzerStore";
@@ -9,9 +8,27 @@ import type { ListedUser } from "@/store/analyzerStore";
 interface VirtualUserListProps {
   users: ListedUser[];
   emptyMessage?: string;
+  reviewed?: Set<string>;
+  onReviewedChange?: (username: string, reviewed: boolean) => void;
+  onIgnore?: (username: string) => void;
+  onRestore?: (username: string) => void;
 }
 
-function UserRow({ user, index }: { user: ListedUser; index: number }) {
+function UserRow({
+  user,
+  index,
+  reviewed,
+  onReviewedChange,
+  onIgnore,
+  onRestore,
+}: {
+  user: ListedUser;
+  index: number;
+  reviewed?: Set<string>;
+  onReviewedChange?: (username: string, reviewed: boolean) => void;
+  onIgnore?: (username: string) => void;
+  onRestore?: (username: string) => void;
+}) {
   const [copyState, setCopyState] = useState<"idle" | "ok" | "fail">("idle");
   const followed = formatFollowDate(user.timestamp);
 
@@ -28,19 +45,52 @@ function UserRow({ user, index }: { user: ListedUser; index: number }) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2.5 text-sm",
+        "flex flex-wrap items-center justify-between gap-2 border-b border-border/60 px-3 py-2.5 text-sm",
         index % 2 === 0 && "bg-border/10",
       )}
     >
-      <div className="min-w-0">
-        <p className="truncate font-medium">@{user.username}</p>
-        {copyState === "fail" ? (
-          <p className="text-xs text-danger">Couldn’t copy</p>
-        ) : followed ? (
-          <p className="text-xs text-muted">Followed {followed}</p>
+      <div className="flex min-w-0 flex-1 items-start gap-2">
+        {onReviewedChange ? (
+          <input
+            type="checkbox"
+            className="mt-1 h-4 w-4 shrink-0 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            checked={reviewed?.has(user.username) ?? false}
+            onChange={(e) => onReviewedChange(user.username, e.target.checked)}
+            aria-label={`Mark ${user.username} as reviewed`}
+          />
         ) : null}
+        <div className="min-w-0">
+          <p className="truncate font-medium">@{user.username}</p>
+          {copyState === "fail" ? (
+            <p className="text-xs text-danger">Couldn’t copy</p>
+          ) : followed ? (
+            <p className="text-xs text-muted">Followed {followed}</p>
+          ) : null}
+        </div>
       </div>
       <div className="flex shrink-0 gap-1">
+        {onIgnore ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onIgnore(user.username)}
+            aria-label={`Ignore ${user.username}`}
+          >
+            Ignore
+          </Button>
+        ) : null}
+        {onRestore ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onRestore(user.username)}
+            aria-label={`Stop ignoring ${user.username}`}
+          >
+            Restore
+          </Button>
+        ) : null}
         <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => void copy()} aria-label={`Copy ${user.username}`}>
           {copyState === "ok" ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
         </Button>
@@ -59,13 +109,21 @@ function UserRow({ user, index }: { user: ListedUser; index: number }) {
   );
 }
 
-export function VirtualUserList({ users, emptyMessage = "No accounts in this list." }: VirtualUserListProps) {
+export function VirtualUserList({
+  users,
+  emptyMessage = "No accounts in this list.",
+  reviewed,
+  onReviewedChange,
+  onIgnore,
+  onRestore,
+}: VirtualUserListProps) {
   const parentRef = useRef<HTMLDivElement>(null);
+  const extras = Boolean(onReviewedChange || onIgnore || onRestore);
 
   const virtualizer = useVirtualizer({
     count: users.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 64,
+    estimateSize: () => (extras ? 80 : 64),
     overscan: 12,
   });
 
@@ -103,7 +161,14 @@ export function VirtualUserList({ users, emptyMessage = "No accounts in this lis
                 transform: `translateY(${virtualRow.start}px)`,
               }}
             >
-              <UserRow user={user} index={virtualRow.index} />
+              <UserRow
+                user={user}
+                index={virtualRow.index}
+                reviewed={reviewed}
+                onReviewedChange={onReviewedChange}
+                onIgnore={onIgnore}
+                onRestore={onRestore}
+              />
             </div>
           );
         })}

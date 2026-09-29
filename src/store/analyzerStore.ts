@@ -16,7 +16,8 @@ export type ResultTab =
   | "unfollowed"
   | "newFollowers"
   | "allFollowers"
-  | "allFollowing";
+  | "allFollowing"
+  | "ignored";
 
 interface AnalyzerState {
   isParsing: boolean;
@@ -197,6 +198,8 @@ export function getActiveList(state: AnalyzerState): ListedUser[] {
       return withTimestamps(followerUsernames, followerTimestamps);
     case "allFollowing":
       return withTimestamps(followingUsernames, followingTimestamps);
+    case "ignored":
+      return [];
     default:
       return [];
   }

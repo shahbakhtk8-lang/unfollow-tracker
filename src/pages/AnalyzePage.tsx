@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
 import { Download, RotateCcw } from "lucide-react";
@@ -24,8 +24,14 @@ import {
   saveSnapshot,
   getSnapshot,
   snapshotThatWouldBeReplaced,
+  listReviewed,
+  listIgnored,
+  setReviewed,
+  ignoreUsername,
+  restoreIgnored,
   type StoredSnapshot,
 } from "@/db/snapshots";
+import { applyReviewFilter, excludeIgnored, ignoredOverlap, type ReviewFilter } from "@/lib/userLists";
 import {
   useAnalyzerStore,
   getActiveList,
@@ -115,8 +121,18 @@ export default function AnalyzePage() {
   const [compareTwoMode, setCompareTwoMode] = useState(false);
   const [twoZipFirst, setTwoZipFirst] = useState<TwoZipParsed | null>(null);
   const [twoZipSecond, setTwoZipSecond] = useState<TwoZipParsed | null>(null);
+  const [reviewed, setReviewedMarks] = useState<Set<string>>(() => new Set());
+  const [ignored, setIgnoredMarks] = useState<Set<string>>(() => new Set());
+  const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
 
   const debounceSearch = useDebouncedCallback((v: string) => setDebouncedSearch(v), 200);
+
+  useEffect(() => {
+    void Promise.all([listReviewed(), listIgnored()]).then(([savedReviewed, savedIgnored]) => {
+      setReviewedMarks(new Set(savedReviewed));
+      setIgnoredMarks(new Set(savedIgnored));
+    });
+  }, []);
 
   const activeList = useMemo(() => {
     const base = getActiveList({
@@ -152,8 +168,17 @@ export default function AnalyzePage() {
       reset,
     });
     const q = debouncedSearch.trim().toLowerCase();
-    const filtered = q ? base.filter((u) => u.username.includes(q)) : base;
-    return sortList(filtered, sortMode);
+    let rows = q ? base.filter((u) => u.username.includes(q)) : base;
+    if (activeTab === "notFollowingBack") {
+      rows = rows.filter((u) => !ignored.has(u.username));
+      rows = applyReviewFilter(rows, reviewed, reviewFilter);
+    } else if (activeTab === "ignored") {
+      rows = [...ignored]
+        .sort((a, b) => a.localeCompare(b))
+        .filter((name) => (q ? name.includes(q) : true))
+        .map((username) => ({ username }));
+    }
+    return sortList(rows, sortMode);
   }, [
     isParsing,
     progress,
@@ -179,6 +204,9 @@ export default function AnalyzePage() {
     compareSnapshotId,
     debouncedSearch,
     sortMode,
+    ignored,
+    reviewed,
+    reviewFilter,
   ]);
 
   const handleFile = async (file: File, compareSnapshot?: StoredSnapshot | null) => {
@@ -420,13 +448,18 @@ export default function AnalyzePage() {
     setDebouncedSearch("");
   };
 
+  const notBackVisibleCount = insights
+    ? excludeIgnored(insights.notFollowingBack, ignored).length
+    : 0;
+  const ignoredHiddenCount = insights ? ignoredOverlap(insights.notFollowingBack, ignored) : 0;
+
   const tabItems: { id: ResultTab; label: string; count: number; needsDiff?: boolean }[] =
     insights
       ? [
           {
             id: "notFollowingBack",
             label: "Not back",
-            count: insights.notFollowingBack.length,
+            count: notBackVisibleCount,
           },
           { id: "mutuals", label: "Mutuals", count: insights.mutuals.length },
           { id: "fans", label: "Fans", count: insights.fans.length },
@@ -451,6 +484,11 @@ export default function AnalyzePage() {
             id: "allFollowing",
             label: "Following",
             count: followingUsernames.length,
+          },
+          {
+            id: "ignored",
+            label: "Ignored",
+            count: ignored.size,
           },
         ]
       : [];
@@ -569,7 +607,7 @@ export default function AnalyzePage() {
                 <StatCard label="Following" value={insights.followingCount} />
                 <StatCard
                   label="Not following back"
-                  value={insights.notFollowingBack.length}
+                  value={notBackVisibleCount}
                   accent="warning"
                 />
                 <StatCard
@@ -689,6 +727,40 @@ export default function AnalyzePage() {
                 </TabsList>
 
                 <TabsContent value={activeTab} forceMount>
+                  {activeTab === "notFollowingBack" ? (
+                    <div className="mb-3 flex flex-col gap-2">
+                      {ignoredHiddenCount > 0 ? (
+                        <p className="text-xs text-muted">
+                          {ignoredHiddenCount} hidden by your ignore list
+                        </p>
+                      ) : null}
+                      <div className="flex flex-wrap gap-2">
+                        {(
+                          [
+                            ["all", "All"],
+                            ["unreviewed", "Not reviewed"],
+                            ["reviewed", "Reviewed"],
+                          ] as const
+                        ).map(([id, label]) => (
+                          <Button
+                            key={id}
+                            type="button"
+                            size="sm"
+                            variant={reviewFilter === id ? "default" : "outline"}
+                            aria-pressed={reviewFilter === id}
+                            onClick={() => setReviewFilter(id)}
+                          >
+                            {label}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {activeTab === "ignored" ? (
+                    <p className="mb-3 text-xs text-muted">
+                      Ignored accounts stay on this device and are left out of the Not back count.
+                    </p>
+                  ) : null}
                   <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
                     <Input
                       placeholder="Search username…"
@@ -737,7 +809,43 @@ export default function AnalyzePage() {
                       </Button>
                     </div>
                   </div>
-                  <VirtualUserList users={activeList} />
+                  <VirtualUserList
+                    users={activeList}
+                    reviewed={reviewed}
+                    onReviewedChange={
+                      activeTab === "notFollowingBack"
+                        ? (username, next) => {
+                            setReviewedMarks((prev) => {
+                              const copy = new Set(prev);
+                              if (next) copy.add(username);
+                              else copy.delete(username);
+                              return copy;
+                            });
+                            void setReviewed(username, next);
+                          }
+                        : undefined
+                    }
+                    onIgnore={
+                      activeTab === "notFollowingBack"
+                        ? (username) => {
+                            setIgnoredMarks((prev) => new Set(prev).add(username));
+                            void ignoreUsername(username);
+                          }
+                        : undefined
+                    }
+                    onRestore={
+                      activeTab === "ignored"
+                        ? (username) => {
+                            setIgnoredMarks((prev) => {
+                              const copy = new Set(prev);
+                              copy.delete(username);
+                              return copy;
+                            });
+                            void restoreIgnored(username);
+                          }
+                        : undefined
+                    }
+                  />
                 </TabsContent>
               </Tabs>
             </>

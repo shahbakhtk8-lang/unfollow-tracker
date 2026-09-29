@@ -18,14 +18,29 @@ export interface StoredSnapshot {
 
 export const MAX_SNAPSHOTS = 10;
 
+interface UsernameRow {
+  username: string;
+}
+
 class SnapshotDatabase extends Dexie {
   snapshots!: EntityTable<StoredSnapshot, "id">;
+  reviewed!: EntityTable<UsernameRow, "username">;
+  ignored!: EntityTable<UsernameRow, "username">;
 
   constructor() {
     super("UnfollowTrackerDB");
     this.version(1).stores({
       snapshots: "++id, createdAt, label",
     });
+    this.version(2)
+      .stores({
+        snapshots: "++id, createdAt, label",
+        reviewed: "username",
+        ignored: "username",
+      })
+      .upgrade(async () => {
+        // Snapshots stay as stored, including rows with or without exportDate.
+      });
   }
 }
 
@@ -84,4 +99,30 @@ export async function updateSnapshotLabel(id: number, label: string): Promise<vo
 
 export async function getSnapshot(id: number): Promise<StoredSnapshot | undefined> {
   return db.snapshots.get(id);
+}
+
+export async function listReviewed(): Promise<string[]> {
+  const rows = await db.reviewed.toArray();
+  return rows.map((row) => row.username);
+}
+
+export async function setReviewed(username: string, reviewed: boolean): Promise<void> {
+  if (reviewed) {
+    await db.reviewed.put({ username });
+    return;
+  }
+  await db.reviewed.delete(username);
+}
+
+export async function listIgnored(): Promise<string[]> {
+  const rows = await db.ignored.toArray();
+  return rows.map((row) => row.username);
+}
+
+export async function ignoreUsername(username: string): Promise<void> {
+  await db.ignored.put({ username });
+}
+
+export async function restoreIgnored(username: string): Promise<void> {
+  await db.ignored.delete(username);
 }
