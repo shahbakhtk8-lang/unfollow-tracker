@@ -70,6 +70,7 @@ export function ZipDropzone({ onFile, disabled, label, compact }: ZipDropzonePro
         type="file"
         accept=".zip,application/zip"
         className="sr-only"
+        tabIndex={-1}
         disabled={disabled}
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
@@ -90,7 +91,7 @@ export function ZipDropzone({ onFile, disabled, label, compact }: ZipDropzonePro
           type="button"
           disabled={disabled}
           onClick={() => inputRef.current?.click()}
-          className="mt-4 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-indigo-500/20 hover:brightness-110"
+          className="mt-4 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-indigo-500/20 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           Choose file
         </button>
