@@ -54,7 +54,26 @@ async function readEntryText(entry: FileEntry): Promise<string> {
   return entry.getData(new TextWriter());
 }
 
+function keepParseError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  return error.message.startsWith("Could not find followers or following files.");
+}
+
 export async function parseZipBlob(
+  blob: Blob,
+  onProgress?: (p: ParseProgress) => void,
+): Promise<ParseResult> {
+  try {
+    return await readExportZip(blob, onProgress);
+  } catch (error) {
+    if (keepParseError(error)) throw error;
+    throw new Error(
+      "This file could not be read as an Instagram export ZIP. Choose the .zip you downloaded from Meta.",
+    );
+  }
+}
+
+async function readExportZip(
   blob: Blob,
   onProgress?: (p: ParseProgress) => void,
 ): Promise<ParseResult> {

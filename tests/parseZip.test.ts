@@ -35,6 +35,11 @@ describe("parseZipBlob", () => {
     expect(result.followerTimestamps.alice_demo).toBe(1699000000);
     expect(result.followingTimestamps.charlie_demo).toBe(1700000200);
 
+    const notZip = new Blob(["this is plain text, not a zip archive"]);
+    await expect(parseZipBlob(notZip)).rejects.toThrow(
+      /could not be read as an Instagram export ZIP/,
+    );
+
     const older = usernamesFromEntries(parseFollowersJson(fixture("followers_old.json").toString()));
     const diff = diffSnapshots(older, result.followerUsernames);
     expect(diff.unfollowed).toEqual(["left_user", "stays"]);
