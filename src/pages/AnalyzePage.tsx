@@ -11,9 +11,13 @@ import { StatCard } from "@/components/analyzer/StatCard";
 import { VirtualUserList } from "@/components/analyzer/VirtualUserList";
 import { ParseProgressBar } from "@/components/analyzer/ParseProgressBar";
 import { SnapshotPanel } from "@/components/analyzer/SnapshotPanel";
+import { TwoZipPanel } from "@/components/analyzer/TwoZipPanel";
 import { parseZipFile } from "@/lib/parseClient";
+import { compareTwoExports, type TwoZipExport } from "@/lib/compareTwoExports";
 import { diffSnapshots, orderComparison, type OlderChoice } from "@/lib/diff";
 import { describeExportDate, snapshotExportDate } from "@/lib/exportDate";
+import type { ParseResult } from "@/lib/parseZip";
+import type { Insights } from "@/lib/sets";
 import { exportUsernamesCsv, formatSnapshotDate } from "@/lib/utils";
 import {
   saveSnapshot,
@@ -28,6 +32,25 @@ import {
 } from "@/store/analyzerStore";
 
 type SortMode = "az" | "za" | "recent";
+
+type TwoZipParsed = TwoZipExport & {
+  insights: Insights;
+  followingUsernames: string[];
+  followingTimestamps: Record<string, number>;
+};
+
+function parsedFromResult(fileName: string, result: ParseResult): TwoZipParsed {
+  return {
+    fileName,
+    insights: result.insights,
+    followerUsernames: result.followerUsernames,
+    followingUsernames: result.followingUsernames,
+    followerTimestamps: result.followerTimestamps,
+    followingTimestamps: result.followingTimestamps,
+    exportDate: result.exportDate,
+    exportDateSource: result.exportDateSource,
+  };
+}
 
 function sortList(
   list: { username: string; timestamp?: number }[],
@@ -88,6 +111,9 @@ export default function AnalyzePage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [replaceOldest, setReplaceOldest] = useState<StoredSnapshot | null>(null);
   const [choiceSnapshot, setChoiceSnapshot] = useState<StoredSnapshot | null>(null);
+  const [compareTwoMode, setCompareTwoMode] = useState(false);
+  const [twoZipFirst, setTwoZipFirst] = useState<TwoZipParsed | null>(null);
+  const [twoZipSecond, setTwoZipSecond] = useState<TwoZipParsed | null>(null);
 
   const debounceSearch = useDebouncedCallback((v: string) => setDebouncedSearch(v), 200);
 
@@ -300,6 +326,99 @@ export default function AnalyzePage() {
     setNotice(null);
   };
 
+  const showParsed = (parsed: TwoZipParsed, extra?: { diff?: ReturnType<typeof diffSnapshots> | null } & Parameters<typeof setDiff>[1]) => {
+    setChoiceSnapshot(null);
+    setResults({
+      fileName: parsed.fileName,
+      insights: parsed.insights,
+      followerUsernames: parsed.followerUsernames,
+      followingUsernames: parsed.followingUsernames,
+      followerTimestamps: parsed.followerTimestamps,
+      followingTimestamps: parsed.followingTimestamps,
+      exportDate: parsed.exportDate,
+      exportDateSource: parsed.exportDateSource,
+      ...(extra?.diff
+        ? {
+            baselineFollowerTimestamps: extra.baselineFollowerTimestamps,
+            newerFollowerTimestamps: extra.newerFollowerTimestamps,
+            comparisonFrom: extra.from,
+            comparisonTo: extra.to,
+            comparisonOldSource: extra.oldSource,
+            comparisonNewSource: extra.newSource,
+            comparisonManual: extra.manual,
+            needsOlderChoice: extra.needsOlderChoice,
+            diff: extra.diff,
+          }
+        : { needsOlderChoice: extra?.needsOlderChoice ?? false, diff: extra?.diff ?? null }),
+    });
+  };
+
+  const applyTwoZip = (
+    first: TwoZipParsed,
+    second: TwoZipParsed,
+    olderChoice: OlderChoice | null = null,
+  ) => {
+    const decision = compareTwoExports(first, second, olderChoice);
+    if (decision.status === "needs-choice") {
+      showParsed(second, { diff: null, needsOlderChoice: true });
+      setNotice(null);
+      return;
+    }
+    const ordered = decision.ordered;
+    showParsed(second, {
+      diff: diffSnapshots(ordered.oldFollowers, ordered.newFollowers),
+      baselineFollowerTimestamps: ordered.oldTimestamps,
+      newerFollowerTimestamps: ordered.newTimestamps,
+      from: ordered.oldAt,
+      to: ordered.newAt,
+      oldSource: ordered.oldSource,
+      newSource: ordered.newSource,
+      manual: ordered.chosenManually,
+      needsOlderChoice: false,
+    });
+    setTab("unfollowed");
+    setNotice(null);
+  };
+
+  const handleTwoZipFile = async (slot: "first" | "second", file: File) => {
+    setParsing(true);
+    setError(null);
+    setProgress({ stage: "reading", percent: 0, message: "Starting…" });
+    const label = slot === "first" ? "First export" : "Second export";
+    try {
+      const result = await parseZipFile(file, (p) =>
+        setProgress({ ...p, message: `${label} — ${p.message}` }),
+      );
+      const parsed = parsedFromResult(file.name, result);
+      const first = slot === "first" ? parsed : twoZipFirst;
+      const second = slot === "second" ? parsed : twoZipSecond;
+      if (slot === "first") setTwoZipFirst(parsed);
+      else setTwoZipSecond(parsed);
+      if (first && second) {
+        applyTwoZip(first, second);
+      } else {
+        showParsed(parsed);
+      }
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to parse ZIP";
+      setError(`${label} (${file.name}): ${message}`);
+      setParsing(false);
+      setProgress(null);
+    }
+  };
+
+  const handleStartOver = () => {
+    reset();
+    setCompareTwoMode(false);
+    setTwoZipFirst(null);
+    setTwoZipSecond(null);
+    setChoiceSnapshot(null);
+    setNotice(null);
+    setReplaceOldest(null);
+    setSearch("");
+    setDebouncedSearch("");
+  };
+
   const tabItems: { id: ResultTab; label: string; count: number; needsDiff?: boolean }[] =
     insights
       ? [
@@ -348,19 +467,39 @@ export default function AnalyzePage() {
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,340px)_1fr]">
         <aside className="space-y-6">
-          <ZipDropzone
+          <TwoZipPanel
+            enabled={compareTwoMode}
+            firstName={twoZipFirst?.fileName ?? null}
+            secondName={twoZipSecond?.fileName ?? null}
             disabled={isParsing}
-            compact
-            onFile={(file) => {
-              void (async () => {
-                let snap: StoredSnapshot | null = null;
-                if (compareSnapshotId != null) {
-                  snap = (await getSnapshot(compareSnapshotId)) ?? null;
-                }
-                await handleFile(file, snap);
-              })();
+            onEnabledChange={(on) => {
+              setCompareTwoMode(on);
+              if (on) {
+                setCompareSnapshotId(null);
+                setChoiceSnapshot(null);
+              } else {
+                setTwoZipFirst(null);
+                setTwoZipSecond(null);
+              }
             }}
+            onFirstFile={(file) => void handleTwoZipFile("first", file)}
+            onSecondFile={(file) => void handleTwoZipFile("second", file)}
           />
+          {compareTwoMode ? null : (
+            <ZipDropzone
+              disabled={isParsing}
+              compact
+              onFile={(file) => {
+                void (async () => {
+                  let snap: StoredSnapshot | null = null;
+                  if (compareSnapshotId != null) {
+                    snap = (await getSnapshot(compareSnapshotId)) ?? null;
+                  }
+                  await handleFile(file, snap);
+                })();
+              }}
+            />
+          )}
           {isParsing ? <ParseProgressBar progress={progress} /> : null}
           {error ? (
             <div className="rounded-xl border border-danger/40 bg-danger/10 p-3 text-sm text-danger">
@@ -401,7 +540,7 @@ export default function AnalyzePage() {
             onSaveCurrent={() => void handleSaveSnapshot()}
           />
 
-          <Button type="button" variant="ghost" className="w-full" onClick={() => reset()}>
+          <Button type="button" variant="ghost" className="w-full" onClick={handleStartOver}>
             <RotateCcw className="h-4 w-4" />
             Start over
           </Button>
@@ -413,8 +552,9 @@ export default function AnalyzePage() {
               <CardHeader>
                 <CardTitle>Results appear here</CardTitle>
                 <CardDescription>
-                  Upload a ZIP or try the demo from the home page. To track unfollows over time,
-                  save a snapshot, then upload a newer export with Compare selected.{" "}
+                  Upload a ZIP, compare two exports without saving, or try the demo from the home
+                  page. To track unfollows over time, save a snapshot, then upload a newer export
+                  with Compare selected.{" "}
                   <Link to="/guide" className="font-semibold text-primary hover:underline">
                     Export guide
                   </Link>
@@ -443,7 +583,12 @@ export default function AnalyzePage() {
 
               {fileName ? (
                 <p className="mb-4 text-sm text-muted">
-                  Analyzed: <span className="font-medium text-foreground">{fileName}</span>
+                  Analyzed:{" "}
+                  <span className="font-medium text-foreground">
+                    {twoZipFirst && twoZipSecond
+                      ? `${twoZipFirst.fileName} and ${twoZipSecond.fileName}`
+                      : fileName}
+                  </span>
                 </p>
               ) : null}
 
@@ -457,24 +602,49 @@ export default function AnalyzePage() {
                     Which export is older?
                   </p>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      aria-pressed={false}
-                      onClick={() => choiceSnapshot && applyCompare(choiceSnapshot, "snapshot")}
-                    >
-                      Saved snapshot
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      aria-pressed={false}
-                      onClick={() => choiceSnapshot && applyCompare(choiceSnapshot, "current")}
-                    >
-                      Current upload
-                    </Button>
+                    {twoZipFirst && twoZipSecond ? (
+                      <>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          aria-pressed={false}
+                          onClick={() => applyTwoZip(twoZipFirst, twoZipSecond, "snapshot")}
+                        >
+                          {twoZipFirst.fileName}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          aria-pressed={false}
+                          onClick={() => applyTwoZip(twoZipFirst, twoZipSecond, "current")}
+                        >
+                          {twoZipSecond.fileName}
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          aria-pressed={false}
+                          onClick={() => choiceSnapshot && applyCompare(choiceSnapshot, "snapshot")}
+                        >
+                          Saved snapshot
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          aria-pressed={false}
+                          onClick={() => choiceSnapshot && applyCompare(choiceSnapshot, "current")}
+                        >
+                          Current upload
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               ) : null}
@@ -483,6 +653,9 @@ export default function AnalyzePage() {
                 <p className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted">
                   {comparisonFrom != null && comparisonTo != null ? (
                     <>
+                      {twoZipFirst && twoZipSecond
+                        ? `${twoZipFirst.fileName} and ${twoZipSecond.fileName}. `
+                        : null}
                       Comparing {formatSnapshotDate(comparisonFrom)} -&gt;{" "}
                       {formatSnapshotDate(comparisonTo)}. Older export{" "}
                       {describeExportDate(comparisonOldSource)}. Newer export{" "}
