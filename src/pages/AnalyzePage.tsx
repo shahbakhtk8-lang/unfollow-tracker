@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ZipDropzone } from "@/components/analyzer/ZipDropzone";
 import { StatCard } from "@/components/analyzer/StatCard";
+import { CountsNote } from "@/components/analyzer/CountsNote";
 import { VirtualUserList } from "@/components/analyzer/VirtualUserList";
 import { ParseProgressBar } from "@/components/analyzer/ParseProgressBar";
 import { SnapshotPanel } from "@/components/analyzer/SnapshotPanel";
@@ -580,6 +581,8 @@ export default function AnalyzePage() {
                   accent="success"
                 />
               </div>
+
+              <CountsNote />
 
               {fileName ? (
                 <p className="mb-4 text-sm text-muted">
