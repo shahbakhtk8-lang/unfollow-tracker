@@ -2,10 +2,13 @@
 
 Privacy-first Instagram unfollow checker. Upload your official Meta data export (ZIP) — analysis runs **100% in your browser**. No Instagram password. No server upload.
 
+**Live demo:** [https://unfollow-tracker.pages.dev/](https://unfollow-tracker.pages.dev/)
+
 ## Features
 
 - Not following back, mutuals, fans, full follower/following lists
-- Compare a new export against a **saved snapshot** (IndexedDB on your device) to see unfollows and new followers
+- Compare two export ZIPs directly, or compare a new export against a **saved snapshot** (IndexedDB on your device) to see unfollows and new followers
+- Ignore list and reviewed marks stored only on this device
 - Web Worker parsing, virtualized lists for large accounts
 - Free CSV export
 - Demo ZIP included
