@@ -9,6 +9,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:e2e": "node scripts/make-test-zips.mjs && playwright test",
     "test:watch": "vitest",
     "lint": "eslint ."
   },
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.1.13",
     "@types/node": "^24.3.1",
     "@types/react": "^18.3.24",
