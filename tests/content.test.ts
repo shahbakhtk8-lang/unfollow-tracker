@@ -36,6 +36,8 @@ describe("article content", () => {
     expect(html).toMatch(/<tbody>[\s\S]*<tr>/);
     expect(html).toContain("No login");
     expect(html).toContain("Seconds");
+    expect(html).toContain('class="article-table-wrap"');
+    expect(html.match(/article-table-wrap/g)?.length).toBe(1);
   });
 
   it("adds slug ids to headings without a visible hash icon", () => {

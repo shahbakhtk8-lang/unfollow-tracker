@@ -146,6 +146,15 @@ function renderMarkdownWithTables(source: string): string {
   return htmlParts.join("");
 }
 
+export function wrapArticleTables(html: string): string {
+  return html.replace(/<table[\s\S]*?<\/table>/gi, (table, offset: number) => {
+    const start = Math.max(0, offset - '<div class="article-table-wrap">'.length);
+    const before = html.slice(start, offset);
+    if (before.endsWith('<div class="article-table-wrap">')) return table;
+    return `<div class="article-table-wrap">${table}</div>`;
+  });
+}
+
 export function renderArticleHtml(source: string): string {
-  return demoteArticleHeadings(renderMarkdownWithTables(source));
+  return wrapArticleTables(demoteArticleHeadings(renderMarkdownWithTables(source)));
 }
