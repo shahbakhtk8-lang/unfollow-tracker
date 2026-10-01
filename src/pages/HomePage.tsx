@@ -1,6 +1,19 @@
+import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Lock, Zap, Target, Sparkles, ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Layers,
+  ListChecks,
+  Monitor,
+  ShieldCheck,
+  Target,
+  Trash2,
+  TrendingUp,
+  Users,
+  Zap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -14,10 +27,21 @@ import { ToolPageLayout } from "@/components/layout/ToolPageLayout";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { parseZipFile } from "@/lib/parseClient";
 import { useAnalyzerStore } from "@/store/analyzerStore";
-
-const HOME_META_TITLE = "Unfollow Tracker — See Who Doesn't Follow You Back on Instagram";
-const HOME_META_DESCRIPTION =
-  "Free Instagram unfollow tracker. Upload your official data export and instantly see who doesn't follow back, your mutuals, and recent unfollowers — 100% private, analyzed in your browser, no login required.";
+import {
+  FEATURED_IMAGE_ALT,
+  FEATURED_IMAGE_HEIGHT,
+  FEATURED_IMAGE_PATH,
+  FEATURED_IMAGE_URL,
+  FEATURED_IMAGE_WIDTH,
+  HOME_META_DESCRIPTION,
+  HOME_META_TITLE,
+  SITE_URL,
+  YOUTUBE_EMBED_URL,
+  YOUTUBE_VIDEO_TITLE,
+  buildHomeJsonLd,
+  homeFaqs,
+  howItWorksSteps,
+} from "@/content/seo";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -30,29 +54,92 @@ const fadeUp = {
 
 const features = [
   {
-    icon: Lock,
-    title: "100% local",
-    desc: "Your ZIP is parsed in your browser. We never receive your archive.",
-  },
-  {
-    icon: Zap,
-    title: "Built for speed",
-    desc: "Web Workers + virtual lists keep scrolling smooth even with huge exports.",
+    icon: ShieldCheck,
+    title: "Safe & secure",
+    desc: "No login and password required. Manual checks only need your official ZIP. We never ask for your Instagram or Threads password, and signing in is optional. Your data is protected and secure at all times.",
   },
   {
     icon: Target,
-    title: "Accurate lists",
-    desc: "Official Meta export data — non-mutuals, mutuals, fans, and snapshot diffs.",
+    title: "100% accurate rate",
+    desc: "The system compares your data with high precision to accurately reveal unfollowers.",
   },
   {
-    icon: Sparkles,
-    title: "Free to use",
-    desc: "No Instagram password. No subscription. Export results as CSV anytime.",
+    icon: Zap,
+    title: "Fast results",
+    desc: "Get instant results with one click. You don't need to wait to check followers' status.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Improve 50% growth",
+    desc: "The unfollower tracker can increase your growth ratio by 50% by filtering out fake or inactive followers from your account.",
+  },
+  {
+    icon: Trash2,
+    title: "Auto deletion of data",
+    desc: "Your data is analyzed securely. After you get your results, the uploaded data is auto-deleted from our system.",
+  },
+  {
+    icon: Layers,
+    title: "All-in-one tracking",
+    desc: "Use both methods, username analysis and Instagram data export (ZIP file), for a more accurate and deeper comparison.",
+  },
+  {
+    icon: Monitor,
+    title: "Analysis in your browser",
+    desc: "Analysis starts when you choose the ZIP. Your browser reads the file locally, so the archive itself is not uploaded to our servers.",
+  },
+  {
+    icon: ListChecks,
+    title: "Clear follower lists",
+    desc: "Spot non-mutual follows and compare exports from different dates. Search the lists and decide for yourself who to keep following.",
+  },
+  {
+    icon: Users,
+    title: "Optimize your social circle",
+    desc: "Adjust your follower list easily. Identify those who no longer follow you and make informed decisions about who to follow.",
+  },
+];
+
+const benefits = [
+  "Losing followers without knowing who left? You could be missing out on up to 30% of your reach.",
+  "Our free Igunfollow tracker reads your exported data.",
+  "It scans your username and matches your followers against who you follow.",
+  "Spot recent unfollowers.",
+  "Find accounts that don't follow you back.",
+  "Check how healthy your account is.",
+  "You don't need to login or provide your insta password.",
+];
+
+const healthRanges = [
+  {
+    size: "Followers under 1k",
+    unfollows: "1 – 2 per day",
+    followBack: "10% – 20%",
+  },
+  {
+    size: "Followers 5k – 10k",
+    unfollows: "3 – 4 per day",
+    followBack: "15% – 25%",
+  },
+  {
+    size: "Followers 10k – 50k",
+    unfollows: "5 – 10 per day",
+    followBack: "20% – 30%",
   },
 ];
 
 export default function HomePage() {
-  useDocumentMeta(HOME_META_TITLE, HOME_META_DESCRIPTION);
+  const jsonLd = useMemo(() => buildHomeJsonLd(), []);
+  useDocumentMeta({
+    title: HOME_META_TITLE,
+    description: HOME_META_DESCRIPTION,
+    canonical: `${SITE_URL}/`,
+    image: FEATURED_IMAGE_URL,
+    imageAlt: FEATURED_IMAGE_ALT,
+    imageWidth: FEATURED_IMAGE_WIDTH,
+    imageHeight: FEATURED_IMAGE_HEIGHT,
+    jsonLd,
+  });
   const navigate = useNavigate();
   const store = useAnalyzerStore();
 
@@ -93,7 +180,7 @@ export default function HomePage() {
   };
 
   return (
-    <ToolPageLayout articleSlug="unfollow-tracker" toolSlug="unfollow-tracker">
+    <ToolPageLayout toolSlug="unfollow-tracker">
       <div className="mesh-bg">
       <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 sm:pt-20">
         <motion.div
@@ -118,11 +205,11 @@ export default function HomePage() {
               initial="hidden"
               animate="visible"
               variants={fadeUp}
-              className="font-display text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl"
+              className="font-display text-3xl font-extrabold leading-[1.15] tracking-tight sm:text-4xl lg:text-5xl"
             >
-              See who doesn&apos;t follow you back —{" "}
+              Instagram Unfollow Tracker Free online -{" "}
               <span className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-transparent">
-                privately
+                Without Login 2026
               </span>
             </motion.h1>
             <motion.p
@@ -162,6 +249,16 @@ export default function HomePage() {
             <ZipDropzone onFile={(f) => void goAnalyzeWithFile(f)} label="Drop ZIP here to analyze" />
           </motion.div>
         </div>
+        <figure className="mx-auto mt-16 max-w-6xl">
+          <img
+            src={FEATURED_IMAGE_PATH}
+            width={FEATURED_IMAGE_WIDTH}
+            height={FEATURED_IMAGE_HEIGHT}
+            alt={FEATURED_IMAGE_ALT}
+            fetchPriority="high"
+            className="h-auto w-full rounded-2xl border border-border bg-card shadow-sm"
+          />
+        </figure>
       </section>
 
       <section id="how-it-works" className="border-t border-border/80 bg-card/30 px-4 py-20 sm:px-6">
@@ -172,26 +269,15 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="font-display text-center text-3xl font-bold"
           >
-            How it works
+            How Does Igunfollow Tool Works?
           </motion.h2>
+          <p className="mx-auto mt-4 max-w-3xl text-center text-muted">
+            Our Unfollow Tracker tool analysis data given by you & give you 100% accurate results.
+            There is no risk, completely free, just upload your zip file in the top box & you&apos;ll
+            get the results of who didn&apos;t follow you back. Here are three simple steps to follow.
+          </p>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {[
-              {
-                step: "1",
-                title: "Export from Meta",
-                body: "Accounts Center → Export your information → Followers and following → All time.",
-              },
-              {
-                step: "2",
-                title: "Upload ZIP here",
-                body: "Drag the archive into Unfollow Tracker. It stays on your device — never uploaded.",
-              },
-              {
-                step: "3",
-                title: "Review lists",
-                body: "See non-mutuals, mutuals, and fans. Save snapshots to track unfollows later.",
-              },
-            ].map((item, i) => (
+            {howItWorksSteps.map((item, i) => (
               <motion.div
                 key={item.step}
                 custom={i}
@@ -220,10 +306,34 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section id="video" className="px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="font-display text-center text-3xl font-bold">Watch how it works</h2>
+          <div className="relative mt-10 aspect-video overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+            <iframe
+              className="absolute inset-0 h-full w-full"
+              src={YOUTUBE_EMBED_URL}
+              title={YOUTUBE_VIDEO_TITLE}
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
+
       <section className="px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-6xl">
-          <h2 className="font-display text-center text-3xl font-bold">Why Unfollow Tracker?</h2>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <h2 className="font-display text-center text-3xl font-bold">Why Use Unfollow Tracker Tool?</h2>
+          <p className="font-display mt-3 text-center text-lg font-semibold">
+            Why Choose Our Unfollower Tool?
+          </p>
+          <p className="mx-auto mt-3 max-w-2xl text-center text-muted">
+            The safest way to track your non-followers. Official exports, local analysis, and a
+            clearer view of who you follow.
+          </p>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
               <motion.div
                 key={f.title}
@@ -242,32 +352,100 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="border-t border-border/80 bg-card/30 px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="font-display text-center text-3xl font-bold">
+            Benefits of Using Our Unfollow Tracker Tool
+          </h2>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {benefits.map((benefit, i) => (
+              <motion.div
+                key={benefit}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+              >
+                <Check className="h-8 w-8 text-primary" aria-hidden />
+                <p className="mt-4 text-sm text-muted">{benefit}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="font-display text-center text-3xl font-bold">
+            How Unfollow Tracker Increase Your Account Growth
+          </h2>
+          <Card className="mt-10 border-border/80 bg-card/90">
+            <CardContent className="p-6 sm:p-8">
+              <p className="text-sm leading-relaxed text-muted">
+                On May 7, 2026, Instagram removed millions of bot and inactive accounts, so many
+                users lose their follower count drop. Meta said the accounts that got banned or
+                penalized were mostly fake or unused. A lower number is not always bad, because bots
+                don&apos;t like, comment or share, and your real audience now makes up a bigger
+                share. Real people can still unfollow you, and Instagram won&apos;t tell you who they
+                are. Our Unfollow Tracker tool compares your followers and following lists, so you
+                can see who left and decide who is important to keep.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="border-t border-border/80 bg-card/30 px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="font-display text-center text-3xl font-bold">
+            Instagram Follower Health Ranges
+          </h2>
+          <p className="mx-auto mt-4 max-w-3xl text-center text-muted">
+            After checking your account with our free Unfollow Tracker tool, compare your numbers
+            with these recommended unfollow and follow-back ranges. They help you tell whether your
+            unfollow rate is normal or a warning sign.
+          </p>
+          <div className="article-prose mx-auto mt-10" style={{ maxWidth: "72rem" }}>
+            <div className="article-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Account size</th>
+                    <th scope="col">Normal daily unfollows</th>
+                    <th scope="col">Healthy follow-back range</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {healthRanges.map((row) => (
+                    <tr key={row.size}>
+                      <td>{row.size}</td>
+                      <td>{row.unfollows}</td>
+                      <td>{row.followBack}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p className="mx-auto mt-6 max-w-3xl text-center text-sm text-muted">
+            How to read it: if your daily unfollows are close to the range for your account size,
+            that is normal. If they are much higher, take it as a warning sign and check who is
+            leaving.
+          </p>
+        </div>
+      </section>
+
       <section className="border-t border-border px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-2xl">
-          <h2 className="font-display text-center text-2xl font-bold">FAQ</h2>
+          <h2 className="font-display text-center text-2xl font-bold">Frequently Asked Questions</h2>
           <Accordion type="single" collapsible className="mt-8">
-            <AccordionItem value="1">
-              <AccordionTrigger>Do you store my Instagram data?</AccordionTrigger>
-              <AccordionContent>
-                No. Your ZIP is read locally in your browser. Optional snapshots save only username
-                lists on this device via IndexedDB — not on our servers.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="2">
-              <AccordionTrigger>How do I see who unfollowed me?</AccordionTrigger>
-              <AccordionContent>
-                Instagram does not include an unfollower history. Save a snapshot from an older
-                export, then upload a newer ZIP with Compare enabled to see who disappeared from
-                your followers list.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="3">
-              <AccordionTrigger>Do I need my Instagram password?</AccordionTrigger>
-              <AccordionContent>
-                Never. We only support Meta&apos;s official data download (ZIP file). That keeps
-                your account safe and within platform rules.
-              </AccordionContent>
-            </AccordionItem>
+            {homeFaqs.map((item, index) => (
+              <AccordionItem key={item.question} value={`home-faq-${String(index)}`}>
+                <AccordionTrigger>{item.question}</AccordionTrigger>
+                <AccordionContent>{item.answer}</AccordionContent>
+              </AccordionItem>
+            ))}
           </Accordion>
         </div>
       </section>

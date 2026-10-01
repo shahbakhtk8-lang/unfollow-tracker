@@ -49,7 +49,7 @@ test.beforeEach(async ({ page }) => {
 test("A home loads and the demo shows results", async ({ page, consoleErrors }) => {
   consoleErrors.splice(0, consoleErrors.length);
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /See who doesn't follow you back/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Instagram Unfollow Tracker Free online/ })).toBeVisible();
   expect(consoleErrors).toEqual([]);
   await page.getByRole("button", { name: "Try demo (10 sec)" }).click();
   await expect(page.getByRole("heading", { name: "Analyze your export" })).toBeVisible();

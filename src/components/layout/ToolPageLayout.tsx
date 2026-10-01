@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
 interface ToolPageLayoutProps {
-  articleSlug: string;
+  articleSlug?: string;
   toolSlug: string;
   children: ReactNode;
 }
@@ -16,7 +16,7 @@ export function ToolPageLayout({ articleSlug, toolSlug, children }: ToolPageLayo
       <SiteHeader />
       <main className="flex-1">
         {children}
-        <ArticleSection slug={articleSlug} />
+        {articleSlug ? <ArticleSection slug={articleSlug} /> : null}
         <RelatedTools toolSlug={toolSlug} />
       </main>
       <SiteFooter />
