@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://unfollow-tracker.pages.dev/sitemap.xml

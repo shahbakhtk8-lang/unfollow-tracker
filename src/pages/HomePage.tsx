@@ -11,8 +11,14 @@ import {
 } from "@/components/ui/accordion";
 import { ZipDropzone } from "@/components/analyzer/ZipDropzone";
 import { ToolPageLayout } from "@/components/layout/ToolPageLayout";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { parseZipFile } from "@/lib/parseClient";
 import { useAnalyzerStore } from "@/store/analyzerStore";
+
+/** Refine these after pasting the real article into src/content/articles/unfollow-tracker.md */
+const HOME_META_TITLE = "[ARTICLE TITLE HERE] — Unfollow Tracker";
+const HOME_META_DESCRIPTION =
+  "Replace this paragraph with the real Unfollow Tracker article. This placeholder exists only to prove the article system loads markdown by slug.";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -47,6 +53,7 @@ const features = [
 ];
 
 export default function HomePage() {
+  useDocumentMeta(HOME_META_TITLE, HOME_META_DESCRIPTION);
   const navigate = useNavigate();
   const store = useAnalyzerStore();
 
