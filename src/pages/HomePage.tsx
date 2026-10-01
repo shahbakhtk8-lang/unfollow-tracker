@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ZipDropzone } from "@/components/analyzer/ZipDropzone";
+import { ToolPageLayout } from "@/components/layout/ToolPageLayout";
 import { parseZipFile } from "@/lib/parseClient";
 import { useAnalyzerStore } from "@/store/analyzerStore";
 
@@ -86,7 +87,8 @@ export default function HomePage() {
   };
 
   return (
-    <div className="mesh-bg">
+    <ToolPageLayout articleSlug="unfollow-tracker" toolSlug="unfollow-tracker">
+      <div className="mesh-bg">
       <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 sm:pt-20">
         <motion.div
           aria-hidden
@@ -263,6 +265,7 @@ export default function HomePage() {
           </Accordion>
         </div>
       </section>
-    </div>
+      </div>
+    </ToolPageLayout>
   );
 }
