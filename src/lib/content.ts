@@ -64,7 +64,9 @@ function renderTableHtml(block: string[]): string {
   const [headerLine, , ...bodyLines] = block;
   const headers = splitTableCells(headerLine);
   const rows = bodyLines.filter((line) => TABLE_ROW.test(line)).map(splitTableCells);
-  const head = headers.map((cell) => `<th>${markdown.renderInline(cell)}</th>`).join("");
+  const head = headers
+    .map((cell) => `<th scope="col">${markdown.renderInline(cell)}</th>`)
+    .join("");
   const body = rows
     .map((cells) => {
       const tds = headers

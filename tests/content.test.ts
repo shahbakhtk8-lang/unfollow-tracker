@@ -11,8 +11,31 @@ describe("article content", () => {
     expect(html).not.toContain("<h1>");
     expect(html).toContain("How Does Unfollow Tracker Work?");
     expect(html).toContain("<table>");
+    expect(html).toContain("<thead>");
+    expect(html).toContain("<tbody>");
     expect(html).toContain("Safe");
     expect(html).not.toMatch(/<script/i);
+  });
+
+  it("renders a GFM pipe table as thead/tbody markup with column headers", () => {
+    const html = renderArticleHtml(
+      [
+        "# Title",
+        "",
+        "| Feature | Details |",
+        "|---|---|",
+        "| **Safe** | No login |",
+        "| Fast | Seconds |",
+        "",
+      ].join("\n"),
+    );
+
+    expect(html).toContain("<table>");
+    expect(html).toContain("<thead>");
+    expect(html).toContain('<th scope="col">');
+    expect(html).toMatch(/<tbody>[\s\S]*<tr>/);
+    expect(html).toContain("No login");
+    expect(html).toContain("Seconds");
   });
 
   it("returns null for an unknown slug", () => {
