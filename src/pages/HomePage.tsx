@@ -15,10 +15,9 @@ import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { parseZipFile } from "@/lib/parseClient";
 import { useAnalyzerStore } from "@/store/analyzerStore";
 
-/** Refine these after pasting the real article into src/content/articles/unfollow-tracker.md */
-const HOME_META_TITLE = "[ARTICLE TITLE HERE] — Unfollow Tracker";
+const HOME_META_TITLE = "Unfollow Tracker — See Who Doesn't Follow You Back on Instagram";
 const HOME_META_DESCRIPTION =
-  "Replace this paragraph with the real Unfollow Tracker article. This placeholder exists only to prove the article system loads markdown by slug.";
+  "Free Instagram unfollow tracker. Upload your official data export and instantly see who doesn't follow back, your mutuals, and recent unfollowers — 100% private, analyzed in your browser, no login required.";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },

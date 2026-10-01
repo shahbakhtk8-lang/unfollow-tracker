@@ -174,3 +174,32 @@ body {
   padding: 0.15rem 0 0.15rem 1rem;
   color: var(--color-muted);
 }
+
+.article-prose .article-table-wrap {
+  margin: 0 0 1.15rem;
+  overflow-x: auto;
+}
+
+.article-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.article-prose th,
+.article-prose td {
+  border: 1px solid var(--color-border);
+  padding: 0.7rem 0.85rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.article-prose th {
+  font-family: var(--font-display);
+  font-weight: 700;
+  background: color-mix(in srgb, var(--color-card) 80%, var(--color-border));
+}
+
+.article-prose tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--color-card) 70%, transparent);
+}

@@ -39,6 +39,75 @@ export function demoteArticleHeadings(html: string): string {
     .replaceAll("</h1>", "</h2>");
 }
 
+const TABLE_ROW = /^\s*\|.*\|\s*$/;
+const TABLE_SEP_CELL = /^:?-+:?$/;
+
+function splitTableCells(line: string): string[] {
+  let inner = line.trim();
+  if (inner.startsWith("|")) inner = inner.slice(1);
+  if (inner.endsWith("|")) inner = inner.slice(0, -1);
+  return inner.split("|").map((cell) => cell.trim());
+}
+
+function isSeparatorLine(line: string): boolean {
+  const cells = splitTableCells(line);
+  return cells.length > 0 && cells.every((cell) => TABLE_SEP_CELL.test(cell.replaceAll(" ", "")));
+}
+
+function isTableBlockStart(lines: string[], index: number): boolean {
+  const header = lines[index];
+  const separator = lines[index + 1];
+  return Boolean(header && separator && TABLE_ROW.test(header) && isSeparatorLine(separator));
+}
+
+function renderTableHtml(block: string[]): string {
+  const [headerLine, , ...bodyLines] = block;
+  const headers = splitTableCells(headerLine);
+  const rows = bodyLines.filter((line) => TABLE_ROW.test(line)).map(splitTableCells);
+  const head = headers.map((cell) => `<th>${markdown.renderInline(cell)}</th>`).join("");
+  const body = rows
+    .map((cells) => {
+      const tds = headers
+        .map((_, i) => `<td>${markdown.renderInline(cells[i] ?? "")}</td>`)
+        .join("");
+      return `<tr>${tds}</tr>`;
+    })
+    .join("");
+  return `<div class="article-table-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>\n`;
+}
+
+/** Render markdown, turning GFM tables into HTML without enabling raw HTML. */
+function renderMarkdownWithTables(source: string): string {
+  const lines = source.split(/\r?\n/);
+  const htmlParts: string[] = [];
+  let markdownBuffer: string[] = [];
+  let i = 0;
+
+  const flushMarkdown = () => {
+    if (markdownBuffer.length === 0) return;
+    htmlParts.push(markdown.render(markdownBuffer.join("\n")));
+    markdownBuffer = [];
+  };
+
+  while (i < lines.length) {
+    if (isTableBlockStart(lines, i)) {
+      flushMarkdown();
+      const block = [lines[i], lines[i + 1]];
+      i += 2;
+      while (i < lines.length && TABLE_ROW.test(lines[i] ?? "")) {
+        block.push(lines[i] ?? "");
+        i += 1;
+      }
+      htmlParts.push(renderTableHtml(block));
+      continue;
+    }
+    markdownBuffer.push(lines[i] ?? "");
+    i += 1;
+  }
+  flushMarkdown();
+  return htmlParts.join("");
+}
+
 export function renderArticleHtml(source: string): string {
-  return demoteArticleHeadings(markdown.render(source));
+  return demoteArticleHeadings(renderMarkdownWithTables(source));
 }
