@@ -6,6 +6,41 @@ const markdown = new MarkdownIt({
   breaks: false,
 });
 
+function slugifyHeading(text: string): string {
+  const slug = text
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "section";
+}
+
+markdown.renderer.rules.heading_open = (tokens, idx, options, env, self) => {
+  const state = (env ?? {}) as { headingIds?: Set<string> };
+  const ids = state.headingIds ?? new Set<string>();
+  state.headingIds = ids;
+  const inline = tokens[idx + 1];
+  const text =
+    inline?.children
+      ?.filter((child) => child.type === "text" || child.type === "code_inline")
+      .map((child) => child.content)
+      .join("") ??
+    inline?.content ??
+    "";
+  const base = slugifyHeading(text);
+  let id = base;
+  let n = 2;
+  while (ids.has(id)) {
+    id = `${base}-${n}`;
+    n += 1;
+  }
+  ids.add(id);
+  tokens[idx].attrSet("id", id);
+  return self.renderToken(tokens, idx, options);
+};
+
 const articleModules = import.meta.glob("../content/articles/*.md", {
   eager: true,
   query: "?raw",
@@ -82,12 +117,13 @@ function renderTableHtml(block: string[]): string {
 function renderMarkdownWithTables(source: string): string {
   const lines = source.split(/\r?\n/);
   const htmlParts: string[] = [];
+  const env = { headingIds: new Set<string>() };
   let markdownBuffer: string[] = [];
   let i = 0;
 
   const flushMarkdown = () => {
     if (markdownBuffer.length === 0) return;
-    htmlParts.push(markdown.render(markdownBuffer.join("\n")));
+    htmlParts.push(markdown.render(markdownBuffer.join("\n"), env as Record<string, unknown>));
     markdownBuffer = [];
   };
 

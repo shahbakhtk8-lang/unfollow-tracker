@@ -80,9 +80,11 @@ body {
 }
 
 .article-prose {
+  width: 100%;
+  max-width: 70ch;
   color: var(--color-foreground);
   font-size: 1.0625rem;
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
 .article-prose > *:first-child {
@@ -102,21 +104,22 @@ body {
 }
 
 .article-prose h2 {
-  margin: 0 0 1rem;
-  font-size: 1.75rem;
+  margin: 2.75rem 0 1rem;
+  font-size: 1.875rem;
   line-height: 1.25;
 }
 
 .article-prose h3 {
-  margin: 2rem 0 0.75rem;
-  font-size: 1.25rem;
+  margin: 2.25rem 0 0.8rem;
+  font-size: 1.35rem;
+  line-height: 1.35;
 }
 
 .article-prose h4,
 .article-prose h5,
 .article-prose h6 {
-  margin: 1.5rem 0 0.5rem;
-  font-size: 1.05rem;
+  margin: 1.75rem 0 0.6rem;
+  font-size: 1.08rem;
 }
 
 .article-prose p,
@@ -124,23 +127,39 @@ body {
 .article-prose ol,
 .article-prose blockquote,
 .article-prose pre {
-  margin: 0 0 1.15rem;
+  margin: 0 0 1.25rem;
 }
 
 .article-prose ul,
 .article-prose ol {
-  padding-left: 1.25rem;
+  padding-left: 1.35rem;
+}
+
+.article-prose ul {
+  list-style-type: disc;
+}
+
+.article-prose ol {
+  list-style-type: decimal;
+}
+
+.article-prose li::marker {
+  color: var(--color-muted);
 }
 
 .article-prose li + li {
-  margin-top: 0.35rem;
+  margin-top: 0.4rem;
 }
 
 .article-prose a {
   color: var(--color-primary);
   font-weight: 600;
   text-decoration: underline;
-  text-underline-offset: 0.15em;
+  text-underline-offset: 0.18em;
+}
+
+.article-prose a:hover {
+  color: var(--color-accent);
 }
 
 .article-prose a:focus-visible {
@@ -171,7 +190,9 @@ body {
 
 .article-prose blockquote {
   border-left: 3px solid var(--color-primary);
-  padding: 0.15rem 0 0.15rem 1rem;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  background: color-mix(in srgb, var(--color-muted) 12%, var(--color-card));
+  padding: 0.85rem 1rem 0.85rem 1.1rem;
   color: var(--color-muted);
 }
 

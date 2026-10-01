@@ -7,8 +7,8 @@ describe("article content", () => {
     expect(source).toContain("# How Does Unfollow Tracker Work?");
     expect(source).toContain("Why Use Unfollow Tracker?");
     const html = renderArticleHtml(source ?? "");
-    expect(html).toContain("<h2>");
-    expect(html).not.toContain("<h1>");
+    expect(html).toMatch(/<h2\b/);
+    expect(html).not.toMatch(/<h1\b/);
     expect(html).toContain("How Does Unfollow Tracker Work?");
     expect(html).toContain("<table>");
     expect(html).toContain("<thead>");
@@ -36,6 +36,13 @@ describe("article content", () => {
     expect(html).toMatch(/<tbody>[\s\S]*<tr>/);
     expect(html).toContain("No login");
     expect(html).toContain("Seconds");
+  });
+
+  it("adds slug ids to headings without a visible hash icon", () => {
+    const html = renderArticleHtml("# How Does Unfollow Tracker Work?\n\nHello.");
+    expect(html).toContain('<h2 id="how-does-unfollow-tracker-work">');
+    expect(html).not.toContain(">#</a>");
+    expect(html).not.toContain(">#</span>");
   });
 
   it("returns null for an unknown slug", () => {
