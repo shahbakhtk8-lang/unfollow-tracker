@@ -1,5 +1,8 @@
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { loadArticle, renderArticleHtml } from "../src/lib/content";
+import { ArticleSection } from "../src/components/content/ArticleSection";
+import { loadArticle, renderArticleHtml, splitArticleFaq } from "../src/lib/content";
 
 describe("article content", () => {
   it("loads the Unfollow Tracker markdown by slug and renders a demoted heading", () => {
@@ -49,5 +52,29 @@ describe("article content", () => {
 
   it("returns null for an unknown slug", () => {
     expect(loadArticle("does-not-exist")).toBeNull();
+  });
+
+  it("parses the Unfollow Tracker FAQ into question/answer pairs", () => {
+    const source = loadArticle("unfollow-tracker");
+    expect(source).not.toBeNull();
+    const { body, faqHeading, faqItems } = splitArticleFaq(source ?? "");
+    expect(faqHeading).toBe("Frequently Asked Questions");
+    expect(faqItems).toHaveLength(5);
+    expect(faqItems[0]?.question).toBe("How can I see who unfollowed me on Instagram?");
+    expect(faqItems[4]?.question).toBe("Can I see who blocked me on Instagram?");
+    expect(faqItems.every((item) => item.answer.length > 0)).toBe(true);
+    expect(body).not.toMatch(/frequently asked questions/i);
+    expect(body).toContain("Why Use Unfollow Tracker?");
+  });
+
+  it("renders the article FAQ as a collapsed accordion with five items", () => {
+    const markup = renderToStaticMarkup(createElement(ArticleSection, { slug: "unfollow-tracker" }));
+    expect(markup).toContain("Frequently Asked Questions");
+    expect(markup).toContain("How can I see who unfollowed me on Instagram?");
+    expect(markup).toContain("Can I see who blocked me on Instagram?");
+    expect(markup.match(/aria-expanded="false"/g)?.length).toBe(5);
+    expect(markup).toContain('data-orientation="vertical"');
+    expect(markup).toContain("<table>");
+    expect(markup).not.toContain("**How can I see who unfollowed me");
   });
 });

@@ -6,7 +6,7 @@ const markdown = new MarkdownIt({
   breaks: false,
 });
 
-function slugifyHeading(text: string): string {
+export function slugifyHeading(text: string): string {
   const slug = text
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -57,6 +57,68 @@ export function loadArticle(slug: string): string | null {
   if (!key) return null;
   const source = articleModules[key];
   return typeof source === "string" && source.trim().length > 0 ? source : null;
+}
+
+export interface ArticleFaqItem {
+  question: string;
+  answer: string;
+}
+
+/**
+ * FAQ convention in article markdown:
+ * a heading matching "Frequently Asked Questions", then pairs of
+ * a line that is only **Question?** followed by one or more answer lines
+ * until the next question, a new heading, or end of file.
+ * Parsing the source (not HTML) keeps Q/A pairs stable even when markdown-it
+ * joins a bold line and the next paragraph into one <p>.
+ */
+export function splitArticleFaq(source: string): {
+  body: string;
+  faqHeading: string | null;
+  faqItems: ArticleFaqItem[];
+} {
+  const lines = source.split(/\r?\n/);
+  const faqAt = lines.findIndex((line) =>
+    /^#{1,3}\s+frequently asked questions\s*$/i.test(line.trim()),
+  );
+  if (faqAt === -1) {
+    return { body: source, faqHeading: null, faqItems: [] };
+  }
+
+  const headingMatch = lines[faqAt]?.trim().match(/^#{1,3}\s+(.+?)\s*$/);
+  const faqHeading = headingMatch?.[1] ?? "Frequently Asked Questions";
+  const body = lines.slice(0, faqAt).join("\n").trimEnd();
+  const rest = lines.slice(faqAt + 1);
+  const questionRe = /^\*\*(.+?)\*\*\s*$/;
+  const faqItems: ArticleFaqItem[] = [];
+
+  let i = 0;
+  while (i < rest.length) {
+    const line = rest[i] ?? "";
+    if (/^#{1,3}\s+/.test(line.trim())) break;
+    const question = line.match(questionRe);
+    if (!question) {
+      i += 1;
+      continue;
+    }
+    i += 1;
+    const answerLines: string[] = [];
+    while (i < rest.length) {
+      const next = rest[i] ?? "";
+      if (questionRe.test(next) || /^#{1,3}\s+/.test(next.trim())) break;
+      answerLines.push(next);
+      i += 1;
+    }
+    const answer = answerLines.join("\n").trim();
+    const q = question[1]?.trim() ?? "";
+    if (q && answer) faqItems.push({ question: q, answer });
+  }
+
+  return { body, faqHeading, faqItems };
+}
+
+export function renderMarkdownFragment(source: string): string {
+  return markdown.render(source);
 }
 
 /** Shift article headings down one level so the tool page can keep a single h1. */

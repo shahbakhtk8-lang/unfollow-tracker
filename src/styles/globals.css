@@ -241,3 +241,7 @@ body {
 .article-prose tbody tr:nth-child(even) {
   background: color-mix(in srgb, var(--color-muted) 10%, var(--color-card));
 }
+
+.article-prose .article-faq-answer p:last-child {
+  margin-bottom: 0;
+}
