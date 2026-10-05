@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, Shield, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ToolsDropdown } from "@/components/layout/ToolsNav";
+import { ToolsDropdown, ToolsMobileSection } from "@/components/layout/ToolsNav";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -14,6 +14,10 @@ const links = [
 export function SiteHeader() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-border/80">
@@ -58,6 +62,7 @@ export function SiteHeader() {
             variant="ghost"
             className="md:hidden"
             aria-expanded={open}
+            aria-controls={open ? "mobile-nav" : undefined}
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen((v) => !v)}
           >
@@ -66,13 +71,24 @@ export function SiteHeader() {
         </div>
       </div>
       {open ? (
-        <nav className="border-t border-border px-4 py-3 md:hidden">
+        <nav id="mobile-nav" className="border-t border-border px-4 py-3 md:hidden">
+          <ToolsMobileSection onNavigate={() => setOpen(false)} />
+          <Link
+            to="/blog"
+            onClick={() => setOpen(false)}
+            className={cn(
+              "block rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-border/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+              location.pathname === "/blog" && "bg-border/40",
+            )}
+          >
+            Blog
+          </Link>
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-border/40"
+              className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-border/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               {l.label}
             </Link>

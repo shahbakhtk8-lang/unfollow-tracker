@@ -179,3 +179,29 @@ export function ToolsDropdown() {
     </div>
   );
 }
+
+export function ToolsMobileSection({ onNavigate }: { onNavigate: () => void }) {
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+
+  return (
+    <div>
+      <button
+        type="button"
+        className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-border/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((value) => !value)}
+      >
+        Tools
+        <ChevronDown className={cn("h-4 w-4 text-muted transition-transform", open && "rotate-180")} aria-hidden />
+      </button>
+      {open ? (
+        <div id={panelId} className="mt-1 border-l border-border pl-2">
+          <ToolsNavItems onNavigate={onNavigate} />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
