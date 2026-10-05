@@ -17,7 +17,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 glass border-b border-border/80">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
+        <Link to="/" aria-label="Unfollow Tracker" className="flex items-center gap-2 font-display text-lg font-bold">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Shield className="h-5 w-5" aria-hidden />
           </span>

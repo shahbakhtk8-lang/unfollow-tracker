@@ -70,6 +70,7 @@ export function ZipDropzone({ onFile, disabled, label, compact }: ZipDropzonePro
         className="sr-only"
         tabIndex={-1}
         disabled={disabled}
+        aria-label="Upload Instagram ZIP export"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
       <div className="flex flex-col items-center text-center">
