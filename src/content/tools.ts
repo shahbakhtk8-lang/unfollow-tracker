@@ -60,3 +60,11 @@ export function liveRelatedTools(currentSlug: string): ToolEntry[] {
 }
 
 export { liveRelatedTools as relatedLiveTools };
+
+/** True when this tool is the one the visitor is on (including nested routes). */
+export function isToolActive(tool: ToolEntry, pathname: string): boolean {
+  if (tool.href === "/") {
+    return pathname === "/" || pathname === "/analyze";
+  }
+  return pathname === tool.href || pathname.startsWith(`${tool.href}/`);
+}

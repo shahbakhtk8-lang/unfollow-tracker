@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, Shield, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ToolsDropdown } from "@/components/layout/ToolsNav";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -24,12 +25,13 @@ export function SiteHeader() {
           <span className="hidden sm:inline">Unfollow Tracker</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
+          <ToolsDropdown />
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
               className={cn(
-                "rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-foreground",
+                "rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 !l.hash && location.pathname === l.to && "text-foreground bg-border/40",
               )}
             >
