@@ -8,6 +8,9 @@ const AnalyzePage = lazy(() => import("@/pages/AnalyzePage"));
 const GuidePage = lazy(() => import("@/pages/GuidePage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const DisclaimerPage = lazy(() => import("@/pages/DisclaimerPage"));
+const ContactPage = lazy(() => import("@/pages/ContactPage"));
 
 function PageLoader() {
   return (
@@ -40,6 +43,9 @@ export default function App() {
         <Route element={<SiteShell />}>
           <Route path="/analyze" element={<AnalyzePage />} />
           <Route path="/guide" element={<GuidePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/disclaimer" element={<DisclaimerPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
         </Route>
