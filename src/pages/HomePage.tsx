@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   Check,
@@ -23,34 +22,25 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ZipDropzone } from "@/components/analyzer/ZipDropzone";
+import { YouTubeEmbed } from "@/components/content/YouTubeEmbed";
 import { ToolPageLayout } from "@/components/layout/ToolPageLayout";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
-import { parseZipFile } from "@/lib/parseClient";
-import { useAnalyzerStore } from "@/store/analyzerStore";
 import {
   FEATURED_IMAGE_ALT,
   FEATURED_IMAGE_HEIGHT,
+  FEATURED_IMAGE_HEIGHT_800,
   FEATURED_IMAGE_PATH,
+  FEATURED_IMAGE_PATH_800,
   FEATURED_IMAGE_URL,
   FEATURED_IMAGE_WIDTH,
+  FEATURED_IMAGE_WIDTH_800,
   HOME_META_DESCRIPTION,
   HOME_META_TITLE,
   SITE_URL,
-  YOUTUBE_EMBED_URL,
-  YOUTUBE_VIDEO_TITLE,
   buildHomeJsonLd,
   homeFaqs,
   howItWorksSteps,
 } from "@/content/seo";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
-  }),
-};
 
 const features = [
   {
@@ -141,10 +131,14 @@ export default function HomePage() {
     jsonLd,
   });
   const navigate = useNavigate();
-  const store = useAnalyzerStore();
 
   const goAnalyzeWithFile = async (file: File) => {
     navigate("/analyze");
+    const [{ parseZipFile }, { useAnalyzerStore }] = await Promise.all([
+      import("@/lib/parseClient"),
+      import("@/store/analyzerStore"),
+    ]);
+    const store = useAnalyzerStore.getState();
     store.setParsing(true);
     store.setError(null);
     store.setProgress({ stage: "reading", percent: 0, message: "Starting…" });
@@ -171,7 +165,8 @@ export default function HomePage() {
     const res = await fetch("/demo/instagram-demo.zip");
     if (!res.ok) {
       navigate("/analyze");
-      store.setError("Demo file is missing. Upload your own Instagram ZIP instead.");
+      const { useAnalyzerStore } = await import("@/store/analyzerStore");
+      useAnalyzerStore.getState().setError("Demo file is missing. Upload your own Instagram ZIP instead.");
       return;
     }
     const blob = await res.blob();
@@ -183,52 +178,26 @@ export default function HomePage() {
     <ToolPageLayout toolSlug="unfollow-tracker">
       <div className="mesh-bg">
       <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 sm:pt-20">
-        <motion.div
+        <div
           aria-hidden
           className="pointer-events-none absolute -right-32 top-10 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
-          animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
           <div>
-            <motion.p
-              custom={0}
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              className="mb-4 inline-flex rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
-            >
+            <p className="mb-4 inline-flex rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
               No password · Local analysis
-            </motion.p>
-            <motion.h1
-              custom={1}
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              className="font-display text-3xl font-extrabold leading-[1.15] tracking-tight sm:text-4xl lg:text-5xl"
-            >
+            </p>
+            <h1 className="font-display text-3xl font-extrabold leading-[1.15] tracking-tight sm:text-4xl lg:text-5xl">
               Instagram Unfollow Tracker Free online -{" "}
               <span className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-transparent">
                 Without Login 2026
               </span>
-            </motion.h1>
-            <motion.p
-              custom={2}
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              className="mt-5 max-w-lg text-lg text-muted"
-            >
+            </h1>
+            <p className="mt-5 max-w-lg text-lg text-muted">
               Upload your official Instagram data export. Unfollow Tracker compares followers and
               following on your device — fast, free, and modern.
-            </motion.p>
-            <motion.div
-              custom={3}
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              className="mt-8 flex flex-wrap gap-3"
-            >
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
                 <Link to="/analyze">
                   Get started
@@ -238,24 +207,23 @@ export default function HomePage() {
               <Button type="button" size="lg" variant="secondary" onClick={() => void tryDemo()}>
                 Try demo (10 sec)
               </Button>
-            </motion.div>
+            </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <div>
             <ZipDropzone onFile={(f) => void goAnalyzeWithFile(f)} label="Drop ZIP here to analyze" />
-          </motion.div>
+          </div>
         </div>
         <figure className="mx-auto mt-16 max-w-6xl">
           <img
-            src={FEATURED_IMAGE_PATH}
-            width={FEATURED_IMAGE_WIDTH}
-            height={FEATURED_IMAGE_HEIGHT}
+            src={FEATURED_IMAGE_PATH_800}
+            srcSet={`${FEATURED_IMAGE_PATH_800} ${String(FEATURED_IMAGE_WIDTH_800)}w, ${FEATURED_IMAGE_PATH} ${String(FEATURED_IMAGE_WIDTH)}w`}
+            sizes="(min-width: 1152px) 1152px, calc(100vw - 32px)"
+            width={FEATURED_IMAGE_WIDTH_800}
+            height={FEATURED_IMAGE_HEIGHT_800}
             alt={FEATURED_IMAGE_ALT}
-            fetchPriority="high"
+            loading="lazy"
+            decoding="async"
             className="h-auto w-full rounded-2xl border border-border bg-card shadow-sm"
           />
         </figure>
@@ -263,29 +231,17 @@ export default function HomePage() {
 
       <section id="how-it-works" className="border-t border-border/80 bg-card/30 px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-6xl">
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-display text-center text-3xl font-bold"
-          >
+          <h2 className="font-display text-center text-3xl font-bold">
             How Does Igunfollow Tool Works?
-          </motion.h2>
+          </h2>
           <p className="mx-auto mt-4 max-w-3xl text-center text-muted">
             Our Unfollow Tracker tool analysis data given by you & give you 100% accurate results.
             There is no risk, completely free, just upload your zip file in the top box & you&apos;ll
             get the results of who didn&apos;t follow you back. Here are three simple steps to follow.
           </p>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {howItWorksSteps.map((item, i) => (
-              <motion.div
-                key={item.step}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-40px" }}
-                variants={fadeUp}
-              >
+            {howItWorksSteps.map((item) => (
+              <div key={item.step}>
                 <Card className="h-full border-border/80 bg-card/90">
                   <CardContent className="p-6">
                     <span className="font-display text-4xl font-extrabold text-primary/40">
@@ -295,7 +251,7 @@ export default function HomePage() {
                     <p className="mt-2 text-sm text-muted">{item.body}</p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
           <p className="mt-8 text-center">
@@ -310,15 +266,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-4xl">
           <h2 className="font-display text-center text-3xl font-bold">Watch how it works</h2>
           <div className="relative mt-10 aspect-video overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-            <iframe
-              className="absolute inset-0 h-full w-full"
-              src={YOUTUBE_EMBED_URL}
-              title={YOUTUBE_VIDEO_TITLE}
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
+            <YouTubeEmbed />
           </div>
         </div>
       </section>
@@ -334,19 +282,15 @@ export default function HomePage() {
             clearer view of who you follow.
           </p>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f, i) => (
-              <motion.div
+            {features.map((f) => (
+              <div
                 key={f.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
                 className="rounded-2xl border border-border bg-card p-6 shadow-sm"
               >
                 <f.icon className="h-8 w-8 text-primary" aria-hidden />
                 <h3 className="font-display mt-4 font-bold">{f.title}</h3>
                 <p className="mt-2 text-sm text-muted">{f.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -358,18 +302,14 @@ export default function HomePage() {
             Benefits of Using Our Unfollow Tracker Tool
           </h2>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {benefits.map((benefit, i) => (
-              <motion.div
+            {benefits.map((benefit) => (
+              <div
                 key={benefit}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
                 className="rounded-2xl border border-border bg-card p-6 shadow-sm"
               >
                 <Check className="h-8 w-8 text-primary" aria-hidden />
                 <p className="mt-4 text-sm text-muted">{benefit}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

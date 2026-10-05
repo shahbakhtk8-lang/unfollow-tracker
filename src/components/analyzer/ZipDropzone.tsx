@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { Upload, FileArchive } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -46,8 +45,7 @@ export function ZipDropzone({ onFile, disabled, label, compact }: ZipDropzonePro
   );
 
   return (
-    <motion.div
-      layout
+    <div
       className={cn(
         "relative rounded-2xl border-2 border-dashed transition-colors",
         dragOver ? "border-primary bg-primary/5" : "border-border bg-card/80",
@@ -75,12 +73,11 @@ export function ZipDropzone({ onFile, disabled, label, compact }: ZipDropzonePro
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
       <div className="flex flex-col items-center text-center">
-        <motion.div
-          animate={dragOver ? { scale: 1.08 } : { scale: 1 }}
+        <div
           className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-primary"
         >
           {dragOver ? <FileArchive className="h-7 w-7" /> : <Upload className="h-7 w-7" />}
-        </motion.div>
+        </div>
         <p className="font-display text-base font-bold sm:text-lg">
           {label ?? "Drop your Instagram export .zip"}
         </p>
@@ -120,6 +117,6 @@ export function ZipDropzone({ onFile, disabled, label, compact }: ZipDropzonePro
           </div>
         ) : null}
       </div>
-    </motion.div>
+    </div>
   );
 }

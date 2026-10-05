@@ -1,8 +1,11 @@
-import type { ReactNode } from "react";
-import { ArticleSection } from "@/components/content/ArticleSection";
+import { lazy, Suspense, type ReactNode } from "react";
 import { RelatedTools } from "@/components/content/RelatedTools";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+
+const ArticleSection = lazy(() =>
+  import("@/components/content/ArticleSection").then((mod) => ({ default: mod.ArticleSection })),
+);
 
 interface ToolPageLayoutProps {
   articleSlug?: string;
@@ -16,7 +19,11 @@ export function ToolPageLayout({ articleSlug, toolSlug, children }: ToolPageLayo
       <SiteHeader />
       <main className="flex-1">
         {children}
-        {articleSlug ? <ArticleSection slug={articleSlug} /> : null}
+        {articleSlug ? (
+          <Suspense fallback={null}>
+            <ArticleSection slug={articleSlug} />
+          </Suspense>
+        ) : null}
         <RelatedTools toolSlug={toolSlug} />
       </main>
       <SiteFooter />

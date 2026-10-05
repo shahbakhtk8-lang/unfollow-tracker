@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { AnalyzeErrorBoundary } from "@/components/analyzer/AnalyzeErrorBoundary";
 import HomePage from "@/pages/HomePage";
 
 const AnalyzePage = lazy(() => import("@/pages/AnalyzePage"));
@@ -39,14 +38,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route element={<SiteShell />}>
-          <Route
-            path="/analyze"
-            element={
-              <AnalyzeErrorBoundary>
-                <AnalyzePage />
-              </AnalyzeErrorBoundary>
-            }
-          />
+          <Route path="/analyze" element={<AnalyzePage />} />
           <Route path="/guide" element={<GuidePage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />

@@ -6,10 +6,13 @@ export const HOME_META_DESCRIPTION =
   "Instagram Unfollow Tracker Free online - Without Login 2026. Upload your official ZIP and see who doesn't follow you back. Private in-browser analysis, no Instagram password required.";
 
 export const FEATURED_IMAGE_PATH = "/images/instagram-unfollow-tracker-featured.jpg";
+export const FEATURED_IMAGE_PATH_800 = "/images/instagram-unfollow-tracker-featured-800.jpg";
 export const FEATURED_IMAGE_URL = `${SITE_URL}${FEATURED_IMAGE_PATH}`;
 export const FEATURED_IMAGE_ALT = "Instagram Unfollow Tracker Free online - Without Login 2026";
 export const FEATURED_IMAGE_WIDTH = 1280;
 export const FEATURED_IMAGE_HEIGHT = 850;
+export const FEATURED_IMAGE_WIDTH_800 = 800;
+export const FEATURED_IMAGE_HEIGHT_800 = 531;
 
 export const YOUTUBE_VIDEO_ID = "X_kvk9f7_sA";
 export const YOUTUBE_WATCH_URL = `https://www.youtube.com/watch?v=${YOUTUBE_VIDEO_ID}`;

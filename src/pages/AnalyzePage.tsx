@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ZipDropzone } from "@/components/analyzer/ZipDropzone";
+import { AnalyzeErrorBoundary } from "@/components/analyzer/AnalyzeErrorBoundary";
 import { StatCard } from "@/components/analyzer/StatCard";
 import { CountsNote } from "@/components/analyzer/CountsNote";
 import { VirtualUserList } from "@/components/analyzer/VirtualUserList";
@@ -79,7 +80,7 @@ function sortList(
   return copy;
 }
 
-export default function AnalyzePage() {
+function AnalyzePage() {
   const isParsing = useAnalyzerStore((s) => s.isParsing);
   const progress = useAnalyzerStore((s) => s.progress);
   const error = useAnalyzerStore((s) => s.error);
@@ -853,5 +854,13 @@ export default function AnalyzePage() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function AnalyzePageRoute() {
+  return (
+    <AnalyzeErrorBoundary>
+      <AnalyzePage />
+    </AnalyzeErrorBoundary>
   );
 }
