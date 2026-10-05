@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, Shield, X } from "lucide-react";
+import { Facebook, Instagram, Menu, Shield, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToolsDropdown, ToolsMobileSection } from "@/components/layout/ToolsNav";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,39 @@ const links = [
   { to: "/guide", label: "Export guide" },
   { to: "/analyze", label: "Analyze" },
 ];
+
+const socialLinks = [
+  {
+    href: "https://web.facebook.com/profile.php?id=61589509679439",
+    label: "Unfollow Tracker on Facebook",
+    Icon: Facebook,
+  },
+  {
+    href: "https://www.instagram.com/unfollowed2026/",
+    label: "Unfollow Tracker on Instagram",
+    Icon: Instagram,
+  },
+] as const;
+
+function SocialLinks({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
+  return (
+    <div className={cn("flex items-center gap-0.5", className)}>
+      {socialLinks.map(({ href, label, Icon }) => (
+        <a
+          key={href}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={label}
+          onClick={onNavigate}
+          className="inline-flex items-center justify-center rounded-lg p-2 text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <Icon className="h-4 w-4" aria-hidden />
+        </a>
+      ))}
+    </div>
+  );
+}
 
 export function SiteHeader() {
   const location = useLocation();
@@ -51,6 +84,7 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <SocialLinks className="ml-1" />
         </nav>
         <div className="flex items-center gap-2">
           <Button asChild size="sm">
@@ -93,6 +127,7 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <SocialLinks className="mt-1 px-1" onNavigate={() => setOpen(false)} />
         </nav>
       ) : null}
     </header>

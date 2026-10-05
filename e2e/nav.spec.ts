@@ -30,6 +30,16 @@ test("desktop Tools dropdown and Blog at 1440px", async ({ page }) => {
   await page.goto("/analyze");
   await page.getByRole("button", { name: "Tools" }).click();
   await expect(page.getByText("Current", { exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const facebook = page.getByRole("link", { name: "Unfollow Tracker on Facebook" });
+  const instagram = page.getByRole("link", { name: "Unfollow Tracker on Instagram" });
+  await expect(facebook).toHaveAttribute("href", "https://web.facebook.com/profile.php?id=61589509679439");
+  await expect(instagram).toHaveAttribute("href", "https://www.instagram.com/unfollowed2026/");
+  for (const link of [facebook, instagram]) {
+    await expect(link).toHaveAttribute("target", "_blank");
+    await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  }
 });
 
 test("mobile burger Tools and Blog at 390px", async ({ page }) => {
@@ -38,11 +48,21 @@ test("mobile burger Tools and Blog at 390px", async ({ page }) => {
   await page.getByRole("button", { name: "Open menu" }).click();
   await page.getByRole("button", { name: "Tools" }).click();
   const mobileNav = page.locator("#mobile-nav");
-  await expect(mobileNav.getByRole("link", { name: /Unfollow Tracker/ })).toBeVisible();
+  await expect(mobileNav.getByRole("link", { name: /See who/ })).toBeVisible();
   await mobileNav.getByRole("link", { name: "Blog", exact: true }).click();
   await expect(page).toHaveURL("/blog");
   await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Blog coming soon" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Open menu" }).click();
+  const facebook = mobileNav.getByRole("link", { name: "Unfollow Tracker on Facebook" });
+  const instagram = mobileNav.getByRole("link", { name: "Unfollow Tracker on Instagram" });
+  await expect(facebook).toHaveAttribute("href", "https://web.facebook.com/profile.php?id=61589509679439");
+  await expect(instagram).toHaveAttribute("href", "https://www.instagram.com/unfollowed2026/");
+  for (const link of [facebook, instagram]) {
+    await expect(link).toHaveAttribute("target", "_blank");
+    await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  }
 });
 
 test("dark mode Tools dropdown at 1440px", async ({ page }) => {
