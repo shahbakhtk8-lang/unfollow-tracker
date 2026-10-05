@@ -26,6 +26,15 @@ export function SiteHeader() {
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           <ToolsDropdown />
+          <Link
+            to="/blog"
+            className={cn(
+              "rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+              location.pathname === "/blog" && "text-foreground bg-border/40",
+            )}
+          >
+            Blog
+          </Link>
           {links.map((l) => (
             <Link
               key={l.to}
