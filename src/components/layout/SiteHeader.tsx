@@ -16,30 +16,42 @@ const socialLinks = [
     href: "https://web.facebook.com/profile.php?id=61589509679439",
     label: "Unfollow Tracker on Facebook",
     Icon: Facebook,
+    className: "bg-[#1877F2] text-white",
   },
   {
     href: "https://www.instagram.com/unfollowed2026/",
     label: "Unfollow Tracker on Instagram",
     Icon: Instagram,
+    className: "text-white",
+    style: {
+      background:
+        "radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)",
+    },
   },
 ] as const;
 
-function SocialLinks({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
+function SocialLinks() {
   return (
-    <div className={cn("flex items-center gap-0.5", className)}>
-      {socialLinks.map(({ href, label, Icon }) => (
-        <a
-          key={href}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={label}
-          onClick={onNavigate}
-          className="inline-flex items-center justify-center rounded-lg p-2 text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-        >
-          <Icon className="h-4 w-4" aria-hidden />
-        </a>
-      ))}
+    <div className="flex items-center gap-1">
+      {socialLinks.map((item) => {
+        const Icon = item.Icon;
+        return (
+          <a
+            key={item.href}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={item.label}
+            style={"style" in item ? item.style : undefined}
+            className={cn(
+              "inline-flex h-9 w-9 items-center justify-center rounded-lg transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+              item.className,
+            )}
+          >
+            <Icon className="h-4 w-4" aria-hidden />
+          </a>
+        );
+      })}
     </div>
   );
 }
@@ -84,12 +96,12 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
-          <SocialLinks className="ml-1" />
         </nav>
         <div className="flex items-center gap-2">
           <Button asChild size="sm">
             <Link to="/analyze">Upload ZIP</Link>
           </Button>
+          <SocialLinks />
           <Button
             type="button"
             size="icon"
@@ -127,7 +139,6 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
-          <SocialLinks className="mt-1 px-1" onNavigate={() => setOpen(false)} />
         </nav>
       ) : null}
     </header>

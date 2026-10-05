@@ -54,9 +54,10 @@ test("mobile burger Tools and Blog at 390px", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Blog coming soon" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Open menu" }).click();
-  const facebook = mobileNav.getByRole("link", { name: "Unfollow Tracker on Facebook" });
-  const instagram = mobileNav.getByRole("link", { name: "Unfollow Tracker on Instagram" });
+  const facebook = page.getByRole("link", { name: "Unfollow Tracker on Facebook" });
+  const instagram = page.getByRole("link", { name: "Unfollow Tracker on Instagram" });
+  await expect(facebook).toBeVisible();
+  await expect(instagram).toBeVisible();
   await expect(facebook).toHaveAttribute("href", "https://web.facebook.com/profile.php?id=61589509679439");
   await expect(instagram).toHaveAttribute("href", "https://www.instagram.com/unfollowed2026/");
   for (const link of [facebook, instagram]) {
