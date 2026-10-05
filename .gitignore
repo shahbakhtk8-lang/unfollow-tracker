@@ -12,3 +12,4 @@ e2e/.generated/
 playwright-report/
 test-results/
 blob-report/
+lighthouse-reports/

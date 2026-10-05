@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:e2e": "node scripts/make-test-zips.mjs && playwright test",
     "test:watch": "vitest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lighthouse:home": "lighthouse http://127.0.0.1:4173 --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --screenEmulation.mobile --output=json --output=html --output-path=lighthouse-reports/home --chrome-flags=\"--headless=new --no-sandbox\""
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",
@@ -51,6 +52,7 @@
     "fake-indexeddb": "^6.2.5",
     "globals": "^16.4.0",
     "jszip": "^3.10.1",
+    "lighthouse": "^13.5.0",
     "tailwindcss": "^4.1.13",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.43.0",
