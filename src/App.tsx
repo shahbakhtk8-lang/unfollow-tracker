@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import HomePage from "@/pages/HomePage";
 
+const PendingRequestsPage = lazy(() => import("@/pages/PendingRequestsPage"));
 const AnalyzePage = lazy(() => import("@/pages/AnalyzePage"));
 const GuidePage = lazy(() => import("@/pages/GuidePage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
@@ -41,6 +42,14 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route
+          path="/pending-requests"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <PendingRequestsPage />
+            </Suspense>
+          }
+        />
         <Route element={<SiteShell />}>
           <Route path="/analyze" element={<AnalyzePage />} />
           <Route path="/guide" element={<GuidePage />} />

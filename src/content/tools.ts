@@ -22,15 +22,15 @@ export const tools: ToolEntry[] = [
     status: "live",
     icon: "shield",
   },
-  // PLACEHOLDER — do not uncomment until the tool is ready.
-  // {
-  //   slug: "example-tool-two",
-  //   name: "Example Tool Two",
-  //   shortDescription: "Short description for the second tool.",
-  //   href: "/example-two",
-  //   status: "coming-soon",
-  //   icon: "users",
-  // },
+  {
+    slug: "pending-requests",
+    name: "Pending Requests Checker",
+    shortDescription:
+      "See which follow requests you sent are still waiting — even from years ago.",
+    href: "/pending-requests",
+    status: "live",
+    icon: "users",
+  },
   // PLACEHOLDER — do not uncomment until the tool is ready.
   // {
   //   slug: "example-tool-three",

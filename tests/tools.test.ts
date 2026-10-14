@@ -9,7 +9,21 @@ describe("tools registry", () => {
       status: "live",
       name: "Unfollow Tracker",
     });
-    expect(relatedLiveTools("unfollow-tracker")).toEqual([]);
+  });
+
+  it("lists Pending Requests Checker and links both tools to each other", () => {
+    const pending = tools.find((tool) => tool.slug === "pending-requests");
+    expect(pending).toMatchObject({
+      href: "/pending-requests",
+      status: "live",
+      name: "Pending Requests Checker",
+    });
+    expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toEqual([
+      "pending-requests",
+    ]);
+    expect(relatedLiveTools("pending-requests").map((t) => t.slug)).toEqual([
+      "unfollow-tracker",
+    ]);
   });
 
   it("treats / and /analyze as the Unfollow Tracker tool", () => {
@@ -18,5 +32,12 @@ describe("tools registry", () => {
     expect(isToolActive(tracker!, "/")).toBe(true);
     expect(isToolActive(tracker!, "/analyze")).toBe(true);
     expect(isToolActive(tracker!, "/guide")).toBe(false);
+  });
+
+  it("treats /pending-requests as the Pending Requests tool", () => {
+    const pending = tools.find((tool) => tool.slug === "pending-requests");
+    expect(pending).toBeDefined();
+    expect(isToolActive(pending!, "/pending-requests")).toBe(true);
+    expect(isToolActive(pending!, "/")).toBe(false);
   });
 });

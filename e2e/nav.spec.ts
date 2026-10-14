@@ -11,7 +11,9 @@ test("desktop Tools dropdown and Blog at 1440px", async ({ page }) => {
   const tools = page.getByRole("button", { name: "Tools" });
   await tools.click();
   const item = page.getByRole("menuitem", { name: /Unfollow Tracker/ });
+  const pending = page.getByRole("menuitem", { name: /Pending Requests Checker/ });
   await expect(item).toBeVisible();
+  await expect(pending).toBeVisible();
   await page.keyboard.press("Tab");
   await expect(item).toBeFocused();
   await page.keyboard.press("Escape");
