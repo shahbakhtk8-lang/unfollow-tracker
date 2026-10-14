@@ -106,11 +106,19 @@ describe("article content", () => {
     expect(body).toContain("Why Do You Have Pending Follow Requests?");
 
     const html = renderArticleHtml(body);
-    expect(html).toMatch(/<h2\b/);
-    expect(html).toMatch(/<h3\b/);
     expect(html).not.toMatch(/<h1\b/);
     expect(html).toContain("Understanding Your Pending Follow Requests");
     expect(html).toContain("How Our Tool Reads Your Pending Requests");
+    // Title stays h2 outside cards; first body section is also h2; the rest are h3.
+    expect(html).toMatch(
+      /<h2[^>]*>Understanding Your Pending Follow Requests<\/h2>/,
+    );
+    expect(html).toMatch(
+      /article-section-card[\s\S]*<h2[^>]*>Why Do You Have Pending Follow Requests\?<\/h2>/,
+    );
+    expect(html).toMatch(
+      /article-section-card[\s\S]*<h3[^>]*>How Our Tool Reads Your Pending Requests<\/h3>/,
+    );
     expect(html.match(/article-section-card/g)?.length).toBe(5);
     expect(html).toContain("rounded-2xl border border-border/80 bg-card/90");
     expect(html).toContain("shadow-sm p-6");

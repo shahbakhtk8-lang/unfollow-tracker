@@ -231,6 +231,7 @@ body {
   line-height: 1;
 }
 
+.article-prose .article-section-card > h2,
 .article-prose .article-section-card > h3 {
   margin: 0.5rem 0 0;
   font-family: var(--font-display);

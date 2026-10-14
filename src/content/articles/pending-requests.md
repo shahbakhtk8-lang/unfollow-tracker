@@ -1,7 +1,7 @@
 # Understanding Your Pending Follow Requests
 A quick guide before and after you check your list
 
-## Why Do You Have Pending Follow Requests?
+# Why Do You Have Pending Follow Requests?
 Before using this tool, it helps to know what this list actually means. Here's a quick answer.
 
 ## How Our Tool Reads Your Pending Requests

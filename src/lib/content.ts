@@ -218,11 +218,11 @@ export function wrapArticleTables(html: string): string {
 }
 
 /**
- * Wrap each demoted ## section (rendered as <h3>) and its following content.
- * Mirrors HomePage how-it-works step cards exactly:
+ * Wrap article body sections as HomePage how-it-works step cards:
  * - Card chrome: rounded-2xl border border-border/80 bg-card/90 shadow-sm p-6
  * - Step number: font-display text-4xl font-extrabold text-primary/40
- * Title (# → <h2>) and lead-in before the first <h3> stay outside the cards.
+ * The first <h2> (demoted article title) and its lead-in stay outside cards.
+ * Later <h2> / <h3> sections (e.g. a promoted first body heading) get cards.
  */
 export const ARTICLE_SECTION_CARD_CLASSES =
   "article-section-card rounded-2xl border border-border/80 bg-card/90 text-foreground shadow-sm p-6";
@@ -231,12 +231,20 @@ export const ARTICLE_SECTION_STEP_NUMBER_CLASSES =
   "article-section-step-number font-display text-4xl font-extrabold text-primary/40";
 
 export function wrapArticleSectionCards(html: string): string {
-  const parts = html.split(/(?=<h3\b)/i);
+  const parts = html.split(/(?=<h[23]\b)/i);
   if (parts.length <= 1) return html;
   let step = 0;
+  let sawTitleH2 = false;
   return parts
-    .map((part, index) => {
-      if (index === 0 || !/^<h3\b/i.test(part.trimStart())) return part;
+    .map((part) => {
+      const trimmed = part.trimStart();
+      const isH2 = /^<h2\b/i.test(trimmed);
+      const isH3 = /^<h3\b/i.test(trimmed);
+      if (!isH2 && !isH3) return part;
+      if (isH2 && !sawTitleH2) {
+        sawTitleH2 = true;
+        return part;
+      }
       step += 1;
       const number = `<span class="${ARTICLE_SECTION_STEP_NUMBER_CLASSES}" aria-hidden="true">${String(step)}</span>`;
       return `<div class="${ARTICLE_SECTION_CARD_CLASSES}">${number}${part}</div>`;
