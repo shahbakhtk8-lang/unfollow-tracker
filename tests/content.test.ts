@@ -102,25 +102,38 @@ describe("article content", () => {
       "Do I need to give my login credentials to check pending requests?",
     ]);
     expect(faqItems.every((item) => item.answer.length > 0)).toBe(true);
-    expect(body).toContain("Understanding Your Pending Follow Requests");
+    expect(body).not.toContain("Understanding Your Pending Follow Requests");
     expect(body).toContain("Why Do You Have Pending Follow Requests?");
 
     const html = renderArticleHtml(body);
     expect(html).not.toMatch(/<h1\b/);
-    expect(html).toContain("Understanding Your Pending Follow Requests");
+    expect(html).not.toContain("Understanding Your Pending Follow Requests");
     expect(html).toContain("How Our Tool Reads Your Pending Requests");
-    // Title stays h2 outside cards; all 5 body sections demote to matching h3 cards.
-    expect(html).toMatch(
-      /<h2[^>]*>Understanding Your Pending Follow Requests<\/h2>/,
-    );
-    const cardBlocks = [...html.matchAll(/<div class="article-section-card[^"]*">([\s\S]*?)(?=<div class="article-section-card|$)/g)];
+    // Lead body is h2 card with no step number; remaining four body sections are numbered h3 cards.
+    const cardBlocks = [
+      ...html.matchAll(
+        /<div class="article-section-card[^"]*">([\s\S]*?)(?=<div class="article-section-card|$)/g,
+      ),
+    ];
     expect(cardBlocks.length).toBe(5);
     const bodyHeadings = cardBlocks.map((match) => {
+      const hasStepNumber = /article-section-step-number/.test(match[1] ?? "");
       const heading = match[1]?.match(/<h([23])\b[^>]*>([\s\S]*?)<\/h\1>/i);
       expect(heading).not.toBeNull();
-      return { level: heading![1], text: heading![2]?.replace(/<[^>]+>/g, "").trim() };
+      return {
+        level: heading![1],
+        text: heading![2]?.replace(/<[^>]+>/g, "").trim(),
+        hasStepNumber,
+      };
     });
-    expect(bodyHeadings.every((item) => item.level === "3")).toBe(true);
+    expect(bodyHeadings.map((item) => item.level)).toEqual(["2", "3", "3", "3", "3"]);
+    expect(bodyHeadings.map((item) => item.hasStepNumber)).toEqual([
+      false,
+      true,
+      true,
+      true,
+      true,
+    ]);
     expect(bodyHeadings.map((item) => item.text)).toEqual([
       "Why Do You Have Pending Follow Requests?",
       "How Our Tool Reads Your Pending Requests",
@@ -132,10 +145,8 @@ describe("article content", () => {
     expect(html).toContain("shadow-sm p-6");
     expect(html).toContain("text-4xl font-extrabold text-primary/40");
     expect(html).toContain(">1</span>");
-    expect(html).toContain(">5</span>");
-    expect(html.indexOf("article-section-card")).toBeGreaterThan(
-      html.indexOf("Understanding Your Pending Follow Requests"),
-    );
+    expect(html).toContain(">4</span>");
+    expect(html).not.toContain(">5</span>");
 
     const markup = renderToStaticMarkup(createElement(ArticleSection, { slug: "pending-requests" }));
     expect(markup).toContain("Frequently Asked Questions");
