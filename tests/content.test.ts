@@ -87,4 +87,34 @@ describe("article content", () => {
     expect(markup.match(/<table>/g)?.length).toBe(2);
     expect(markup).not.toContain("**How can we see who unfollowed you");
   });
+
+  it("parses and renders the Pending Requests article FAQ accordion", () => {
+    const source = loadArticle("pending-requests");
+    expect(source).not.toBeNull();
+    const { body, faqHeading, faqItems } = splitArticleFaq(source ?? "");
+    expect(faqHeading).toBe("Frequently Asked Questions");
+    expect(faqItems).toHaveLength(4);
+    expect(faqItems.map((item) => item.question)).toEqual([
+      "How long can a pending request stay unaccepted?",
+      'What happens when I click "Cancel on Instagram"?',
+      "Can I check pending requests for multiple accounts?",
+      "Do I need to give my login credentials to check pending requests?",
+    ]);
+    expect(faqItems.every((item) => item.answer.length > 0)).toBe(true);
+    expect(body).toContain("Understanding Your Pending Follow Requests");
+    expect(body).toContain("Why Do You Have Pending Follow Requests?");
+
+    const html = renderArticleHtml(body);
+    expect(html).toMatch(/<h2\b/);
+    expect(html).toMatch(/<h3\b/);
+    expect(html).not.toMatch(/<h1\b/);
+    expect(html).toContain("Understanding Your Pending Follow Requests");
+    expect(html).toContain("How Our Tool Reads Your Pending Requests");
+
+    const markup = renderToStaticMarkup(createElement(ArticleSection, { slug: "pending-requests" }));
+    expect(markup).toContain("Frequently Asked Questions");
+    expect(markup).toContain("How long can a pending request stay unaccepted?");
+    expect(markup.match(/aria-expanded="false"/g)?.length).toBe(4);
+    expect(markup).not.toContain("**How long can a pending request");
+  });
 });
