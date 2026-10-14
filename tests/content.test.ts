@@ -91,6 +91,7 @@ describe("article content", () => {
   it("parses and renders the Pending Requests article FAQ accordion", () => {
     const source = loadArticle("pending-requests");
     expect(source).not.toBeNull();
+    expect(source).not.toMatch(/[—–]/);
     const { body, faqHeading, faqItems } = splitArticleFaq(source ?? "");
     expect(faqHeading).toBe("Frequently Asked Questions");
     expect(faqItems).toHaveLength(4);
