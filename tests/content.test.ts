@@ -111,11 +111,19 @@ describe("article content", () => {
     expect(html).not.toMatch(/<h1\b/);
     expect(html).toContain("Understanding Your Pending Follow Requests");
     expect(html).toContain("How Our Tool Reads Your Pending Requests");
+    expect(html.match(/article-section-card/g)?.length).toBe(5);
+    expect(html.indexOf("article-section-card")).toBeGreaterThan(
+      html.indexOf("Understanding Your Pending Follow Requests"),
+    );
 
     const markup = renderToStaticMarkup(createElement(ArticleSection, { slug: "pending-requests" }));
     expect(markup).toContain("Frequently Asked Questions");
     expect(markup).toContain("How long can a pending request stay unaccepted?");
     expect(markup.match(/aria-expanded="false"/g)?.length).toBe(4);
     expect(markup).not.toContain("**How long can a pending request");
+    expect(markup).toContain("article-section-card");
+    expect(markup).toMatch(
+      /<\/div><section class="article-faq"[\s\S]*Frequently Asked Questions/,
+    );
   });
 });

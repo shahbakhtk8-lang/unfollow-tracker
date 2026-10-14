@@ -217,6 +217,24 @@ export function wrapArticleTables(html: string): string {
   });
 }
 
+/**
+ * Wrap each demoted ## section (rendered as <h3>) and its following content
+ * in a card matching .article-table-wrap chrome. Title (# → <h2>) and lead-in
+ * content before the first <h3> stay outside the cards.
+ */
+export function wrapArticleSectionCards(html: string): string {
+  const parts = html.split(/(?=<h3\b)/i);
+  if (parts.length <= 1) return html;
+  return parts
+    .map((part, index) => {
+      if (index === 0 || !/^<h3\b/i.test(part.trimStart())) return part;
+      return `<div class="article-section-card">${part}</div>`;
+    })
+    .join("");
+}
+
 export function renderArticleHtml(source: string): string {
-  return wrapArticleTables(demoteArticleHeadings(renderMarkdownWithTables(source)));
+  return wrapArticleSectionCards(
+    wrapArticleTables(demoteArticleHeadings(renderMarkdownWithTables(source))),
+  );
 }

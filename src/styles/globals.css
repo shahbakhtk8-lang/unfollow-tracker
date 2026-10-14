@@ -207,6 +207,36 @@ body {
   background: var(--color-card);
 }
 
+/* Same chrome as .article-table-wrap — boxes each demoted ## section (h3). */
+.article-prose .article-section-card {
+  margin: 0 0 1.35rem;
+  max-width: 100%;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+}
+
+.article-prose .article-section-card > :first-child {
+  margin-top: 0;
+}
+
+.article-prose .article-section-card > :last-child {
+  margin-bottom: 0;
+}
+
+.article-prose .article-section-card > h3:first-child {
+  margin-bottom: 0.8rem;
+}
+
+/* Nested feature tables keep zebra striping; drop a second outer border. */
+.article-prose .article-section-card .article-table-wrap {
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
 .article-prose table {
   width: 100%;
   min-width: 36rem;
