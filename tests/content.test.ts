@@ -112,6 +112,8 @@ describe("article content", () => {
     expect(html).toContain("Understanding Your Pending Follow Requests");
     expect(html).toContain("How Our Tool Reads Your Pending Requests");
     expect(html.match(/article-section-card/g)?.length).toBe(5);
+    expect(html).toContain("rounded-2xl border border-border/80 bg-card/90");
+    expect(html).toContain("shadow-sm p-6");
     expect(html.indexOf("article-section-card")).toBeGreaterThan(
       html.indexOf("Understanding Your Pending Follow Requests"),
     );

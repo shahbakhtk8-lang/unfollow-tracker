@@ -207,14 +207,16 @@ body {
   background: var(--color-card);
 }
 
-/* Same chrome as .article-table-wrap — boxes each demoted ## section (h3). */
+/*
+ * Article section cards reuse HomePage how-it-works Card classes via the
+ * wrapper (see ARTICLE_SECTION_CARD_CLASSES). These rules only reset
+ * .article-prose heading/body defaults so h3/p match the step-card title
+ * ("font-display text-xl font-bold") and description ("text-sm text-muted").
+ */
 .article-prose .article-section-card {
-  margin: 0 0 1.35rem;
+  margin: 0 0 1.5rem;
   max-width: 100%;
-  padding: 1rem 1.15rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-card);
+  box-sizing: border-box;
 }
 
 .article-prose .article-section-card > :first-child {
@@ -226,12 +228,40 @@ body {
 }
 
 .article-prose .article-section-card > h3:first-child {
-  margin-bottom: 0.8rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.75rem;
+  letter-spacing: -0.02em;
+  color: var(--color-foreground);
+}
+
+.article-prose .article-section-card > p {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-muted);
+}
+
+.article-prose .article-section-card > h4,
+.article-prose .article-section-card > h5,
+.article-prose .article-section-card > h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.article-prose .article-section-card > ul,
+.article-prose .article-section-card > ol {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-muted);
 }
 
 /* Nested feature tables keep zebra striping; drop a second outer border. */
 .article-prose .article-section-card .article-table-wrap {
-  margin-bottom: 0;
+  margin: 0.75rem 0 0;
   border: none;
   border-radius: 0;
   background: transparent;

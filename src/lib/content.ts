@@ -218,17 +218,22 @@ export function wrapArticleTables(html: string): string {
 }
 
 /**
- * Wrap each demoted ## section (rendered as <h3>) and its following content
- * in a card matching .article-table-wrap chrome. Title (# → <h2>) and lead-in
- * content before the first <h3> stay outside the cards.
+ * Wrap each demoted ## section (rendered as <h3>) and its following content.
+ * Class list mirrors HomePage how-it-works step cards:
+ * Card ("rounded-2xl border border-border bg-card shadow-sm") +
+ * step overrides ("border-border/80 bg-card/90") + CardContent ("p-6").
+ * Title (# → <h2>) and lead-in before the first <h3> stay outside the cards.
  */
+export const ARTICLE_SECTION_CARD_CLASSES =
+  "article-section-card rounded-2xl border border-border/80 bg-card/90 text-foreground shadow-sm p-6";
+
 export function wrapArticleSectionCards(html: string): string {
   const parts = html.split(/(?=<h3\b)/i);
   if (parts.length <= 1) return html;
   return parts
     .map((part, index) => {
       if (index === 0 || !/^<h3\b/i.test(part.trimStart())) return part;
-      return `<div class="article-section-card">${part}</div>`;
+      return `<div class="${ARTICLE_SECTION_CARD_CLASSES}">${part}</div>`;
     })
     .join("");
 }
