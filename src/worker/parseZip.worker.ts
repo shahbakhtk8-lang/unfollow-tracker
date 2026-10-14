@@ -1,8 +1,14 @@
 import * as Comlink from "comlink";
-import { parseZipBlob, type ParseProgress, type ParseResult } from "../lib/parseZip";
+import {
+  parsePendingRequestsZipBlob,
+  parseZipBlob,
+  type ParseProgress,
+  type ParseResult,
+  type PendingRequestsParseResult,
+} from "../lib/parseZip";
 import { diffSnapshots } from "../lib/diff";
 
-export type { ParseProgress, ParseResult };
+export type { ParseProgress, ParseResult, PendingRequestsParseResult };
 
 const api = {
   async parseFile(
@@ -19,6 +25,12 @@ const api = {
     const result = await parseZipBlob(newFile, onProgress);
     const diff = diffSnapshots(oldFollowerUsernames, result.followerUsernames);
     return { ...result, diff };
+  },
+  async parsePendingRequests(
+    file: File,
+    onProgress?: (p: ParseProgress) => void,
+  ): Promise<PendingRequestsParseResult> {
+    return parsePendingRequestsZipBlob(file, onProgress);
   },
 };
 

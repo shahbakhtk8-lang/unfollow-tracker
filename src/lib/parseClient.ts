@@ -1,6 +1,6 @@
 import * as Comlink from "comlink";
 import type { ParseWorkerApi } from "../worker/parseZip.worker";
-import type { ParseProgress, ParseResult } from "./parseZip";
+import type { ParseProgress, ParseResult, PendingRequestsParseResult } from "./parseZip";
 import { diffSnapshots } from "./diff";
 
 let worker: Worker | null = null;
@@ -35,6 +35,15 @@ export async function parseZipWithDiff(
   const remote = getWorker();
   const progressProxy = onProgress ? Comlink.proxy(onProgress) : undefined;
   return remote.parseFileAndDiff(newFile, oldFollowerUsernames, progressProxy);
+}
+
+export async function parsePendingRequestsFile(
+  file: File,
+  onProgress?: (p: ParseProgress) => void,
+): Promise<PendingRequestsParseResult> {
+  const remote = getWorker();
+  const progressProxy = onProgress ? Comlink.proxy(onProgress) : undefined;
+  return remote.parsePendingRequests(file, progressProxy);
 }
 
 export function computeDiffLocal(oldFollowers: string[], newFollowers: string[]) {

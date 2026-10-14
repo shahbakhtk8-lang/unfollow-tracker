@@ -59,6 +59,29 @@ export function parseFollowingJson(text: string): UserEntry[] {
   return [];
 }
 
+/** Pending sent follow requests — same string_list_data shape as following/followers. */
+export function parsePendingFollowRequestsJson(text: string): UserEntry[] {
+  const data = JSON.parse(text) as unknown;
+  if (Array.isArray(data)) {
+    return dedupeUsers(extractFromRelationshipArray(data));
+  }
+  if (data && typeof data === "object") {
+    const rec = data as JsonRecord;
+    const arr =
+      rec.relationships_follow_requests_sent ??
+      rec.relationships_pending_follow_requests ??
+      rec.relationships_following;
+    if (Array.isArray(arr)) {
+      return dedupeUsers(extractFromRelationshipArray(arr));
+    }
+  }
+  return [];
+}
+
+export function parsePendingFollowRequestsHtml(html: string): UserEntry[] {
+  return parseFollowersHtml(html);
+}
+
 const IG_PROFILE_RE = /instagram\.com\/([a-zA-Z0-9._]+)/i;
 
 const RESERVED_PATHS = new Set([
@@ -134,4 +157,12 @@ export function isFollowersPath(path: string): boolean {
 export function isFollowingPath(path: string): boolean {
   const lower = path.toLowerCase().replace(/\\/g, "/");
   return lower.includes("followers_and_following") && /following\.(json|html)$/i.test(lower);
+}
+
+export function isPendingFollowRequestsPath(path: string): boolean {
+  const lower = path.toLowerCase().replace(/\\/g, "/");
+  return (
+    lower.includes("followers_and_following") &&
+    /pending_follow_requests\.(json|html)$/i.test(lower)
+  );
 }

@@ -11,8 +11,10 @@ import {
   followerFileSortKey,
   isFollowersPath,
   isFollowingPath,
+  isPendingFollowRequestsPath,
   parseFollowersJson,
   parseFollowingJson,
+  parsePendingFollowRequestsJson,
 } from "./extractUsers";
 import type { UserEntry } from "./normalize";
 import { getExportDate, type ExportDateSource } from "./exportDate";
@@ -25,6 +27,7 @@ export type ParseStage =
   | "reading"
   | "parsing_followers"
   | "parsing_following"
+  | "parsing_pending"
   | "computing"
   | "done"
   | "error";
@@ -44,6 +47,13 @@ export interface ParseResult {
   followingTimestamps: Record<string, number>;
   exportDate: number | null;
   exportDateSource: ExportDateSource | null;
+}
+
+export interface PendingRequestsParseResult {
+  requests: UserEntry[];
+  usernames: string[];
+  timestamps: Record<string, number>;
+  hasAnyTimestamp: boolean;
 }
 
 function isFileEntry(entry: Entry): entry is FileEntry {
@@ -92,7 +102,8 @@ function keepParseError(error: unknown): boolean {
   if (!(error instanceof Error)) return false;
   return (
     error.message.startsWith("Could not find followers or following files.") ||
-    error.message.startsWith("This export has no followers or following accounts.")
+    error.message.startsWith("This export has no followers or following accounts.") ||
+    error.message.startsWith("Could not find pending follow requests")
   );
 }
 
@@ -260,5 +271,95 @@ async function readExportZip(
     followingTimestamps,
     exportDate: dated.exportDate,
     exportDateSource: dated.source,
+  };
+}
+
+export async function parsePendingRequestsZipBlob(
+  blob: Blob,
+  onProgress?: (p: ParseProgress) => void,
+): Promise<PendingRequestsParseResult> {
+  try {
+    return await readPendingRequestsZip(blob, onProgress);
+  } catch (error) {
+    if (keepParseError(error)) throw error;
+    throw new Error(
+      "This file could not be read as an Instagram export ZIP. Choose the .zip you downloaded from Meta.",
+    );
+  }
+}
+
+async function readPendingRequestsZip(
+  blob: Blob,
+  onProgress?: (p: ParseProgress) => void,
+): Promise<PendingRequestsParseResult> {
+  const report = (stage: ParseStage, percent: number, message: string) => {
+    onProgress?.({ stage, percent, message });
+  };
+
+  report("reading", 5, "Opening ZIP archive…");
+
+  const reader = new ZipReader(new BlobReader(blob));
+  const entries = await reader.getEntries();
+  const total = entries.length || 1;
+
+  let pendingEntry: FileEntry | null = null;
+
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i];
+    if (!entry || !isFileEntry(entry) || !entry.filename) continue;
+    const path = entry.filename.replace(/\\/g, "/");
+    if (isPendingFollowRequestsPath(path)) {
+      pendingEntry = entry;
+    }
+    if (i % 50 === 0) {
+      report("reading", 5 + Math.round((i / total) * 30), "Scanning archive…");
+    }
+  }
+
+  if (!pendingEntry) {
+    const fuzzy = entries.find(
+      (e): e is FileEntry =>
+        isFileEntry(e) &&
+        !!e.filename &&
+        /pending_follow_requests\.(json|html)$/i.test(e.filename),
+    );
+    if (fuzzy) pendingEntry = fuzzy;
+  }
+
+  if (!pendingEntry?.filename) {
+    await reader.close();
+    throw new Error(
+      "Could not find pending follow requests in this export. Export with Connections → Followers and following (include pending_follow_requests).",
+    );
+  }
+
+  report("parsing_pending", 45, "Parsing pending follow requests…");
+
+  const lower = pendingEntry.filename.toLowerCase();
+  const requests = lower.endsWith(".html")
+    ? await parseHtmlEntry(pendingEntry, (done, totalBytes) => {
+        report(
+          "parsing_pending",
+          45 + Math.round((done / totalBytes) * 45),
+          `Parsing pending requests (${formatMb(done)} of ${formatMb(totalBytes)})…`,
+        );
+      })
+    : parsePendingFollowRequestsJson(await readEntryText(pendingEntry));
+
+  await reader.close();
+
+  report("computing", 95, "Preparing list…");
+
+  const usernames = usernamesFromEntries(requests);
+  const timestamps = timestampMapFromEntries(requests);
+  const hasAnyTimestamp = Object.keys(timestamps).length > 0;
+
+  report("done", 100, "Done");
+
+  return {
+    requests,
+    usernames,
+    timestamps,
+    hasAnyTimestamp,
   };
 }
