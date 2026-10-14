@@ -231,15 +231,36 @@ body {
   line-height: 1;
 }
 
-.article-prose .article-section-card > h2,
+/* Lead body h2 — distinct from numbered step-card titles, centered. */
+.article-prose .article-section-card > h2 {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--color-foreground);
+}
+
+/* Numbered step cards — match HomePage how-it-works titles. */
 .article-prose .article-section-card > h3 {
   margin: 0.5rem 0 0;
+  text-align: left;
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.75rem;
   letter-spacing: -0.02em;
   color: var(--color-foreground);
+}
+
+.article-prose .article-section-card > h2 + p {
+  margin: 0.75rem 0 0;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-muted);
 }
 
 .article-prose .article-section-card > p {
