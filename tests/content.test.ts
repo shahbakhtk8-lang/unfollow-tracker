@@ -114,6 +114,9 @@ describe("article content", () => {
     expect(html.match(/article-section-card/g)?.length).toBe(5);
     expect(html).toContain("rounded-2xl border border-border/80 bg-card/90");
     expect(html).toContain("shadow-sm p-6");
+    expect(html).toContain("text-4xl font-extrabold text-primary/40");
+    expect(html).toContain(">1</span>");
+    expect(html).toContain(">5</span>");
     expect(html.indexOf("article-section-card")).toBeGreaterThan(
       html.indexOf("Understanding Your Pending Follow Requests"),
     );

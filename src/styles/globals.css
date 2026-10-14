@@ -208,10 +208,9 @@ body {
 }
 
 /*
- * Article section cards reuse HomePage how-it-works Card classes via the
- * wrapper (see ARTICLE_SECTION_CARD_CLASSES). These rules only reset
- * .article-prose heading/body defaults so h3/p match the step-card title
- * ("font-display text-xl font-bold") and description ("text-sm text-muted").
+ * Article section cards reuse HomePage how-it-works Card + step number
+ * classes (see ARTICLE_SECTION_CARD_CLASSES / ARTICLE_SECTION_STEP_NUMBER_CLASSES).
+ * These rules reset .article-prose defaults so title/body match the step cards.
  */
 .article-prose .article-section-card {
   margin: 0 0 1.5rem;
@@ -227,8 +226,13 @@ body {
   margin-bottom: 0;
 }
 
-.article-prose .article-section-card > h3:first-child {
-  margin: 0;
+.article-prose .article-section-card > .article-section-step-number {
+  display: block;
+  line-height: 1;
+}
+
+.article-prose .article-section-card > h3 {
+  margin: 0.5rem 0 0;
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 700;

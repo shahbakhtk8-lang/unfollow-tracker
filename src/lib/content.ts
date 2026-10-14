@@ -219,21 +219,27 @@ export function wrapArticleTables(html: string): string {
 
 /**
  * Wrap each demoted ## section (rendered as <h3>) and its following content.
- * Class list mirrors HomePage how-it-works step cards:
- * Card ("rounded-2xl border border-border bg-card shadow-sm") +
- * step overrides ("border-border/80 bg-card/90") + CardContent ("p-6").
+ * Mirrors HomePage how-it-works step cards exactly:
+ * - Card chrome: rounded-2xl border border-border/80 bg-card/90 shadow-sm p-6
+ * - Step number: font-display text-4xl font-extrabold text-primary/40
  * Title (# → <h2>) and lead-in before the first <h3> stay outside the cards.
  */
 export const ARTICLE_SECTION_CARD_CLASSES =
   "article-section-card rounded-2xl border border-border/80 bg-card/90 text-foreground shadow-sm p-6";
 
+export const ARTICLE_SECTION_STEP_NUMBER_CLASSES =
+  "article-section-step-number font-display text-4xl font-extrabold text-primary/40";
+
 export function wrapArticleSectionCards(html: string): string {
   const parts = html.split(/(?=<h3\b)/i);
   if (parts.length <= 1) return html;
+  let step = 0;
   return parts
     .map((part, index) => {
       if (index === 0 || !/^<h3\b/i.test(part.trimStart())) return part;
-      return `<div class="${ARTICLE_SECTION_CARD_CLASSES}">${part}</div>`;
+      step += 1;
+      const number = `<span class="${ARTICLE_SECTION_STEP_NUMBER_CLASSES}" aria-hidden="true">${String(step)}</span>`;
+      return `<div class="${ARTICLE_SECTION_CARD_CLASSES}">${number}${part}</div>`;
     })
     .join("");
 }
