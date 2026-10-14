@@ -246,9 +246,9 @@ export default function PendingRequestsPage() {
                               href={`https://www.instagram.com/${row.username}/`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              aria-label={`View ${row.username} on Instagram`}
+                              aria-label={`Cancel request with ${row.username} on Instagram`}
                             >
-                              View on Instagram
+                              Cancel on Instagram
                               <ExternalLink className="h-3.5 w-3.5" aria-hidden />
                             </a>
                           </Button>
