@@ -109,17 +109,25 @@ describe("article content", () => {
     expect(html).not.toMatch(/<h1\b/);
     expect(html).toContain("Understanding Your Pending Follow Requests");
     expect(html).toContain("How Our Tool Reads Your Pending Requests");
-    // Title stays h2 outside cards; first body section is also h2; the rest are h3.
+    // Title stays h2 outside cards; all 5 body sections demote to matching h3 cards.
     expect(html).toMatch(
       /<h2[^>]*>Understanding Your Pending Follow Requests<\/h2>/,
     );
-    expect(html).toMatch(
-      /article-section-card[\s\S]*<h2[^>]*>Why Do You Have Pending Follow Requests\?<\/h2>/,
-    );
-    expect(html).toMatch(
-      /article-section-card[\s\S]*<h3[^>]*>How Our Tool Reads Your Pending Requests<\/h3>/,
-    );
-    expect(html.match(/article-section-card/g)?.length).toBe(5);
+    const cardBlocks = [...html.matchAll(/<div class="article-section-card[^"]*">([\s\S]*?)(?=<div class="article-section-card|$)/g)];
+    expect(cardBlocks.length).toBe(5);
+    const bodyHeadings = cardBlocks.map((match) => {
+      const heading = match[1]?.match(/<h([23])\b[^>]*>([\s\S]*?)<\/h\1>/i);
+      expect(heading).not.toBeNull();
+      return { level: heading![1], text: heading![2]?.replace(/<[^>]+>/g, "").trim() };
+    });
+    expect(bodyHeadings.every((item) => item.level === "3")).toBe(true);
+    expect(bodyHeadings.map((item) => item.text)).toEqual([
+      "Why Do You Have Pending Follow Requests?",
+      "How Our Tool Reads Your Pending Requests",
+      "Your Data Stays Safe in Your Browser",
+      "Why Some Requests Stay Pending for Years",
+      "How to Act on Your Pending Requests",
+    ]);
     expect(html).toContain("rounded-2xl border border-border/80 bg-card/90");
     expect(html).toContain("shadow-sm p-6");
     expect(html).toContain("text-4xl font-extrabold text-primary/40");

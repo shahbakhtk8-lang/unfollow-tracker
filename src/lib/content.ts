@@ -221,8 +221,13 @@ export function wrapArticleTables(html: string): string {
  * Wrap article body sections as HomePage how-it-works step cards:
  * - Card chrome: rounded-2xl border border-border/80 bg-card/90 shadow-sm p-6
  * - Step number: font-display text-4xl font-extrabold text-primary/40
- * The first <h2> (demoted article title) and its lead-in stay outside cards.
- * Later <h2> / <h3> sections (e.g. a promoted first body heading) get cards.
+ *
+ * Robust wrapping (not "first H2 then H3s"):
+ * 1. Skip the first <h2> (demoted article title) and its lead-in.
+ * 2. The next h2/h3 heading locks the body-section level L.
+ * 3. Only consecutive headings of level L get numbered cards.
+ * Nested deeper headings (e.g. h4 under an h3 section) stay inside that
+ * section's part because we only split on h2/h3.
  */
 export const ARTICLE_SECTION_CARD_CLASSES =
   "article-section-card rounded-2xl border border-border/80 bg-card/90 text-foreground shadow-sm p-6";
@@ -235,16 +240,21 @@ export function wrapArticleSectionCards(html: string): string {
   if (parts.length <= 1) return html;
   let step = 0;
   let sawTitleH2 = false;
+  let sectionLevel: 2 | 3 | null = null;
   return parts
     .map((part) => {
-      const trimmed = part.trimStart();
-      const isH2 = /^<h2\b/i.test(trimmed);
-      const isH3 = /^<h3\b/i.test(trimmed);
-      if (!isH2 && !isH3) return part;
-      if (isH2 && !sawTitleH2) {
+      const match = part.trimStart().match(/^<h([23])\b/i);
+      if (!match) return part;
+      const level = Number(match[1]) as 2 | 3;
+
+      if (!sawTitleH2 && level === 2) {
         sawTitleH2 = true;
         return part;
       }
+
+      if (sectionLevel === null) sectionLevel = level;
+      if (level !== sectionLevel) return part;
+
       step += 1;
       const number = `<span class="${ARTICLE_SECTION_STEP_NUMBER_CLASSES}" aria-hidden="true">${String(step)}</span>`;
       return `<div class="${ARTICLE_SECTION_CARD_CLASSES}">${number}${part}</div>`;
