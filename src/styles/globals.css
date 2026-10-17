@@ -345,6 +345,165 @@ body {
   overflow: hidden;
 }
 
+/* Hero: text reveal + slow gradient drift (transform/opacity only) */
+.fontgen-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.fontgen-hero-drift {
+  inset: -20% -10% auto;
+  height: 14rem;
+  background:
+    radial-gradient(ellipse 50% 70% at 20% 40%, rgb(99 102 241 / 0.28), transparent 70%),
+    radial-gradient(ellipse 45% 60% at 80% 30%, rgb(56 189 248 / 0.18), transparent 70%);
+  transform: translate3d(0, 0, 0);
+  animation: fontgen-drift 18s ease-in-out infinite alternate;
+}
+
+.fontgen-hero-title,
+.fontgen-hero-sub,
+.fontgen-hero ul {
+  animation: fontgen-reveal 0.55s ease-out both;
+}
+
+.fontgen-hero-sub {
+  animation-delay: 0.08s;
+}
+
+.fontgen-hero ul {
+  animation-delay: 0.16s;
+}
+
+@keyframes fontgen-drift {
+  from {
+    transform: translate3d(-3%, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  to {
+    transform: translate3d(3%, 4%, 0) scale(1.06);
+    opacity: 1;
+  }
+}
+
+@keyframes fontgen-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Style cards: stagger first 12, hover lift/glow (transform/opacity only) */
+.fontgen-card {
+  position: relative;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.fontgen-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 10px 28px -12px rgb(79 70 229 / 0.4);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.fontgen-card-enter {
+  animation: fontgen-card-in 0.4s ease-out both;
+  animation-delay: calc(var(--fontgen-stagger, 0) * 35ms);
+}
+
+.fontgen-card:hover {
+  transform: translate3d(0, -3px, 0);
+}
+
+.fontgen-card:hover::after {
+  opacity: 1;
+}
+
+@keyframes fontgen-card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Copy micro-interaction */
+.fontgen-copy-btn {
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.fontgen-copy-btn:active {
+  transform: scale(0.96);
+}
+
+.fontgen-copy-ok {
+  animation: fontgen-copy-pop 0.35s ease-out;
+}
+
+@keyframes fontgen-copy-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Category sliding indicator */
+.fontgen-cat-indicator {
+  transition:
+    transform 0.22s ease,
+    width 0.22s ease;
+  will-change: transform, width;
+}
+
+/* Heart burst on favorite */
+.fontgen-heart {
+  transition:
+    transform 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.fontgen-heart-burst {
+  animation: fontgen-heart-burst 0.45s ease-out;
+}
+
+@keyframes fontgen-heart-burst {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.35);
+  }
+  60% {
+    transform: scale(0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Toast slide */
 .fontgen-toast {
   animation: fontgen-toast-in 0.25s ease-out;
 }
@@ -360,8 +519,49 @@ body {
   }
 }
 
+/* Phone preview fade when View Transitions unavailable */
+.fontgen-phone-body {
+  transition: opacity 0.15s ease;
+}
+
+::view-transition-old(fontgen-preview),
+::view-transition-new(fontgen-preview) {
+  animation-duration: 0.22s;
+  animation-timing-function: ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .fontgen-hero-drift,
+  .fontgen-hero-title,
+  .fontgen-hero-sub,
+  .fontgen-hero ul,
+  .fontgen-card-enter,
+  .fontgen-copy-ok,
+  .fontgen-heart-burst,
   .fontgen-toast {
-    animation: none;
+    animation: none !important;
+  }
+
+  .fontgen-card:hover,
+  .fontgen-copy-btn:active {
+    transform: none;
+  }
+
+  .fontgen-card:hover::after {
+    opacity: 0;
+  }
+
+  .fontgen-cat-indicator,
+  .fontgen-phone-body,
+  .fontgen-card,
+  .fontgen-card::after,
+  .fontgen-copy-btn,
+  .fontgen-heart {
+    transition: none !important;
+  }
+
+  ::view-transition-old(fontgen-preview),
+  ::view-transition-new(fontgen-preview) {
+    animation: none !important;
   }
 }
