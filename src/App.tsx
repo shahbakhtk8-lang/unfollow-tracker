@@ -2,6 +2,8 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { SITE_URL } from "@/content/seo";
 import HomePage from "@/pages/HomePage";
 
 const PendingRequestsPage = lazy(() => import("@/pages/PendingRequestsPage"));
@@ -38,6 +40,17 @@ function SiteShell() {
   );
 }
 
+/** Document meta for /analyze without editing AnalyzePage.tsx */
+function AnalyzeRoute() {
+  useDocumentMeta({
+    title: "Analyze — Unfollow Tracker",
+    description:
+      "Upload your Instagram export ZIP and see who doesn’t follow you back. Private, in-browser analysis.",
+    canonical: `${SITE_URL}/analyze`,
+  });
+  return <AnalyzePage />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -60,7 +73,7 @@ export default function App() {
           }
         />
         <Route element={<SiteShell />}>
-          <Route path="/analyze" element={<AnalyzePage />} />
+          <Route path="/analyze" element={<AnalyzeRoute />} />
           <Route path="/guide" element={<GuidePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/disclaimer" element={<DisclaimerPage />} />

@@ -1,6 +1,15 @@
 import { Link } from "react-router-dom";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { SITE_URL } from "@/content/seo";
 
 export default function AboutPage() {
+  useDocumentMeta({
+    title: "About — Unfollow Tracker",
+    description:
+      "Why Unfollow Tracker exists: private, password-free Instagram unfollow checks from your official export.",
+    canonical: `${SITE_URL}/about`,
+  });
+
   return (
     <article className="mx-auto max-w-3xl space-y-6 px-4 py-12 text-sm leading-relaxed sm:px-6 sm:py-16">
       <h1 className="font-display text-4xl font-bold">About Unfollow Tracker</h1>

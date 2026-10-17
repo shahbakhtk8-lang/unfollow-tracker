@@ -1,6 +1,15 @@
 import { Link } from "react-router-dom";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { SITE_URL } from "@/content/seo";
 
 export default function PrivacyPage() {
+  useDocumentMeta({
+    title: "Privacy Policy — Unfollow Tracker",
+    description:
+      "How Unfollow Tracker handles your data: local-first ZIP analysis, optional device storage, and no analytics.",
+    canonical: `${SITE_URL}/privacy`,
+  });
+
   return (
     <article className="mx-auto max-w-3xl space-y-6 px-4 py-12 text-sm leading-relaxed sm:px-6 sm:py-16">
       <h1 className="font-display text-4xl font-bold">Privacy Policy</h1>
@@ -31,6 +40,11 @@ export default function PrivacyPage() {
           your browser only. Reviewed marks and the ignore list are stored the same way — only on
           this device, never on our servers. You can delete snapshots anytime from the Analyze page.
           Clearing site data removes this information.
+        </p>
+        <p className="mt-2 text-muted">
+          On the Instagram Font Generator, favorite style ids are saved in localStorage on this
+          device only. The text you type is never stored or sent anywhere — it stays in memory for
+          the session and is discarded when you leave or clear the field.
         </p>
       </section>
 

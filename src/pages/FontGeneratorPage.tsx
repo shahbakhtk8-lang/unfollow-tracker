@@ -7,8 +7,6 @@ import {
   useState,
 } from "react";
 import { Link } from "react-router-dom";
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { SiteHeader } from "@/components/layout/SiteHeader";
 import { CopyToast, type ToastState } from "@/components/fontgen/CopyToast";
 import { fontBreadcrumbJsonLd } from "@/components/fontgen/breadcrumbJsonLd";
 import { FontBreadcrumb } from "@/components/fontgen/FontBreadcrumb";
@@ -23,6 +21,7 @@ import {
   saveFavoriteIds,
   toggleFavoriteId,
 } from "@/components/fontgen/favorites";
+import { ToolPageLayout } from "@/components/layout/ToolPageLayout";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { SITE_URL } from "@/content/seo";
 import { STYLE_BY_ID, convert, type ConvertOptions } from "@/lib/fontStyles";
@@ -39,6 +38,7 @@ export default function FontGeneratorPage() {
     title: META_TITLE,
     description: META_DESCRIPTION,
     canonical: `${SITE_URL}/instagram-font-generator`,
+    robots: "noindex",
     jsonLd: breadcrumbLd,
     jsonLdId: "fontgen-breadcrumb-jsonld",
   });
@@ -131,60 +131,51 @@ export default function FontGeneratorPage() {
   }, []);
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <SiteHeader />
-      <main className="flex-1">
-        <div className="mesh-bg fontgen-page">
-          <div className="mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-12">
-            <FontBreadcrumb />
-            <FontHero />
+    <ToolPageLayout
+      articleSlug="instagram-font-generator"
+      toolSlug="instagram-font-generator"
+    >
+      <div className="mesh-bg fontgen-page">
+        <div className="mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-12">
+          <FontBreadcrumb />
+          <FontHero />
 
-            <p className="mt-4 text-xs text-muted">
-              Unicode styling varies by device and app. Not every character is available in every
-              style.{" "}
-              <Link to="/" className="font-medium text-primary underline-offset-2 hover:underline">
-                Back to Unfollow Tracker
-              </Link>
-            </p>
+          <p className="mt-4 text-xs text-muted">
+            Unicode styling varies by device and app. Not every character is available in every
+            style.{" "}
+            <Link to="/" className="font-medium text-primary underline-offset-2 hover:underline">
+              Back to Unfollow Tracker
+            </Link>
+          </p>
 
-            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
-              <div className="min-w-0 space-y-8">
-                <div ref={gallerySentinelRef}>
-                  <FontInputCard
-                    ref={inputRef}
-                    value={rawText}
-                    onChange={setRawText}
-                    target={target}
-                    onTargetChange={setTarget}
-                    keepLinks={keepLinks}
-                    onKeepLinksChange={setKeepLinks}
-                    keepEmoji={keepEmoji}
-                    onKeepEmojiChange={setKeepEmoji}
-                  />
-                </div>
-
-                <StyleGallery
-                  sourceText={sourceText}
-                  options={options}
-                  favoriteIds={favoriteIds}
-                  selectedStyleId={selectedStyle.id}
-                  onCopy={handleCopy}
-                  onFavorite={handleFavorite}
-                  onPreview={setSelectedStyleId}
-                />
-              </div>
-
-              <div className="hidden lg:block">
-                <PhonePreview
-                  styledText={previewResult.text}
-                  styleName={selectedStyle.name}
+          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
+            <div className="min-w-0 space-y-8">
+              <div ref={gallerySentinelRef}>
+                <FontInputCard
+                  ref={inputRef}
+                  value={rawText}
+                  onChange={setRawText}
                   target={target}
                   onTargetChange={setTarget}
+                  keepLinks={keepLinks}
+                  onKeepLinksChange={setKeepLinks}
+                  keepEmoji={keepEmoji}
+                  onKeepEmojiChange={setKeepEmoji}
                 />
               </div>
+
+              <StyleGallery
+                sourceText={sourceText}
+                options={options}
+                favoriteIds={favoriteIds}
+                selectedStyleId={selectedStyle.id}
+                onCopy={handleCopy}
+                onFavorite={handleFavorite}
+                onPreview={setSelectedStyleId}
+              />
             </div>
 
-            <div className="mt-8 lg:hidden">
+            <div className="hidden lg:block">
               <PhonePreview
                 styledText={previewResult.text}
                 styleName={selectedStyle.name}
@@ -194,30 +185,38 @@ export default function FontGeneratorPage() {
             </div>
           </div>
 
-          <div
-            className={cn(
-              "fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 p-3 backdrop-blur md:hidden",
-              stickyCompact ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0",
-              "transition-transform duration-200",
-            )}
-            aria-hidden={!stickyCompact}
-          >
-            <FontInputCard
-              value={rawText}
-              onChange={setRawText}
+          <div className="mt-8 lg:hidden">
+            <PhonePreview
+              styledText={previewResult.text}
+              styleName={selectedStyle.name}
               target={target}
               onTargetChange={setTarget}
-              keepLinks={keepLinks}
-              onKeepLinksChange={setKeepLinks}
-              keepEmoji={keepEmoji}
-              onKeepEmojiChange={setKeepEmoji}
-              compact
             />
           </div>
         </div>
-        <CopyToast toast={toast} onDismiss={dismissToast} />
-      </main>
-      <SiteFooter />
-    </div>
+
+        <div
+          className={cn(
+            "fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 p-3 backdrop-blur md:hidden",
+            stickyCompact ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0",
+            "transition-transform duration-200",
+          )}
+          aria-hidden={!stickyCompact}
+        >
+          <FontInputCard
+            value={rawText}
+            onChange={setRawText}
+            target={target}
+            onTargetChange={setTarget}
+            keepLinks={keepLinks}
+            onKeepLinksChange={setKeepLinks}
+            keepEmoji={keepEmoji}
+            onKeepEmojiChange={setKeepEmoji}
+            compact
+          />
+        </div>
+      </div>
+      <CopyToast toast={toast} onDismiss={dismissToast} />
+    </ToolPageLayout>
   );
 }

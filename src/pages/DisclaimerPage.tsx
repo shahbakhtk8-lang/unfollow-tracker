@@ -1,4 +1,14 @@
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { SITE_URL } from "@/content/seo";
+
 export default function DisclaimerPage() {
+  useDocumentMeta({
+    title: "Disclaimer — Unfollow Tracker",
+    description:
+      "Independent tool disclaimer: not affiliated with Instagram or Meta; results depend on your export.",
+    canonical: `${SITE_URL}/disclaimer`,
+  });
+
   return (
     <article className="mx-auto max-w-3xl space-y-6 px-4 py-12 text-sm leading-relaxed sm:px-6 sm:py-16">
       <h1 className="font-display text-4xl font-bold">Disclaimer</h1>

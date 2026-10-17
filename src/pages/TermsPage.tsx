@@ -1,4 +1,14 @@
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { SITE_URL } from "@/content/seo";
+
 export default function TermsPage() {
+  useDocumentMeta({
+    title: "Terms of Use — Unfollow Tracker",
+    description:
+      "Terms for using Unfollow Tracker’s browser-based Instagram export analysis tools.",
+    canonical: `${SITE_URL}/terms`,
+  });
+
   return (
     <article className="mx-auto max-w-3xl space-y-6 px-4 py-12 text-sm leading-relaxed sm:px-6 sm:py-16">
       <h1 className="font-display text-4xl font-bold">Terms of Use</h1>

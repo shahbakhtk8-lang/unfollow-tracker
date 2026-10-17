@@ -1,7 +1,7 @@
 export type ToolStatus = "live" | "coming-soon";
 
 /** Lucide icon names used by related-tool cards. Add names here when a new tool needs a new icon. */
-export type ToolIconName = "shield" | "users" | "file-text" | "sparkles";
+export type ToolIconName = "shield" | "users" | "file-text" | "sparkles" | "type";
 
 export interface ToolEntry {
   slug: string;
@@ -30,6 +30,15 @@ export const tools: ToolEntry[] = [
     href: "/pending-requests",
     status: "live",
     icon: "users",
+  },
+  {
+    slug: "instagram-font-generator",
+    name: "Instagram Font Generator",
+    shortDescription:
+      "Style bio, display name, or caption text with Unicode lettering — free, in your browser.",
+    href: "/instagram-font-generator",
+    status: "coming-soon",
+    icon: "type",
   },
   // PLACEHOLDER — do not uncomment until the tool is ready.
   // {

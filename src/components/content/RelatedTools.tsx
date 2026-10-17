@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FileText, Shield, Sparkles, Users } from "lucide-react";
+import { FileText, Shield, Sparkles, Type, Users } from "lucide-react";
 import { relatedLiveTools, type ToolIconName } from "@/content/tools";
 
 const icons: Record<ToolIconName, typeof Shield> = {
@@ -7,6 +7,7 @@ const icons: Record<ToolIconName, typeof Shield> = {
   users: Users,
   "file-text": FileText,
   sparkles: Sparkles,
+  type: Type,
 };
 
 export function RelatedTools({ toolSlug }: { toolSlug: string }) {

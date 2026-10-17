@@ -1,4 +1,13 @@
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { SITE_URL } from "@/content/seo";
+
 export default function ContactPage() {
+  useDocumentMeta({
+    title: "Contact — Unfollow Tracker",
+    description: "Get in touch about Unfollow Tracker bugs, questions, or feedback.",
+    canonical: `${SITE_URL}/contact`,
+  });
+
   return (
     <article className="mx-auto max-w-3xl space-y-6 px-4 py-12 text-sm leading-relaxed sm:px-6 sm:py-16">
       <h1 className="font-display text-4xl font-bold">Contact Us</h1>

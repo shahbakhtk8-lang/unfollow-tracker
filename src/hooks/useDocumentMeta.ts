@@ -24,6 +24,8 @@ type DocumentMeta = {
   title: string;
   description: string;
   canonical?: string;
+  /** e.g. "noindex, nofollow" — upserts meta[name=robots] */
+  robots?: string;
   image?: string;
   imageAlt?: string;
   imageWidth?: number;
@@ -92,11 +94,12 @@ function upsertLink(rel: string, href: string): () => void {
   };
 }
 
-/** Sets document title, description, canonical, Open Graph, and Twitter tags. Restores on unmount. */
+/** Sets document title, description, canonical, robots, Open Graph, and Twitter tags. Restores on unmount. */
 export function useDocumentMeta({
   title,
   description,
   canonical,
+  robots,
   image,
   imageAlt,
   imageWidth,
@@ -119,6 +122,7 @@ export function useDocumentMeta({
     ];
 
     if (canonical) restorers.push(upsertLink("canonical", canonical), upsertPropertyMeta("og:url", canonical));
+    if (robots) restorers.push(upsertNamedMeta("robots", robots));
     if (image) {
       restorers.push(
         upsertPropertyMeta("og:image", image),
@@ -139,5 +143,16 @@ export function useDocumentMeta({
       document.title = previousTitle;
       restorers.forEach((restore) => restore());
     };
-  }, [title, description, canonical, image, imageAlt, imageWidth, imageHeight, jsonLd, jsonLdId]);
+  }, [
+    title,
+    description,
+    canonical,
+    robots,
+    image,
+    imageAlt,
+    imageWidth,
+    imageHeight,
+    jsonLd,
+    jsonLdId,
+  ]);
 }

@@ -1,4 +1,4 @@
-export const SITE_URL = "https://unfollow-tracker.pages.dev";
+export const SITE_URL = "https://igunfollowed.com";
 
 export const HOME_META_TITLE = "Instagram Unfollow Tracker Free online - Without Login 2026";
 

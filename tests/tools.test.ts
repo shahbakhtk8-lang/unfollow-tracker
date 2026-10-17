@@ -26,6 +26,20 @@ describe("tools registry", () => {
     ]);
   });
 
+  it("registers Instagram Font Generator as coming-soon", () => {
+    const font = tools.find((tool) => tool.slug === "instagram-font-generator");
+    expect(font).toMatchObject({
+      href: "/instagram-font-generator",
+      status: "coming-soon",
+      name: "Instagram Font Generator",
+      icon: "type",
+    });
+    expect(relatedLiveTools("instagram-font-generator").map((t) => t.slug)).toEqual([
+      "unfollow-tracker",
+      "pending-requests",
+    ]);
+  });
+
   it("treats / and /analyze as the Unfollow Tracker tool", () => {
     const tracker = tools.find((tool) => tool.slug === "unfollow-tracker");
     expect(tracker).toBeDefined();

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { SITE_URL } from "@/content/seo";
 
 const steps = [
   "Open Meta Accounts Center (Instagram app → Settings → Accounts Center, or accounts.center.meta.com).",
@@ -14,6 +16,13 @@ const steps = [
 ];
 
 export default function GuidePage() {
+  useDocumentMeta({
+    title: "How to download your Instagram export — Unfollow Tracker",
+    description:
+      "Step-by-step guide to request and download your official Instagram data export ZIP for Unfollow Tracker.",
+    canonical: `${SITE_URL}/guide`,
+  });
+
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <h1 className="font-display text-4xl font-bold tracking-tight">
