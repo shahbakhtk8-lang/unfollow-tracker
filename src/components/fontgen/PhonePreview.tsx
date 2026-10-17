@@ -32,10 +32,18 @@ export function PhonePreview({
     };
 
     if (typeof doc.startViewTransition === "function") {
-      doc.startViewTransition(() => {
+      try {
+        const transition = doc.startViewTransition(() => {
+          setDisplayText(styledText);
+          setDisplayName(styleName);
+        });
+        void (transition as { finished?: Promise<void> }).finished?.catch(() => {
+          /* skipped when a newer transition starts */
+        });
+      } catch {
         setDisplayText(styledText);
         setDisplayName(styleName);
-      });
+      }
       return;
     }
 
@@ -50,7 +58,7 @@ export function PhonePreview({
 
   return (
     <aside
-      className="fontgen-phone sticky top-20 rounded-2xl border border-border bg-card p-4 shadow-sm"
+      className="fontgen-phone rounded-2xl border border-border bg-card p-4 shadow-sm"
       aria-label="Preview (approximate)"
     >
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">

@@ -25,7 +25,6 @@ import { ToolPageLayout } from "@/components/layout/ToolPageLayout";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { SITE_URL } from "@/content/seo";
 import { STYLE_BY_ID, convert, type ConvertOptions } from "@/lib/fontStyles";
-import { cn } from "@/lib/utils";
 
 const META_TITLE = "Instagram Font Generator";
 const META_DESCRIPTION =
@@ -175,7 +174,7 @@ export default function FontGeneratorPage() {
               />
             </div>
 
-            <div className="hidden lg:block">
+            <div className="lg:sticky lg:top-20">
               <PhonePreview
                 styledText={previewResult.text}
                 styleName={selectedStyle.name}
@@ -184,37 +183,23 @@ export default function FontGeneratorPage() {
               />
             </div>
           </div>
+        </div>
 
-          <div className="mt-8 lg:hidden">
-            <PhonePreview
-              styledText={previewResult.text}
-              styleName={selectedStyle.name}
+        {stickyCompact ? (
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 p-3 backdrop-blur transition-transform duration-200 md:hidden">
+            <FontInputCard
+              value={rawText}
+              onChange={setRawText}
               target={target}
               onTargetChange={setTarget}
+              keepLinks={keepLinks}
+              onKeepLinksChange={setKeepLinks}
+              keepEmoji={keepEmoji}
+              onKeepEmojiChange={setKeepEmoji}
+              compact
             />
           </div>
-        </div>
-
-        <div
-          className={cn(
-            "fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 p-3 backdrop-blur md:hidden",
-            stickyCompact ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0",
-            "transition-transform duration-200",
-          )}
-          aria-hidden={!stickyCompact}
-        >
-          <FontInputCard
-            value={rawText}
-            onChange={setRawText}
-            target={target}
-            onTargetChange={setTarget}
-            keepLinks={keepLinks}
-            onKeepLinksChange={setKeepLinks}
-            keepEmoji={keepEmoji}
-            onKeepEmojiChange={setKeepEmoji}
-            compact
-          />
-        </div>
+        ) : null}
       </div>
       <CopyToast toast={toast} onDismiss={dismissToast} />
     </ToolPageLayout>

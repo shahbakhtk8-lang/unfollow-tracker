@@ -84,13 +84,14 @@ export const FontInputCard = forwardRef<HTMLTextAreaElement, FontInputCardProps>
         ) : null}
 
         <textarea
-          id="fontgen-input"
-          ref={setRefs}
+          id={compact ? undefined : "fontgen-input"}
+          ref={compact ? undefined : setRefs}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={compact ? 2 : 4}
           placeholder={EXAMPLE_TEXT}
-          aria-label="Text to style"
+          aria-label={compact ? "Text to style (compact)" : "Text to style"}
+          tabIndex={compact ? -1 : undefined}
           className={cn(
             "w-full resize-none rounded-xl border border-border bg-background px-3 py-2.5 text-base shadow-sm placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
             compact && "text-sm",

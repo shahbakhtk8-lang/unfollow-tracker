@@ -66,8 +66,8 @@ export const StyleCard = memo(function StyleCard({
               className={cn(
                 "rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
                 style.compatibility === "high"
-                  ? "bg-success/15 text-success"
-                  : "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+                  ? "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
+                  : "bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100",
               )}
               title={style.compatibilityNote}
             >
@@ -75,7 +75,7 @@ export const StyleCard = memo(function StyleCard({
             </span>
             {result.partial ? (
               <span
-                className="rounded-md bg-border/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted"
+                className="rounded-md bg-slate-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-800 dark:bg-slate-800 dark:text-slate-100"
                 title="Some characters could not be styled"
               >
                 Partial
