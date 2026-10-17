@@ -331,3 +331,37 @@ body {
 .article-prose .article-faq-answer p:last-child {
   margin-bottom: 0;
 }
+
+/* —— Instagram Font Generator —— */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 220px;
+}
+
+.fontgen-page .line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.fontgen-toast {
+  animation: fontgen-toast-in 0.25s ease-out;
+}
+
+@keyframes fontgen-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fontgen-toast {
+    animation: none;
+  }
+}

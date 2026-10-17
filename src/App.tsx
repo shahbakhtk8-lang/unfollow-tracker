@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import HomePage from "@/pages/HomePage";
 
 const PendingRequestsPage = lazy(() => import("@/pages/PendingRequestsPage"));
+const FontGeneratorPage = lazy(() => import("@/pages/FontGeneratorPage"));
 const AnalyzePage = lazy(() => import("@/pages/AnalyzePage"));
 const GuidePage = lazy(() => import("@/pages/GuidePage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
@@ -47,6 +48,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <PendingRequestsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/instagram-font-generator"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <FontGeneratorPage />
             </Suspense>
           }
         />
