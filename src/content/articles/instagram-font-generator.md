@@ -8,11 +8,15 @@ Turning plain text into a stylish bio, name or caption takes three quick steps:
 
 > **Tip:** Stick to one or two styles. Style the part you want people to notice and keep the rest of your message in plain text so it stays clear.
 
+Once your profile looks right, you can also check who doesn't follow you back with our free [Unfollow Tracker](/). It reads your official Instagram data export, and the file stays in your browser.
+
 # Best Instagram Fonts to Copy and Paste
 
 Sans and Bold are clean and easy to read, which makes them a safe choice for a bio or display name. Tiny and Bold Gothic have more personality, so they work best as a short accent, such as one word or a tagline.
 
 These are not installable font files. They are Unicode characters, so you can copy and paste them anywhere Instagram lets you type text.
+
+Want more options? Our sister site Copyfonty has a separate collection of [more Instagram font styles](https://copyfonty.com/instagram-fonts/) you can copy and paste.
 
 # What to Know Before You Style Your Name
 

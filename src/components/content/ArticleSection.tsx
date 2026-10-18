@@ -1,4 +1,5 @@
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useRef, type MouseEvent, type RefObject } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
@@ -67,9 +68,14 @@ function useArticleReveal(rootRef: RefObject<HTMLElement | null>) {
   }, [rootRef]);
 }
 
+function isModifiedClick(e: MouseEvent): boolean {
+  return e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
+}
+
 export function ArticleSection({ slug }: { slug: string }) {
   const source = loadArticle(slug);
   const rootRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
   useArticleReveal(rootRef);
 
   if (!source || isDraftArticle(source)) return null;
@@ -80,11 +86,30 @@ export function ArticleSection({ slug }: { slug: string }) {
 
   const faqId = slugifyHeading(faqHeading ?? "Frequently Asked Questions");
 
+  const handleArticleClick = (e: MouseEvent<HTMLElement>) => {
+    if (e.defaultPrevented || isModifiedClick(e)) return;
+    const target = e.target as HTMLElement | null;
+    const anchor = target?.closest?.("a");
+    if (!anchor || !rootRef.current?.contains(anchor)) return;
+    if (anchor.target && anchor.target !== "_self") return;
+
+    const href = anchor.getAttribute("href");
+    if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+      return;
+    }
+    // Relative / same-origin app paths only — external links keep native navigation.
+    if (/^https?:\/\//i.test(href) || href.startsWith("//")) return;
+
+    e.preventDefault();
+    navigate(href);
+  };
+
   return (
     <section
       ref={rootRef}
       className="border-t border-border bg-background px-4 py-16 sm:px-6"
       aria-label="Article"
+      onClick={handleArticleClick}
     >
       <article className="article-prose mx-auto">
         {html ? <div dangerouslySetInnerHTML={{ __html: html }} /> : null}

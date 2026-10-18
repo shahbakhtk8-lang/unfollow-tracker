@@ -1,10 +1,56 @@
 import MarkdownIt from "markdown-it";
+import { SITE_URL } from "@/content/seo";
 
 const markdown = new MarkdownIt({
   html: false,
   linkify: true,
   breaks: false,
 });
+
+const SITE_HOST = new URL(SITE_URL).hostname.replace(/^www\./, "");
+
+/** True for http(s) links whose host is not igunfollowed.com. */
+export function isExternalArticleHref(href: string): boolean {
+  const trimmed = href.trim();
+  if (
+    !trimmed ||
+    trimmed.startsWith("/") ||
+    trimmed.startsWith("#") ||
+    trimmed.startsWith("?") ||
+    trimmed.startsWith("mailto:") ||
+    trimmed.startsWith("tel:")
+  ) {
+    return false;
+  }
+  try {
+    const url = new URL(trimmed, SITE_URL);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    const host = url.hostname.replace(/^www\./, "");
+    return host !== SITE_HOST;
+  } catch {
+    return false;
+  }
+}
+
+const defaultLinkOpen =
+  markdown.renderer.rules.link_open ??
+  ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options));
+
+markdown.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+  const token = tokens[idx]!;
+  const href = String(token.attrGet("href") ?? "");
+  if (isExternalArticleHref(href)) {
+    token.attrSet("target", "_blank");
+    token.attrSet("rel", "noopener");
+    const existing = token.attrGet("class");
+    const className =
+      existing != null && String(existing).length > 0
+        ? `${String(existing)} article-link-external`
+        : "article-link-external";
+    token.attrSet("class", className);
+  }
+  return defaultLinkOpen(tokens, idx, options, env, self);
+};
 
 export function slugifyHeading(text: string): string {
   const slug = text

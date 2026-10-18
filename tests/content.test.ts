@@ -1,13 +1,21 @@
-import { createElement } from "react";
+import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { ArticleSection } from "../src/components/content/ArticleSection";
 import {
   isDraftArticle,
+  isExternalArticleHref,
   loadArticle,
   renderArticleHtml,
   splitArticleFaq,
 } from "../src/lib/content";
+
+function renderArticleSection(slug: string): string {
+  return renderToStaticMarkup(
+    createElement(MemoryRouter, null, createElement(ArticleSection, { slug }) as ReactElement),
+  );
+}
 
 describe("article content", () => {
   it("loads the Unfollow Tracker markdown by slug and renders a demoted heading", () => {
@@ -83,7 +91,7 @@ describe("article content", () => {
   });
 
   it("renders the article FAQ as a collapsed accordion with five items", () => {
-    const markup = renderToStaticMarkup(createElement(ArticleSection, { slug: "unfollow-tracker" }));
+    const markup = renderArticleSection("unfollow-tracker");
     expect(markup).toContain("Frequently Asked Questions");
     expect(markup).toContain("How can we see who unfollowed you on instagram?");
     expect(markup).toContain("Can I see who blocked me on Instagram?");
@@ -155,7 +163,7 @@ describe("article content", () => {
     expect(html).toContain(">4</span>");
     expect(html).not.toContain(">5</span>");
 
-    const markup = renderToStaticMarkup(createElement(ArticleSection, { slug: "pending-requests" }));
+    const markup = renderArticleSection("pending-requests");
     expect(markup).toContain("Frequently Asked Questions");
     expect(markup).toContain("How long can a pending request stay unaccepted?");
     expect(markup.match(/aria-expanded="true"/g)?.length).toBe(1);
@@ -195,14 +203,42 @@ describe("article content", () => {
     expect(html.match(/<h2\b/g)?.length).toBeGreaterThanOrEqual(3);
     expect(html).not.toMatch(/<h1\b/);
 
-    const markup = renderToStaticMarkup(
-      createElement(ArticleSection, { slug: "instagram-font-generator" }),
-    );
+    const markup = renderArticleSection("instagram-font-generator");
     expect(markup).toContain("How to Use the Instagram Font Generator");
     expect(markup).toContain("Frequently Asked Questions");
     expect(markup).toContain("Where can I use Instagram fonts?");
     expect(markup).toContain("Is my text saved or sent anywhere?");
     expect(markup.match(/aria-expanded="true"/g)?.length).toBe(1);
     expect(markup.match(/aria-expanded="false"/g)?.length).toBe(6);
+  });
+
+  it("renders internal and external article links with the correct attributes", () => {
+    expect(isExternalArticleHref("/")).toBe(false);
+    expect(isExternalArticleHref("https://igunfollowed.com/guide")).toBe(false);
+    expect(isExternalArticleHref("https://copyfonty.com/instagram-fonts/")).toBe(true);
+
+    const source = loadArticle("instagram-font-generator");
+    const { body } = splitArticleFaq(source ?? "");
+    const html = renderArticleHtml(body);
+
+    expect(html).toContain("Unfollow Tracker");
+    expect(html).toContain('href="/"');
+    expect(html).not.toMatch(/href="\/"[^>]*target=/);
+    expect(html).toContain("more Instagram font styles");
+    expect(html).toContain('href="https://copyfonty.com/instagram-fonts/"');
+    expect(html).toMatch(
+      /href="https:\/\/copyfonty\.com\/instagram-fonts\/"[^>]*target="_blank"/,
+    );
+    expect(html).toMatch(
+      /href="https:\/\/copyfonty\.com\/instagram-fonts\/"[^>]*rel="[^"]*noopener/,
+    );
+    expect(html).toContain("article-link-external");
+    expect(html).not.toMatch(/rel="[^"]*nofollow/);
+    expect(html).not.toMatch(/<script/i);
+    // Raw HTML in markdown is escaped (html: false) — tags are not rendered as markup.
+    const withRaw = renderArticleHtml('Hello <script>alert(1)</script> and [ok](/).');
+    expect(withRaw).not.toMatch(/<script>/i);
+    expect(withRaw).toContain("&lt;script&gt;");
+    expect(withRaw).toContain('href="/"');
   });
 });
