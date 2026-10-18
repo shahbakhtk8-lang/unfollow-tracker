@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { SITE_URL } from "@/content/seo";
 
 function upsertJsonLd(id: string, data: Record<string, unknown>): () => void {
   const existing = document.getElementById(id);
@@ -20,10 +21,11 @@ function upsertJsonLd(id: string, data: Record<string, unknown>): () => void {
   };
 }
 
-type DocumentMeta = {
+export type DocumentMeta = {
   title: string;
   description: string;
-  canonical?: string;
+  /** Absolute or path; normalized to https://igunfollowed.com + path (no trailing slash, query, or hash). */
+  canonical: string;
   /** e.g. "noindex, nofollow" — upserts meta[name=robots] */
   robots?: string;
   image?: string;
@@ -33,6 +35,23 @@ type DocumentMeta = {
   jsonLd?: Record<string, unknown>;
   jsonLdId?: string;
 };
+
+/** Build a site canonical: SITE_URL + path, no trailing slash, no query/hash. */
+export function toCanonicalUrl(pathOrUrl: string): string {
+  let pathname: string;
+  if (/^https?:\/\//i.test(pathOrUrl)) {
+    const parsed = new URL(pathOrUrl);
+    pathname = parsed.pathname;
+  } else {
+    const bare = pathOrUrl.split(/[?#]/, 1)[0] ?? "";
+    pathname = bare.startsWith("/") ? bare : `/${bare}`;
+  }
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    pathname = pathname.slice(0, -1);
+  }
+  if (pathname === "/" || pathname === "") return SITE_URL;
+  return `${SITE_URL}${pathname}`;
+}
 
 function upsertNamedMeta(name: string, content: string): () => void {
   const existing = document.head.querySelector(`meta[name="${name}"]`);
@@ -94,8 +113,8 @@ function upsertLink(rel: string, href: string): () => void {
   };
 }
 
-/** Sets document title, description, canonical, robots, Open Graph, and Twitter tags. Restores on unmount. */
-export function useDocumentMeta({
+/** Applies document title, description, canonical, og:url, Open Graph, and Twitter tags. Returns restore. */
+export function applyDocumentMeta({
   title,
   description,
   canonical,
@@ -106,43 +125,74 @@ export function useDocumentMeta({
   imageHeight,
   jsonLd,
   jsonLdId = "home-jsonld",
-}: DocumentMeta): void {
+}: DocumentMeta): () => void {
+  const previousTitle = document.title;
+  document.title = title;
+  const href = toCanonicalUrl(canonical);
+  const restorers = [
+    upsertNamedMeta("description", description),
+    upsertNamedMeta("twitter:card", image ? "summary_large_image" : "summary"),
+    upsertNamedMeta("twitter:title", title),
+    upsertNamedMeta("twitter:description", description),
+    upsertPropertyMeta("og:type", "website"),
+    upsertPropertyMeta("og:site_name", "Unfollow Tracker"),
+    upsertPropertyMeta("og:title", title),
+    upsertPropertyMeta("og:description", description),
+    upsertLink("canonical", href),
+    upsertPropertyMeta("og:url", href),
+  ];
+
+  if (robots) restorers.push(upsertNamedMeta("robots", robots));
+  if (image) {
+    restorers.push(
+      upsertPropertyMeta("og:image", image),
+      upsertNamedMeta("twitter:image", image),
+    );
+  }
+  if (imageAlt) {
+    restorers.push(
+      upsertPropertyMeta("og:image:alt", imageAlt),
+      upsertNamedMeta("twitter:image:alt", imageAlt),
+    );
+  }
+  if (imageWidth) restorers.push(upsertPropertyMeta("og:image:width", String(imageWidth)));
+  if (imageHeight) restorers.push(upsertPropertyMeta("og:image:height", String(imageHeight)));
+  if (jsonLd) restorers.push(upsertJsonLd(jsonLdId, jsonLd));
+
+  return () => {
+    document.title = previousTitle;
+    restorers.forEach((restore) => restore());
+  };
+}
+
+/** Sets document title, description, canonical, robots, Open Graph, and Twitter tags. Restores on unmount. */
+export function useDocumentMeta(meta: DocumentMeta): void {
+  const {
+    title,
+    description,
+    canonical,
+    robots,
+    image,
+    imageAlt,
+    imageWidth,
+    imageHeight,
+    jsonLd,
+    jsonLdId = "home-jsonld",
+  } = meta;
+
   useEffect(() => {
-    const previousTitle = document.title;
-    document.title = title;
-    const restorers = [
-      upsertNamedMeta("description", description),
-      upsertNamedMeta("twitter:card", image ? "summary_large_image" : "summary"),
-      upsertNamedMeta("twitter:title", title),
-      upsertNamedMeta("twitter:description", description),
-      upsertPropertyMeta("og:type", "website"),
-      upsertPropertyMeta("og:site_name", "Unfollow Tracker"),
-      upsertPropertyMeta("og:title", title),
-      upsertPropertyMeta("og:description", description),
-    ];
-
-    if (canonical) restorers.push(upsertLink("canonical", canonical), upsertPropertyMeta("og:url", canonical));
-    if (robots) restorers.push(upsertNamedMeta("robots", robots));
-    if (image) {
-      restorers.push(
-        upsertPropertyMeta("og:image", image),
-        upsertNamedMeta("twitter:image", image),
-      );
-    }
-    if (imageAlt) {
-      restorers.push(
-        upsertPropertyMeta("og:image:alt", imageAlt),
-        upsertNamedMeta("twitter:image:alt", imageAlt),
-      );
-    }
-    if (imageWidth) restorers.push(upsertPropertyMeta("og:image:width", String(imageWidth)));
-    if (imageHeight) restorers.push(upsertPropertyMeta("og:image:height", String(imageHeight)));
-    if (jsonLd) restorers.push(upsertJsonLd(jsonLdId, jsonLd));
-
-    return () => {
-      document.title = previousTitle;
-      restorers.forEach((restore) => restore());
-    };
+    return applyDocumentMeta({
+      title,
+      description,
+      canonical,
+      robots,
+      image,
+      imageAlt,
+      imageWidth,
+      imageHeight,
+      jsonLd,
+      jsonLdId,
+    });
   }, [
     title,
     description,

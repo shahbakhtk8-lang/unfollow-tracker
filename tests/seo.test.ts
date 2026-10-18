@@ -58,5 +58,9 @@ describe("home SEO", () => {
     expect(html).toContain("FAQPage");
     expect(html).toContain("SoftwareApplication");
     expect(html).toContain(YOUTUBE_VIDEO_ID);
+    // Canonical / og:url are set per-route by useDocumentMeta (not static in HTML).
+    expect(html).not.toMatch(/rel=["']canonical["']/);
+    expect(html).not.toMatch(/property=["']og:url["']/);
+    expect(html).not.toMatch(/name=["']twitter:url["']/);
   });
 });
