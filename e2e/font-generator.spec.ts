@@ -26,7 +26,7 @@ test.describe("Instagram Font Generator", () => {
     const boldCard = page.locator('[data-style-id="math-bold"]');
     await expect(boldCard).toBeVisible();
     await boldCard.getByRole("button", { name: /Copy Bold/i }).click();
-    await expect(page.getByRole("status")).toContainText(/Copied Bold/i);
+    await expect(page.getByRole("status").filter({ hasText: /Copied Bold/i })).toBeVisible();
 
     const clip = await page.evaluate(() => navigator.clipboard.readText());
     expect(clip).toBe(convert(SAMPLE, "math-bold").text);
@@ -87,7 +87,7 @@ test.describe("Instagram Font Generator", () => {
     await expect(plain).toContainText("Keyboard copy");
     await plain.focus();
     await page.keyboard.press("Enter");
-    await expect(page.getByRole("status")).toContainText(/Copied Plain/i);
+    await expect(page.getByRole("status").filter({ hasText: /Copied Plain/i })).toBeVisible();
     const clip2 = await page.evaluate(() => navigator.clipboard.readText());
     expect(clip2).toBe(convert("Keyboard copy", "plain").text);
 
@@ -99,6 +99,37 @@ test.describe("Instagram Font Generator", () => {
     await page.locator("#fontgen-input").fill("Bio https://example.com");
     await expect(page.getByRole("status").filter({ hasText: /Screen readers/i })).toBeVisible();
     await page.getByRole("button", { name: /Copy Heart$/i }).first().click();
-    await expect(page.getByRole("status")).toContainText(/Copied Heart/i);
+    await expect(page.getByRole("status").filter({ hasText: /Copied Heart/i })).toBeVisible();
+  });
+
+  test("article section screenshots (light/dark, mobile/desktop)", async ({ page }) => {
+    mkdirSync(shotDir, { recursive: true });
+    await page.goto("/instagram-font-generator");
+    const article = page.getByRole("region", { name: "Article" });
+    await expect(article).toBeVisible();
+    await expect(
+      article.getByRole("heading", { name: "How to Use the Instagram Font Generator" }),
+    ).toBeVisible();
+    await expect(article.getByRole("heading", { name: "Frequently Asked Questions" })).toBeVisible();
+    await article.scrollIntoViewIfNeeded();
+
+    for (const scheme of ["light", "dark"] as const) {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await article.scrollIntoViewIfNeeded();
+      await page.screenshot({
+        path: path.join(shotDir, `fontgen-article-390-${scheme}.png`),
+        fullPage: false,
+      });
+      await article.screenshot({
+        path: path.join(shotDir, `fontgen-article-section-390-${scheme}.png`),
+      });
+
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await article.scrollIntoViewIfNeeded();
+      await article.screenshot({
+        path: path.join(shotDir, `fontgen-article-section-1440-${scheme}.png`),
+      });
+    }
   });
 });
