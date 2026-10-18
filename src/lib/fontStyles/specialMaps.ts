@@ -1,4 +1,4 @@
-﻿import type { LetterMapper } from "./mathMaps";
+﻿import { buildAsciiTable, type LetterMapper } from "./mathMaps";
 
 function tableMap(table: Record<string, string>): LetterMapper {
   return (ch) => table[ch] ?? null;
@@ -115,3 +115,18 @@ export function flipLine(line: string): string {
   }
   return out.join("");
 }
+
+/** Precomputed ASCII lookups for letter-mapping special styles. */
+export const SPECIAL_ASCII_TABLES: Record<string, (string | null)[]> = {
+  circled: buildAsciiTable(CIRCLED),
+  bubble: buildAsciiTable(BUBBLE),
+  squared: buildAsciiTable(SQUARED),
+  "negative-squared": buildAsciiTable(NEGATIVE_SQUARED),
+  "negative-circled": buildAsciiTable(NEGATIVE_CIRCLED),
+  parenthesized: buildAsciiTable(PARENTHESIZED),
+  fullwidth: buildAsciiTable(FULLWIDTH),
+  vaporwave: buildAsciiTable(FULLWIDTH),
+  "small-caps": buildAsciiTable(SMALL_CAPS_MAP),
+  superscript: buildAsciiTable(SUPERSCRIPT),
+  subscript: buildAsciiTable(SUBSCRIPT),
+};

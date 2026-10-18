@@ -24,7 +24,12 @@ import {
 import { ToolPageLayout } from "@/components/layout/ToolPageLayout";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { SITE_URL } from "@/content/seo";
-import { STYLE_BY_ID, convert, type ConvertOptions } from "@/lib/fontStyles";
+import {
+  STYLE_BY_ID,
+  convertFull,
+  type ConvertOptions,
+  type StyleMeta,
+} from "@/lib/fontStyles";
 
 const META_TITLE = "Instagram Font Generator";
 const META_DESCRIPTION =
@@ -67,7 +72,7 @@ export default function FontGeneratorPage() {
 
   const selectedStyle = STYLE_BY_ID[selectedStyleId] ?? STYLE_BY_ID["math-bold"]!;
   const previewResult = useMemo(
-    () => convert(sourceText, selectedStyle.id, options),
+    () => convertFull(sourceText, selectedStyle.id, options),
     [sourceText, selectedStyle.id, options],
   );
 
@@ -116,14 +121,19 @@ export default function FontGeneratorPage() {
 
   const dismissToast = useCallback(() => setToast(null), []);
 
-  const handleCopy = useCallback(async (style: { id: string; name: string }, text: string) => {
-    const ok = await copyText(text);
-    if (ok) {
-      setToast({ kind: "success", message: `Copied ${style.name}` });
-    } else {
-      setToast({ kind: "error", message: "Couldn’t copy — try selecting the text manually." });
-    }
-  }, []);
+  const handleCopy = useCallback(
+    async (style: StyleMeta) => {
+      // Always convert the FULL source — gallery cards only show a truncated preview.
+      const { text } = convertFull(sourceText, style.id, options);
+      const ok = await copyText(text);
+      if (ok) {
+        setToast({ kind: "success", message: `Copied ${style.name}` });
+      } else {
+        setToast({ kind: "error", message: "Couldn’t copy — try selecting the text manually." });
+      }
+    },
+    [sourceText, options],
+  );
 
   const handleFavorite = useCallback((styleId: string) => {
     setFavoriteIds((prev) => toggleFavoriteId(prev, styleId));

@@ -10,6 +10,7 @@ import {
   NEGATIVE_SQUARED,
   PARENTHESIZED,
   SMALL_CAPS_MAP,
+  SPECIAL_ASCII_TABLES,
   SQUARED,
   SUBSCRIPT,
   SUPERSCRIPT,
@@ -399,6 +400,8 @@ export function convert(
 
   const mathTable = MATH_ASCII_TABLES[styleId];
   if (mathTable) return letterResult(mapWithAsciiTable(text, mathTable, opts));
+  const specialTable = SPECIAL_ASCII_TABLES[styleId];
+  if (specialTable) return letterResult(mapWithAsciiTable(text, specialTable, opts));
   const math = MATH_MAPPERS[styleId];
   if (math) return letterResult(mapWithMapper(text, math, opts));
 
@@ -464,19 +467,19 @@ export function convert(
       return wrapPlain(text, "_", "_");
     case "frame-hearts-script":
       return frameThen(text, "frame-hearts", (t) =>
-        letterResult(mapWithMapper(t, MATH_MAPPERS["math-script"], opts)),
+        letterResult(mapWithAsciiTable(t, MATH_ASCII_TABLES["math-script"], opts)),
       );
     case "frame-stars-bold":
       return frameThen(text, "frame-stars", (t) =>
-        letterResult(mapWithMapper(t, MATH_MAPPERS["math-bold"], opts)),
+        letterResult(mapWithAsciiTable(t, MATH_ASCII_TABLES["math-bold"], opts)),
       );
     case "frame-sparkles-sans":
       return frameThen(text, "frame-sparkles", (t) =>
-        letterResult(mapWithMapper(t, MATH_MAPPERS["math-sans"], opts)),
+        letterResult(mapWithAsciiTable(t, MATH_ASCII_TABLES["math-sans"], opts)),
       );
     case "frame-hearts-bold":
       return frameThen(text, "frame-hearts", (t) =>
-        letterResult(mapWithMapper(t, MATH_MAPPERS["math-bold"], opts)),
+        letterResult(mapWithAsciiTable(t, MATH_ASCII_TABLES["math-bold"], opts)),
       );
     case "alt-caps":
       return altCaps(text, opts);

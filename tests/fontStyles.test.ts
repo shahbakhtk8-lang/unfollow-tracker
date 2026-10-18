@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   convert,
+  convertFull,
+  convertPreview,
   listStyleIds,
   NFKC_LETTER_STYLES,
+  PREVIEW_CODE_POINTS,
+  sliceForPreview,
   STYLES,
 } from "../src/lib/fontStyles";
 
@@ -156,6 +160,32 @@ describe("combining effects", () => {
   });
 });
 
+describe("preview vs full copy", () => {
+  it("sliceForPreview keeps only the first N code points", () => {
+    const chars = Array.from({ length: PREVIEW_CODE_POINTS + 50 }, (_, i) =>
+      String.fromCharCode(97 + (i % 26)),
+    ).join("");
+    const sliced = sliceForPreview(chars);
+    expect([...sliced]).toHaveLength(PREVIEW_CODE_POINTS);
+  });
+
+  it("convertPreview truncates input before styling", () => {
+    const long = "a".repeat(PREVIEW_CODE_POINTS + 200);
+    const preview = convertPreview(long, "math-bold");
+    const full = convertFull(long, "math-bold");
+    expect(preview.text.length).toBeLessThan(full.text.length);
+    expect(full.text.startsWith(preview.text)).toBe(true);
+  });
+
+  it("Copy path (convertFull) equals convert() on the full source", () => {
+    const source =
+      "Hello @alice https://example.com #tag 😀\n" + "x".repeat(400);
+    for (const id of ["math-bold", "math-script", "circled", "frame-hearts", "upside-down"]) {
+      expect(convertFull(source, id).text).toBe(convert(source, id).text);
+    }
+  });
+});
+
 describe("performance", () => {
   it("converts 5000 chars × all styles quickly", () => {
     const big = "Hello World 123 @user #tag https://x.test 😀\n".repeat(200);
@@ -167,7 +197,7 @@ describe("performance", () => {
       convert(sample, id);
     }
     const ms = performance.now() - t0;
-    // Target ~30ms on a fast machine; log actual. Hard fail only if pathological.
+    // Log for PART 1 report (lookup tables + engine).
     console.log(`fontStyles: ${ids.length} styles × 5000 chars in ${ms.toFixed(2)} ms`);
     expect(ms).toBeLessThan(200);
   });

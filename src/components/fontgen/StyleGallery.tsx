@@ -1,6 +1,12 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
-import { STYLES, convert, type ConvertOptions, type StyleCategory } from "@/lib/fontStyles";
+import {
+  STYLES,
+  convertPreview,
+  type ConvertOptions,
+  type StyleCategory,
+  type StyleMeta,
+} from "@/lib/fontStyles";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "./constants";
@@ -8,14 +14,30 @@ import { StyleCard } from "./StyleCard";
 
 type GalleryTab = "all" | "favorites";
 
+const INITIAL_VISIBLE = 12;
+const IDLE_CHUNK = 10;
+
 interface StyleGalleryProps {
   sourceText: string;
   options: ConvertOptions;
   favoriteIds: string[];
   selectedStyleId: string;
-  onCopy: (style: { id: string; name: string }, text: string) => void;
+  onCopy: (style: StyleMeta) => void;
   onFavorite: (styleId: string) => void;
   onPreview: (styleId: string) => void;
+}
+
+function scheduleIdle(cb: () => void): () => void {
+  const w = window as Window & {
+    requestIdleCallback?: (cb: IdleRequestCallback, opts?: IdleRequestOptions) => number;
+    cancelIdleCallback?: (id: number) => void;
+  };
+  if (typeof w.requestIdleCallback === "function") {
+    const id = w.requestIdleCallback(() => cb(), { timeout: 120 });
+    return () => w.cancelIdleCallback?.(id);
+  }
+  const id = globalThis.setTimeout(cb, 16);
+  return () => globalThis.clearTimeout(id);
 }
 
 export function StyleGallery({
@@ -30,6 +52,7 @@ export function StyleGallery({
   const [tab, setTab] = useState<GalleryTab>("all");
   const [category, setCategory] = useState<StyleCategory | "all">("all");
   const [query, setQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
   const activeChipRef = useRef<HTMLButtonElement>(null);
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
 
@@ -53,13 +76,31 @@ export function StyleGallery({
     });
   }, [tab, category, query, favoriteSet]);
 
+  // Reset idle window when the filtered list identity changes.
+  const filterKey = `${tab}|${category}|${query}|${filtered.length}`;
+  useEffect(() => {
+    setVisibleCount(Math.min(INITIAL_VISIBLE, filtered.length));
+  }, [filterKey, filtered.length]);
+
+  useEffect(() => {
+    if (visibleCount >= filtered.length) return;
+    return scheduleIdle(() => {
+      setVisibleCount((n) => Math.min(n + IDLE_CHUNK, filtered.length));
+    });
+  }, [visibleCount, filtered.length]);
+
+  const visibleStyles = useMemo(
+    () => filtered.slice(0, visibleCount),
+    [filtered, visibleCount],
+  );
+
   const results = useMemo(
     () =>
-      filtered.map((style) => ({
+      visibleStyles.map((style) => ({
         style,
-        result: convert(sourceText, style.id, options),
+        result: convertPreview(sourceText, style.id, options),
       })),
-    [filtered, sourceText, options],
+    [visibleStyles, sourceText, options],
   );
 
   useLayoutEffect(() => {
@@ -164,7 +205,7 @@ export function StyleGallery({
         </div>
       ) : null}
 
-      {results.length === 0 ? (
+      {filtered.length === 0 ? (
         <p className="mt-8 text-center text-sm text-muted">
           {tab === "favorites"
             ? "No favorites yet — tap the heart on any style."

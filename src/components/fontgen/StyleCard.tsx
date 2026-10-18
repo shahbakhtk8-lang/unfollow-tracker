@@ -10,7 +10,8 @@ interface StyleCardProps {
   favorite: boolean;
   selected: boolean;
   index: number;
-  onCopy: (style: StyleMeta, text: string) => void;
+  /** Parent converts the FULL source text on copy — card only shows a preview slice. */
+  onCopy: (style: StyleMeta) => void;
   onFavorite: (styleId: string) => void;
   onPreview: (styleId: string) => void;
 }
@@ -30,7 +31,7 @@ export const StyleCard = memo(function StyleCard({
   const stagger = index < 12;
 
   const handleCopy = () => {
-    onCopy(style, result.text);
+    onCopy(style);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1600);
   };
