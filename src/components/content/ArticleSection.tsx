@@ -22,26 +22,46 @@ function useArticleReveal(rootRef: RefObject<HTMLElement | null>) {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
 
-    root.classList.add("article-reveal-ready");
-    const items = root.querySelectorAll<HTMLElement>(
-      ".article-section-card, .article-faq, .article-table-wrap, blockquote, ol",
-    );
-    items.forEach((el) => el.classList.add("article-reveal-item"));
+    let cancelled = false;
+    let io: IntersectionObserver | undefined;
+    const w = window as Window & {
+      requestIdleCallback?: (cb: IdleRequestCallback, opts?: IdleRequestOptions) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-in");
-            io.unobserve(entry.target);
+    const start = () => {
+      if (cancelled || !rootRef.current) return;
+      const el = rootRef.current;
+      el.classList.add("article-reveal-ready");
+      const items = el.querySelectorAll<HTMLElement>(
+        ".article-section-card, .article-faq, .article-table-wrap, blockquote, ol",
+      );
+      items.forEach((node) => node.classList.add("article-reveal-item"));
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-in");
+              io?.unobserve(entry.target);
+            }
           }
-        }
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
-    );
-    items.forEach((el) => io.observe(el));
+        },
+        { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+      );
+      items.forEach((node) => io?.observe(node));
+    };
+
+    const idleId =
+      typeof w.requestIdleCallback === "function"
+        ? w.requestIdleCallback(start, { timeout: 3200 })
+        : undefined;
+    const fallbackId = idleId == null ? window.setTimeout(start, 400) : undefined;
+
     return () => {
-      io.disconnect();
+      cancelled = true;
+      if (idleId != null) w.cancelIdleCallback?.(idleId);
+      if (fallbackId != null) window.clearTimeout(fallbackId);
+      io?.disconnect();
       root.classList.remove("article-reveal-ready");
     };
   }, [rootRef]);

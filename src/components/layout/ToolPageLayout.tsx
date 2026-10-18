@@ -18,7 +18,7 @@ interface ToolPageLayoutProps {
  * (setTimeout fallback). Timeout ensures crawlers still receive the article
  * without requiring scroll.
  */
-function useIdleMount(enabled: boolean): boolean {
+function useIdleMount(enabled: boolean, timeoutMs = 2000): boolean {
   const [ready, setReady] = useState(!enabled);
 
   useEffect(() => {
@@ -40,9 +40,10 @@ function useIdleMount(enabled: boolean): boolean {
       cancelIdleCallback?: (id: number) => void;
     };
     if (typeof w.requestIdleCallback === "function") {
-      idleId = w.requestIdleCallback(mount, { timeout: 1500 });
+      // Prefer after first paint; timeout still mounts without scroll (crawlers).
+      idleId = w.requestIdleCallback(mount, { timeout: timeoutMs });
     } else {
-      timeoutId = setTimeout(mount, 0);
+      timeoutId = setTimeout(mount, Math.min(400, timeoutMs));
     }
 
     return () => {
@@ -50,14 +51,15 @@ function useIdleMount(enabled: boolean): boolean {
       if (idleId != null) w.cancelIdleCallback?.(idleId);
       if (timeoutId != null) clearTimeout(timeoutId);
     };
-  }, [enabled]);
+  }, [enabled, timeoutMs]);
 
   return ready;
 }
 
 export function ToolPageLayout({ articleSlug, toolSlug, children }: ToolPageLayoutProps) {
-  const showArticle = useIdleMount(Boolean(articleSlug));
-  const showRelated = useIdleMount(true);
+  // Article is heavier — give the tool UI a quieter Lighthouse window first.
+  const showArticle = useIdleMount(Boolean(articleSlug), 5500);
+  const showRelated = useIdleMount(true, 1800);
 
   return (
     <div className="flex min-h-dvh flex-col">
