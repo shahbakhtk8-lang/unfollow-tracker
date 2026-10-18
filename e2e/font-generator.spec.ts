@@ -91,9 +91,9 @@ test.describe("Instagram Font Generator", () => {
     const clip2 = await page.evaluate(() => navigator.clipboard.readText());
     expect(clip2).toBe(convert("Keyboard copy", "plain").text);
 
-    // robots noindex
-    const robots = await page.locator('meta[name="robots"]').getAttribute("content");
-    expect(robots).toBe("noindex");
+    // Canonical for indexing
+    const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
+    expect(canonical).toBe("https://igunfollowed.com/instagram-font-generator");
 
     // Readability hint (bio + URL) and symbols tray copy
     await page.locator("#fontgen-input").fill("Bio https://example.com");

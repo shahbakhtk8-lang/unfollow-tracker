@@ -43,7 +43,6 @@ export default function FontGeneratorPage() {
     title: META_TITLE,
     description: META_DESCRIPTION,
     canonical: `${SITE_URL}/instagram-font-generator`,
-    robots: "noindex",
     jsonLd: breadcrumbLd,
     jsonLdId: "fontgen-breadcrumb-jsonld",
   });
