@@ -57,6 +57,7 @@ function useIdleMount(enabled: boolean): boolean {
 
 export function ToolPageLayout({ articleSlug, toolSlug, children }: ToolPageLayoutProps) {
   const showArticle = useIdleMount(Boolean(articleSlug));
+  const showRelated = useIdleMount(true);
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -68,7 +69,7 @@ export function ToolPageLayout({ articleSlug, toolSlug, children }: ToolPageLayo
             <ArticleSection slug={articleSlug} />
           </Suspense>
         ) : null}
-        <RelatedTools toolSlug={toolSlug} />
+        {showRelated ? <RelatedTools toolSlug={toolSlug} /> : null}
       </main>
       <SiteFooter />
     </div>

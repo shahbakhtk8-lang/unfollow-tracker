@@ -84,9 +84,21 @@ export function StyleGallery({
 
   useEffect(() => {
     if (visibleCount >= filtered.length) return;
-    return scheduleIdle(() => {
-      setVisibleCount((n) => Math.min(n + IDLE_CHUNK, filtered.length));
+    let cancelled = false;
+    let gapTimer: ReturnType<typeof setTimeout> | undefined;
+    const cancelIdle = scheduleIdle(() => {
+      // Small gap after idle so style/layout can settle (helps TBT).
+      gapTimer = setTimeout(() => {
+        if (!cancelled) {
+          setVisibleCount((n) => Math.min(n + IDLE_CHUNK, filtered.length));
+        }
+      }, 48);
     });
+    return () => {
+      cancelled = true;
+      cancelIdle();
+      if (gapTimer != null) clearTimeout(gapTimer);
+    };
   }, [visibleCount, filtered.length]);
 
   const visibleStyles = useMemo(
