@@ -2,7 +2,12 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ArticleSection } from "../src/components/content/ArticleSection";
-import { loadArticle, renderArticleHtml, splitArticleFaq } from "../src/lib/content";
+import {
+  isDraftArticle,
+  loadArticle,
+  renderArticleHtml,
+  splitArticleFaq,
+} from "../src/lib/content";
 
 describe("article content", () => {
   it("loads the Unfollow Tracker markdown by slug and renders a demoted heading", () => {
@@ -157,5 +162,21 @@ describe("article content", () => {
     expect(markup).toMatch(
       /<\/div><section class="article-faq"[\s\S]*Frequently Asked Questions/,
     );
+  });
+
+  it("hides draft articles (first-line <!-- draft -->) with no empty section", () => {
+    const source = loadArticle("instagram-font-generator");
+    expect(source).not.toBeNull();
+    expect(isDraftArticle(source ?? "")).toBe(true);
+    expect(isDraftArticle("## Visible\n\nHello")).toBe(false);
+    expect(isDraftArticle(" <!-- draft -->\n## Title")).toBe(false);
+
+    const markup = renderToStaticMarkup(
+      createElement(ArticleSection, { slug: "instagram-font-generator" }),
+    );
+    expect(markup).toBe("");
+    expect(markup).not.toContain("article");
+    expect(markup).not.toContain("Instagram Font Generator");
+    expect(markup).not.toContain("Placeholder");
   });
 });

@@ -5,6 +5,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
+  isDraftArticle,
   loadArticle,
   renderArticleHtml,
   renderMarkdownFragment,
@@ -14,7 +15,7 @@ import {
 
 export function ArticleSection({ slug }: { slug: string }) {
   const source = loadArticle(slug);
-  if (!source) return null;
+  if (!source || isDraftArticle(source)) return null;
 
   const { body, faqHeading, faqItems } = splitArticleFaq(source);
   const html = body.trim() ? renderArticleHtml(body) : "";

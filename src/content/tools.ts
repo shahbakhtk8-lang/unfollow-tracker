@@ -37,7 +37,7 @@ export const tools: ToolEntry[] = [
     shortDescription:
       "Style bio, display name, or caption text with Unicode lettering — free, in your browser.",
     href: "/instagram-font-generator",
-    status: "coming-soon",
+    status: "live",
     icon: "type",
   },
   // PLACEHOLDER — do not uncomment until the tool is ready.

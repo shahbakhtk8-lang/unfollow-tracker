@@ -11,26 +11,20 @@ describe("tools registry", () => {
     });
   });
 
-  it("lists Pending Requests Checker and links both tools to each other", () => {
+  it("lists Pending Requests Checker as live", () => {
     const pending = tools.find((tool) => tool.slug === "pending-requests");
     expect(pending).toMatchObject({
       href: "/pending-requests",
       status: "live",
       name: "Pending Requests Checker",
     });
-    expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toEqual([
-      "pending-requests",
-    ]);
-    expect(relatedLiveTools("pending-requests").map((t) => t.slug)).toEqual([
-      "unfollow-tracker",
-    ]);
   });
 
-  it("registers Instagram Font Generator as coming-soon", () => {
+  it("registers Instagram Font Generator as live and cross-links with Unfollow Tracker", () => {
     const font = tools.find((tool) => tool.slug === "instagram-font-generator");
     expect(font).toMatchObject({
       href: "/instagram-font-generator",
-      status: "coming-soon",
+      status: "live",
       name: "Instagram Font Generator",
       icon: "type",
     });
@@ -38,6 +32,17 @@ describe("tools registry", () => {
       "unfollow-tracker",
       "pending-requests",
     ]);
+    expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
+      "instagram-font-generator",
+    );
+    expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain("pending-requests");
+  });
+
+  it("treats /instagram-font-generator as the Font Generator tool", () => {
+    const font = tools.find((tool) => tool.slug === "instagram-font-generator");
+    expect(font).toBeDefined();
+    expect(isToolActive(font!, "/instagram-font-generator")).toBe(true);
+    expect(isToolActive(font!, "/")).toBe(false);
   });
 
   it("treats / and /analyze as the Unfollow Tracker tool", () => {

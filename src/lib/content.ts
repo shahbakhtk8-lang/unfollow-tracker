@@ -59,6 +59,17 @@ export function loadArticle(slug: string): string | null {
   return typeof source === "string" && source.trim().length > 0 ? source : null;
 }
 
+/** First-line HTML comment marker — ArticleSection renders nothing for draft articles. */
+const DRAFT_MARKER = "<!-- draft -->";
+
+/** True when the file begins with `<!-- draft -->` on its own first line. */
+export function isDraftArticle(source: string): boolean {
+  if (source.startsWith(`${DRAFT_MARKER}\n`) || source.startsWith(`${DRAFT_MARKER}\r\n`)) {
+    return true;
+  }
+  return source === DRAFT_MARKER;
+}
+
 export interface ArticleFaqItem {
   question: string;
   answer: string;
