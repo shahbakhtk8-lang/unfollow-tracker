@@ -164,19 +164,35 @@ describe("article content", () => {
     );
   });
 
-  it("hides draft articles (first-line <!-- draft -->) with no empty section", () => {
-    const source = loadArticle("instagram-font-generator");
-    expect(source).not.toBeNull();
-    expect(isDraftArticle(source ?? "")).toBe(true);
+  it("treats first-line <!-- draft --> as a hidden draft article", () => {
+    expect(isDraftArticle("<!-- draft -->\n## Title\n\nBody")).toBe(true);
+    expect(isDraftArticle("<!-- draft -->")).toBe(true);
     expect(isDraftArticle("## Visible\n\nHello")).toBe(false);
     expect(isDraftArticle(" <!-- draft -->\n## Title")).toBe(false);
+  });
+
+  it("renders the Instagram Font Generator article (not a draft)", () => {
+    const source = loadArticle("instagram-font-generator");
+    expect(source).not.toBeNull();
+    expect(isDraftArticle(source ?? "")).toBe(false);
+    expect(source).not.toContain("<!-- draft -->");
+    expect(source).toContain("# How to Use the Instagram Font Generator");
+
+    const { body, faqItems } = splitArticleFaq(source ?? "");
+    expect(faqItems).toHaveLength(7);
+    const html = renderArticleHtml(body);
+    expect(html).not.toMatch(/<style/i);
+    expect(html).toMatch(/<h2\b/);
+    expect(html).not.toMatch(/<h1\b/);
+    expect(html).toContain("<ol>");
+    expect(html).toContain("article-table-wrap");
+    expect(html).toContain("<blockquote>");
 
     const markup = renderToStaticMarkup(
       createElement(ArticleSection, { slug: "instagram-font-generator" }),
     );
-    expect(markup).toBe("");
-    expect(markup).not.toContain("article");
-    expect(markup).not.toContain("Instagram Font Generator");
-    expect(markup).not.toContain("Placeholder");
+    expect(markup).toContain("How to Use the Instagram Font Generator");
+    expect(markup).toContain("Frequently Asked Questions");
+    expect(markup).toContain("Where can I use Instagram fonts?");
   });
 });
