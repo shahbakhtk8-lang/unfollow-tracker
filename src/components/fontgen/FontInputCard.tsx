@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -8,6 +8,8 @@ import {
   countCodePoints,
   type FontTarget,
 } from "./constants";
+import { ReadabilityHint } from "./ReadabilityHint";
+import { shouldShowReadabilityHint } from "./readability";
 
 interface FontInputCardProps {
   value: string;
@@ -37,6 +39,7 @@ export const FontInputCard = forwardRef<HTMLTextAreaElement, FontInputCardProps>
     ref,
   ) {
     const innerRef = useRef<HTMLTextAreaElement | null>(null);
+    const [hintDismissed, setHintDismissed] = useState(false);
 
     const setRefs = (node: HTMLTextAreaElement | null) => {
       innerRef.current = node;
@@ -51,9 +54,18 @@ export const FontInputCard = forwardRef<HTMLTextAreaElement, FontInputCardProps>
       el.style.height = `${Math.min(Math.max(el.scrollHeight, 120), 320)}px`;
     }, [value, compact]);
 
+    // Re-offer the hint when the text/target changes enough to matter.
+    useEffect(() => {
+      setHintDismissed(false);
+    }, [target]);
+
     const count = countCodePoints(value);
     const limit = TARGET_LIMITS[target];
     const over = count > limit;
+    const showHint =
+      !compact &&
+      !hintDismissed &&
+      shouldShowReadabilityHint(value, target, keepLinks);
 
     return (
       <div
@@ -131,6 +143,8 @@ export const FontInputCard = forwardRef<HTMLTextAreaElement, FontInputCardProps>
             Past the typical {TARGET_LABELS[target].toLowerCase()} limit — Instagram may truncate.
           </p>
         ) : null}
+
+        <ReadabilityHint visible={showHint} onDismiss={() => setHintDismissed(true)} />
 
         {!compact ? (
           <div className="mt-4 flex flex-col gap-2 border-t border-border/60 pt-3 sm:flex-row sm:gap-6">
