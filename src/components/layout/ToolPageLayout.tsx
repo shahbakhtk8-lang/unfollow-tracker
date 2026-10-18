@@ -57,9 +57,8 @@ function useIdleMount(enabled: boolean, timeoutMs = 2000): boolean {
 }
 
 export function ToolPageLayout({ articleSlug, toolSlug, children }: ToolPageLayoutProps) {
-  // Article is heavier — give the tool UI a quieter Lighthouse window first.
-  const showArticle = useIdleMount(Boolean(articleSlug), 5500);
-  const showRelated = useIdleMount(true, 1800);
+  const showArticle = useIdleMount(Boolean(articleSlug), 1600);
+  const showRelated = useIdleMount(true, 1200);
 
   return (
     <div className="flex min-h-dvh flex-col">
