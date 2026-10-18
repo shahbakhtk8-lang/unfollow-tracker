@@ -94,5 +94,11 @@ test.describe("Instagram Font Generator", () => {
     // robots noindex
     const robots = await page.locator('meta[name="robots"]').getAttribute("content");
     expect(robots).toBe("noindex");
+
+    // Readability hint (bio + URL) and symbols tray copy
+    await page.locator("#fontgen-input").fill("Bio https://example.com");
+    await expect(page.getByRole("status").filter({ hasText: /Screen readers/i })).toBeVisible();
+    await page.getByRole("button", { name: /Copy Heart$/i }).first().click();
+    await expect(page.getByRole("status")).toContainText(/Copied Heart/i);
   });
 });

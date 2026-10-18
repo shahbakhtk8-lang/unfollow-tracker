@@ -14,6 +14,7 @@ import { FontHero } from "@/components/fontgen/FontHero";
 import { FontInputCard } from "@/components/fontgen/FontInputCard";
 import { PhonePreview } from "@/components/fontgen/PhonePreview";
 import { StyleGallery } from "@/components/fontgen/StyleGallery";
+import { SymbolsTray } from "@/components/fontgen/SymbolsTray";
 import { EXAMPLE_TEXT, type FontTarget } from "@/components/fontgen/constants";
 import { copyText } from "@/components/fontgen/copyText";
 import {
@@ -181,6 +182,18 @@ export default function FontGeneratorPage() {
                 onCopy={handleCopy}
                 onFavorite={handleFavorite}
                 onPreview={setSelectedStyleId}
+              />
+
+              <SymbolsTray
+                onCopied={(label) =>
+                  setToast({ kind: "success", message: `Copied ${label}` })
+                }
+                onCopyFailed={() =>
+                  setToast({
+                    kind: "error",
+                    message: "Couldn’t copy — try selecting the text manually.",
+                  })
+                }
               />
             </div>
 
