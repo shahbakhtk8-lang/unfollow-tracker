@@ -32,9 +32,9 @@ import {
   type StyleMeta,
 } from "@/lib/fontStyles";
 
-const META_TITLE = "Instagram Font Generator";
+const META_TITLE = "Instagram Font Generator: 60+ Styles to Copy & Paste";
 const META_DESCRIPTION =
-  "Style Instagram bio, display name, or caption text with Unicode lettering. Free, no signup — text stays in your browser.";
+  "Free Instagram font generator with 60+ styles. Type your text, preview it for your bio, name or caption, and copy it in one tap. No signup needed.";
 
 export default function FontGeneratorPage() {
   const breadcrumbLd = useMemo(() => fontBreadcrumbJsonLd(), []);
