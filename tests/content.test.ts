@@ -22,7 +22,7 @@ describe("article content", () => {
     expect(html).toContain("<thead>");
     expect(html).toContain("<tbody>");
     expect(html.match(/<table>/g)?.length).toBe(2);
-    expect(html.match(/article-table-wrap/g)?.length).toBe(2);
+    expect(html.match(/class="article-table-wrap[^"]*"/g)?.length).toBe(2);
     expect(html).toContain("Safe &amp; secure");
     expect(html).toContain("Follower Health Ranges");
     expect(html).toContain("Account size");
@@ -49,8 +49,8 @@ describe("article content", () => {
     expect(html).toMatch(/<tbody>[\s\S]*<tr>/);
     expect(html).toContain("No login");
     expect(html).toContain("Seconds");
-    expect(html).toContain('class="article-table-wrap"');
-    expect(html.match(/article-table-wrap/g)?.length).toBe(1);
+    expect(html).toContain("article-table-wrap--cols-2");
+    expect(html.match(/class="article-table-wrap[^"]*"/g)?.length).toBe(1);
   });
 
   it("adds slug ids to headings without a visible hash icon", () => {
@@ -87,7 +87,9 @@ describe("article content", () => {
     expect(markup).toContain("Frequently Asked Questions");
     expect(markup).toContain("How can we see who unfollowed you on instagram?");
     expect(markup).toContain("Can I see who blocked me on Instagram?");
-    expect(markup.match(/aria-expanded="false"/g)?.length).toBe(5);
+    // First FAQ item opens by default; the other four stay collapsed.
+    expect(markup.match(/aria-expanded="true"/g)?.length).toBe(1);
+    expect(markup.match(/aria-expanded="false"/g)?.length).toBe(4);
     expect(markup).toContain('data-orientation="vertical"');
     expect(markup.match(/<table>/g)?.length).toBe(2);
     expect(markup).not.toContain("**How can we see who unfollowed you");
@@ -156,7 +158,8 @@ describe("article content", () => {
     const markup = renderToStaticMarkup(createElement(ArticleSection, { slug: "pending-requests" }));
     expect(markup).toContain("Frequently Asked Questions");
     expect(markup).toContain("How long can a pending request stay unaccepted?");
-    expect(markup.match(/aria-expanded="false"/g)?.length).toBe(4);
+    expect(markup.match(/aria-expanded="true"/g)?.length).toBe(1);
+    expect(markup.match(/aria-expanded="false"/g)?.length).toBe(3);
     expect(markup).not.toContain("**How long can a pending request");
     expect(markup).toContain("article-section-card");
     expect(markup).toMatch(
@@ -185,8 +188,12 @@ describe("article content", () => {
     expect(html).toMatch(/<h2\b/);
     expect(html).not.toMatch(/<h1\b/);
     expect(html).toContain("<ol>");
-    expect(html).toContain("article-table-wrap");
+    expect(html).toContain("article-table-wrap--cols-2");
     expect(html).toContain("<blockquote>");
+    expect(html).toContain("<ol>");
+    // Demoted # headings → h2 only (page hero keeps the sole h1).
+    expect(html.match(/<h2\b/g)?.length).toBeGreaterThanOrEqual(3);
+    expect(html).not.toMatch(/<h1\b/);
 
     const markup = renderToStaticMarkup(
       createElement(ArticleSection, { slug: "instagram-font-generator" }),
@@ -194,5 +201,8 @@ describe("article content", () => {
     expect(markup).toContain("How to Use the Instagram Font Generator");
     expect(markup).toContain("Frequently Asked Questions");
     expect(markup).toContain("Where can I use Instagram fonts?");
+    expect(markup).toContain("Is my text saved or sent anywhere?");
+    expect(markup.match(/aria-expanded="true"/g)?.length).toBe(1);
+    expect(markup.match(/aria-expanded="false"/g)?.length).toBe(6);
   });
 });

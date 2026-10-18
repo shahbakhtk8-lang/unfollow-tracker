@@ -183,7 +183,13 @@ function renderTableHtml(block: string[]): string {
       return `<tr>${tds}</tr>`;
     })
     .join("");
-  return `<div class="article-table-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>\n`;
+  const colsClass =
+    headers.length === 2
+      ? " article-table-wrap--cols-2"
+      : headers.length >= 3
+        ? " article-table-wrap--cols-many"
+        : "";
+  return `<div class="article-table-wrap${colsClass}"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>\n`;
 }
 
 /** Render markdown, turning GFM tables into HTML without enabling raw HTML. */
@@ -221,10 +227,18 @@ function renderMarkdownWithTables(source: string): string {
 
 export function wrapArticleTables(html: string): string {
   return html.replace(/<table[\s\S]*?<\/table>/gi, (table, offset: number) => {
-    const start = Math.max(0, offset - '<div class="article-table-wrap">'.length);
-    const before = html.slice(start, offset);
-    if (before.endsWith('<div class="article-table-wrap">')) return table;
-    return `<div class="article-table-wrap">${table}</div>`;
+    // Already wrapped (with optional cols modifier class).
+    const lookback = html.slice(Math.max(0, offset - 80), offset);
+    if (/article-table-wrap[^"]*"\s*>\s*$/.test(lookback)) return table;
+
+    const headerCells = (table.match(/<th\b/gi) ?? []).length;
+    const colsClass =
+      headerCells === 2
+        ? " article-table-wrap--cols-2"
+        : headerCells >= 3
+          ? " article-table-wrap--cols-many"
+          : "";
+    return `<div class="article-table-wrap${colsClass}">${table}</div>`;
   });
 }
 

@@ -95,7 +95,8 @@ body {
 .article-prose h3,
 .article-prose h4,
 .article-prose h5,
-.article-prose h6 {
+.article-prose h6,
+.article-prose .article-heading {
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -103,16 +104,48 @@ body {
   scroll-margin-top: 5rem;
 }
 
-.article-prose h2 {
-  margin: 2.75rem 0 1rem;
-  font-size: 1.875rem;
+.article-prose h2,
+.article-prose .article-heading {
+  position: relative;
+  margin: 2.75rem 0 1.15rem;
+  padding-left: 0.85rem;
+  font-size: clamp(1.45rem, 2.4vw, 1.875rem);
   line-height: 1.25;
 }
 
+.article-prose h2::before,
+.article-prose .article-heading::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 0.22rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    var(--color-primary),
+    color-mix(in srgb, var(--color-accent) 70%, var(--color-primary))
+  );
+}
+
 .article-prose h3 {
-  margin: 2.25rem 0 0.8rem;
-  font-size: 1.35rem;
+  position: relative;
+  margin: 2.25rem 0 0.85rem;
+  padding-left: 0.75rem;
+  font-size: 1.3rem;
   line-height: 1.35;
+}
+
+.article-prose h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 0.18rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
 }
 
 .article-prose h4,
@@ -130,25 +163,80 @@ body {
   margin: 0 0 1.25rem;
 }
 
-.article-prose ul,
-.article-prose ol {
-  padding-left: 1.35rem;
-}
-
 .article-prose ul {
+  padding-left: 1.35rem;
   list-style-type: disc;
 }
 
-.article-prose ol {
-  list-style-type: decimal;
-}
-
-.article-prose li::marker {
+.article-prose ul li::marker {
   color: var(--color-muted);
 }
 
-.article-prose li + li {
+.article-prose ul li + li {
   margin-top: 0.4rem;
+}
+
+/* Ordered lists → step cards */
+.article-prose ol {
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  counter-reset: article-step;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.article-prose ol > li {
+  position: relative;
+  counter-increment: article-step;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem 1rem;
+  align-items: start;
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 90%, var(--color-primary));
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-card) 92%, var(--color-primary));
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 80%, transparent);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.article-prose ol > li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -16px color-mix(in srgb, var(--color-foreground) 35%, transparent);
+}
+
+.article-prose ol > li::before {
+  content: counter(article-step);
+  grid-row: 1 / span 2;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(160deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  min-width: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .article-prose ol > li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: calc(1.1rem + 0.7rem);
+    top: calc(100% - 2px);
+    width: 2px;
+    height: 0.85rem;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-primary) 45%, transparent),
+      transparent
+    );
+  }
 }
 
 .article-prose a {
@@ -188,23 +276,46 @@ body {
   background: transparent;
 }
 
+/* Tip / callout blockquotes */
 .article-prose blockquote {
+  position: relative;
+  margin: 0 0 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
   border-left: 3px solid var(--color-primary);
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  background: color-mix(in srgb, var(--color-muted) 12%, var(--color-card));
-  padding: 0.85rem 1rem 0.85rem 1.1rem;
-  color: var(--color-muted);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-card));
+  padding: 1rem 1.1rem 1rem 2.6rem;
+  color: var(--color-foreground);
+}
+
+.article-prose blockquote::before {
+  content: "✦";
+  position: absolute;
+  left: 0.85rem;
+  top: 0.95rem;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.article-prose blockquote p {
+  margin: 0;
+}
+
+.article-prose blockquote p + p {
+  margin-top: 0.65rem;
 }
 
 .article-prose .article-table-wrap {
-  margin: 0 0 1.35rem;
+  margin: 0 0 1.5rem;
   max-width: 100%;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background: var(--color-card);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
 /*
@@ -231,19 +342,19 @@ body {
   line-height: 1;
 }
 
-/* Lead body h2 — distinct from numbered step-card titles, centered. */
+/* Lead body h2 — accent bar + comfortable title. */
 .article-prose .article-section-card > h2 {
-  margin: 0;
-  text-align: center;
+  margin: 0 0 0.85rem;
+  text-align: left;
   font-family: var(--font-display);
-  font-size: 1.875rem;
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--color-foreground);
 }
 
-/* Numbered step cards — match HomePage how-it-works titles. */
+/* Numbered step cards (h3) — homepage how-it-works titles. */
 .article-prose .article-section-card > h3 {
   margin: 0.5rem 0 0;
   text-align: left;
@@ -256,17 +367,17 @@ body {
 }
 
 .article-prose .article-section-card > h2 + p {
-  margin: 0.75rem 0 0;
-  text-align: center;
-  font-size: 1rem;
-  line-height: 1.6;
+  margin: 0.35rem 0 0;
+  text-align: left;
+  font-size: 1.02rem;
+  line-height: 1.7;
   color: var(--color-muted);
 }
 
 .article-prose .article-section-card > p {
-  margin: 0.5rem 0 0;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  margin: 0.75rem 0 0;
+  font-size: 1rem;
+  line-height: 1.7;
   color: var(--color-muted);
 }
 
@@ -277,34 +388,53 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.article-prose .article-section-card > ul,
-.article-prose .article-section-card > ol {
-  margin: 0.5rem 0 0;
-  font-size: 0.875rem;
-  line-height: 1.5;
+.article-prose .article-section-card > ul {
+  margin: 0.75rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
   color: var(--color-muted);
 }
 
-/* Nested feature tables keep zebra striping; drop a second outer border. */
+.article-prose .article-section-card > ol {
+  margin: 1rem 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-foreground);
+}
+
+.article-prose .article-section-card > ol > li {
+  color: var(--color-foreground);
+}
+
+.article-prose .article-section-card > blockquote {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+/* Nested feature tables — keep card chrome from the wrap. */
 .article-prose .article-section-card .article-table-wrap {
-  margin: 0.75rem 0 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
+  margin: 1rem 0 0;
 }
 
 .article-prose table {
   width: 100%;
-  min-width: 36rem;
   border-collapse: collapse;
   font-size: 0.95rem;
+}
+
+.article-prose .article-table-wrap--cols-many table {
+  min-width: 36rem;
+}
+
+.article-prose .article-table-wrap--cols-2 table {
+  min-width: 0;
 }
 
 .article-prose th,
 .article-prose td {
   border: none;
   border-bottom: 1px solid var(--color-border);
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1rem;
   text-align: left;
   vertical-align: top;
 }
@@ -316,8 +446,16 @@ body {
 .article-prose th {
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--color-foreground);
-  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-card));
+  color: var(--color-primary-foreground);
+  background: linear-gradient(
+    115deg,
+    var(--color-primary),
+    color-mix(in srgb, var(--color-accent) 65%, var(--color-primary))
+  );
+}
+
+.article-prose tbody tr {
+  transition: background-color 140ms ease;
 }
 
 .article-prose tbody tr:nth-child(odd) {
@@ -325,11 +463,108 @@ body {
 }
 
 .article-prose tbody tr:nth-child(even) {
-  background: color-mix(in srgb, var(--color-muted) 10%, var(--color-card));
+  background: color-mix(in srgb, var(--color-muted) 9%, var(--color-card));
+}
+
+.article-prose tbody tr:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-card));
+}
+
+.article-prose tbody td:first-child {
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+@media (max-width: 600px) {
+  .article-prose .article-table-wrap--cols-2 {
+    overflow: visible;
+  }
+
+  .article-prose .article-table-wrap--cols-2 table,
+  .article-prose .article-table-wrap--cols-2 thead,
+  .article-prose .article-table-wrap--cols-2 tbody,
+  .article-prose .article-table-wrap--cols-2 tr,
+  .article-prose .article-table-wrap--cols-2 th,
+  .article-prose .article-table-wrap--cols-2 td {
+    display: block;
+    width: 100%;
+  }
+
+  .article-prose .article-table-wrap--cols-2 thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .article-prose .article-table-wrap--cols-2 tbody tr {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .article-prose .article-table-wrap--cols-2 tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .article-prose .article-table-wrap--cols-2 tbody td {
+    border: none;
+    padding: 0.15rem 0;
+  }
+
+  .article-prose .article-table-wrap--cols-2 tbody td:first-child {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .article-prose .article-table-wrap--cols-2 tbody td:last-child {
+    font-weight: 400;
+    color: var(--color-muted);
+  }
+}
+
+.article-prose .article-faq {
+  margin-top: 2.5rem;
+}
+
+.article-prose .article-faq-accordion {
+  margin-top: 1rem;
 }
 
 .article-prose .article-faq-answer p:last-child {
   margin-bottom: 0;
+}
+
+/* Scroll reveal — progressive enhancement (visible without JS). */
+.article-reveal-ready .article-reveal-item {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 480ms ease,
+    transform 480ms ease;
+}
+
+.article-reveal-ready .article-reveal-item.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-reveal-ready .article-reveal-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .article-prose ol > li:hover {
+    transform: none;
+  }
 }
 
 /* —— Instagram Font Generator —— */

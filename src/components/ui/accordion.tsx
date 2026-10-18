@@ -39,7 +39,14 @@ export const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="overflow-hidden text-sm"
+    className={cn(
+      "overflow-hidden text-sm data-[state=closed]:animate-none",
+      className,
+    )}
+    style={{
+      // Smooth height via Radix CSS variables when present.
+      transition: "height 200ms ease",
+    }}
     {...props}
   >
     <div className={cn("pb-4 text-muted", className)}>{children}</div>
