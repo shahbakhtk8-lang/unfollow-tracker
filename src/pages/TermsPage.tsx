@@ -1,5 +1,9 @@
+import { Link } from "react-router-dom";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { SITE_URL } from "@/content/seo";
+
+const linkClass =
+  "font-semibold text-primary underline underline-offset-2 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
 
 export default function TermsPage() {
   useDocumentMeta({
@@ -20,13 +24,21 @@ export default function TermsPage() {
         Unfollow Tracker is a browser-based tool that helps you analyze follower and following lists
         from your official Meta (Instagram) data export. The tool displays information for your
         review; any follow or unfollow actions must be performed by you in the official Instagram
-        app.
+        app. Details on how we handle your file are in our{" "}
+        <Link to="/privacy" className={linkClass}>
+          Privacy Policy
+        </Link>
+        .
       </p>
 
       <h2 className="font-display mt-6 text-xl font-bold">No affiliation</h2>
       <p className="mt-2 text-muted">
         Unfollow Tracker is not affiliated with, endorsed by, or sponsored by Meta Platforms, Inc.
-        or Instagram.
+        or Instagram. The same point is stated in our{" "}
+        <Link to="/disclaimer" className={linkClass}>
+          Disclaimer
+        </Link>
+        .
       </p>
 
       <h2 className="font-display mt-6 text-xl font-bold">Accuracy</h2>
@@ -45,7 +57,12 @@ export default function TermsPage() {
       <h2 className="font-display mt-6 text-xl font-bold">Disclaimer</h2>
       <p className="mt-2 text-muted">
         The service is provided &quot;as is&quot; without warranties. We are not liable for decisions
-        you make based on displayed lists or for any account actions taken on Instagram.
+        you make based on displayed lists or for any account actions taken on Instagram. See our
+        full{" "}
+        <Link to="/disclaimer" className={linkClass}>
+          Disclaimer
+        </Link>{" "}
+        for more on independence and accuracy limits.
       </p>
       </section>
     </article>

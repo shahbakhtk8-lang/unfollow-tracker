@@ -34,7 +34,15 @@ export default function AboutPage() {
         <p className="mt-2 text-muted">
           You request your official data export from Instagram, upload the ZIP file here, and
           everything — reading the file, comparing your followers and following lists, and showing
-          results — happens entirely in your browser. Nothing is uploaded to any server.
+          results — happens entirely in your browser. Nothing is uploaded to any server. You can
+          read the full details in our{" "}
+          <Link
+            to="/privacy"
+            className="font-semibold text-primary underline underline-offset-2 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            Privacy Policy
+          </Link>
+          .
         </p>
       </section>
 
@@ -42,7 +50,14 @@ export default function AboutPage() {
         <h2 className="font-display text-xl font-bold">Who&apos;s behind it</h2>
         <p className="mt-2 text-muted">
           Unfollow Tracker is built and maintained independently. It isn&apos;t affiliated with,
-          endorsed by, or sponsored by Instagram or Meta.
+          endorsed by, or sponsored by Instagram or Meta — see our{" "}
+          <Link
+            to="/disclaimer"
+            className="font-semibold text-primary underline underline-offset-2 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            Disclaimer
+          </Link>{" "}
+          for the formal statement.
         </p>
       </section>
 

@@ -16,6 +16,7 @@ const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const DisclaimerPage = lazy(() => import("@/pages/DisclaimerPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
+const BlogPostPage = lazy(() => import("@/pages/BlogPostPage"));
 
 function PageLoader() {
   return (
@@ -79,6 +80,7 @@ export default function App() {
           <Route path="/disclaimer" element={<DisclaimerPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
         </Route>

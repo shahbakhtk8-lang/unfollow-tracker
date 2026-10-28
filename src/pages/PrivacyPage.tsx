@@ -63,7 +63,14 @@ export default function PrivacyPage() {
         <h2 className="font-display text-xl font-bold">Hosting</h2>
         <p className="mt-2 text-muted">
           This site is static files served over HTTPS. We do not run account systems or backend
-          databases for your Instagram data.
+          databases for your Instagram data. How you may use the tools is covered in our{" "}
+          <Link
+            to="/terms"
+            className="font-semibold text-primary underline underline-offset-2 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            Terms of Use
+          </Link>
+          .
         </p>
       </section>
 

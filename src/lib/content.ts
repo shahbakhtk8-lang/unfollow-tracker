@@ -93,15 +93,34 @@ const articleModules = import.meta.glob("../content/articles/*.md", {
   import: "default",
 }) as Record<string, string>;
 
+const blogModules = import.meta.glob("../content/blog/*.md", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
+
 function articlePath(slug: string): string | undefined {
   const suffix = `/articles/${slug}.md`;
   return Object.keys(articleModules).find((key) => key.replaceAll("\\", "/").endsWith(suffix));
+}
+
+function blogPath(slug: string): string | undefined {
+  const suffix = `/blog/${slug}.md`;
+  return Object.keys(blogModules).find((key) => key.replaceAll("\\", "/").endsWith(suffix));
 }
 
 export function loadArticle(slug: string): string | null {
   const key = articlePath(slug);
   if (!key) return null;
   const source = articleModules[key];
+  return typeof source === "string" && source.trim().length > 0 ? source : null;
+}
+
+/** Load a blog markdown body by slug (no heading demotion — page owns the H1). */
+export function loadBlogMarkdown(slug: string): string | null {
+  const key = blogPath(slug);
+  if (!key) return null;
+  const source = blogModules[key];
   return typeof source === "string" && source.trim().length > 0 ? source : null;
 }
 
@@ -344,4 +363,9 @@ export function renderArticleHtml(source: string): string {
   return wrapArticleSectionCards(
     wrapArticleTables(demoteArticleHeadings(renderMarkdownWithTables(source))),
   );
+}
+
+/** Blog bodies already use ##/### under a page-level H1 — do not demote headings. */
+export function renderBlogHtml(source: string): string {
+  return wrapArticleSectionCards(wrapArticleTables(renderMarkdownWithTables(source)));
 }

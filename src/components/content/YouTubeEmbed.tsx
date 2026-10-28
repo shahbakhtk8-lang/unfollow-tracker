@@ -1,16 +1,37 @@
 import { useState } from "react";
-import { YOUTUBE_EMBED_URL, YOUTUBE_THUMBNAIL_URL, YOUTUBE_VIDEO_TITLE } from "@/content/seo";
+import {
+  YOUTUBE_EMBED_URL,
+  YOUTUBE_THUMBNAIL_URL,
+  YOUTUBE_VIDEO_ID,
+  YOUTUBE_VIDEO_TITLE,
+} from "@/content/seo";
 
-export function YouTubeEmbed() {
+type YouTubeEmbedProps = {
+  videoId?: string;
+  title?: string;
+};
+
+export function YouTubeEmbed({
+  videoId = YOUTUBE_VIDEO_ID,
+  title = YOUTUBE_VIDEO_TITLE,
+}: YouTubeEmbedProps) {
   const [playing, setPlaying] = useState(false);
+  const embedUrl =
+    videoId === YOUTUBE_VIDEO_ID
+      ? YOUTUBE_EMBED_URL
+      : `https://www.youtube.com/embed/${videoId}`;
+  const thumbnailUrl =
+    videoId === YOUTUBE_VIDEO_ID
+      ? YOUTUBE_THUMBNAIL_URL
+      : `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
   if (playing) {
-    const separator = YOUTUBE_EMBED_URL.includes("?") ? "&" : "?";
+    const separator = embedUrl.includes("?") ? "&" : "?";
     return (
       <iframe
         className="absolute inset-0 h-full w-full"
-        src={`${YOUTUBE_EMBED_URL}${separator}autoplay=1`}
-        title={YOUTUBE_VIDEO_TITLE}
+        src={`${embedUrl}${separator}autoplay=1`}
+        title={title}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
@@ -23,10 +44,10 @@ export function YouTubeEmbed() {
       type="button"
       className="absolute inset-0 flex items-center justify-center bg-card"
       onClick={() => setPlaying(true)}
-      aria-label={`Play video: ${YOUTUBE_VIDEO_TITLE}`}
+      aria-label={`Play video: ${title}`}
     >
       <img
-        src={YOUTUBE_THUMBNAIL_URL}
+        src={thumbnailUrl}
         alt=""
         width={480}
         height={360}

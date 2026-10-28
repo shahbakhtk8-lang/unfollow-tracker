@@ -39,6 +39,8 @@ The safest way to track your non-followers. Official exports, local analysis, an
 - Check how healthy your account is.
 - You don't need to login or provide your insta password.
 
+The same export can also show [pending follow requests](/pending-requests) that are still waiting, and you can style a bio or caption with our free [Instagram font generator](/instagram-font-generator).
+
 ## How Unfollow Tracker Increase Your Account Growth
 
 On May 7, 2026, Instagram removed millions of bot and inactive accounts, so many users lose their follower count drop. Meta said the accounts that got banned or penalized were mostly fake or unused. A lower number is not always bad, because bots don't like, comment or share, and your real audience now makes up a bigger share. Real people can still unfollow you, and Instagram won't tell you who they are. Our Unfollow Tracker tool compares your followers and following lists, so you can see who left and decide who is important to keep.

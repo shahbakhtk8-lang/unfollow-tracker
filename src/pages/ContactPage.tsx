@@ -1,5 +1,9 @@
+import { Link } from "react-router-dom";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { SITE_URL } from "@/content/seo";
+
+const linkClass =
+  "font-semibold text-primary underline underline-offset-2 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
 
 export default function ContactPage() {
   useDocumentMeta({
@@ -12,7 +16,12 @@ export default function ContactPage() {
     <article className="mx-auto max-w-3xl space-y-6 px-4 py-12 text-sm leading-relaxed sm:px-6 sm:py-16">
       <h1 className="font-display text-4xl font-bold">Contact Us</h1>
       <p className="text-muted">
-        Have a question, found a bug, or have feedback? We&apos;d like to hear from you.
+        Have a question, found a bug, or have feedback? We&apos;d like to hear from you. For
+        background on the project, see{" "}
+        <Link to="/about" className={linkClass}>
+          About Unfollow Tracker
+        </Link>
+        .
       </p>
 
       <section>
@@ -20,14 +29,18 @@ export default function ContactPage() {
         <p className="mt-2 text-muted">
           <a
             href="mailto:postmaster@igunfollowed.com"
-            className="font-semibold text-primary underline underline-offset-2 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className={linkClass}
           >
             postmaster@igunfollowed.com
           </a>
         </p>
         <p className="mt-2 text-muted">
           We read every message, though response times may vary since this is an independently run
-          tool.
+          tool. Privacy questions are also covered in our{" "}
+          <Link to="/privacy" className={linkClass}>
+            Privacy Policy
+          </Link>
+          .
         </p>
         <p className="mt-2 text-muted">
           If you&apos;re reporting a bug, it helps to include what browser you&apos;re using and

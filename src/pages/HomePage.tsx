@@ -232,7 +232,14 @@ export default function HomePage() {
       <section id="how-it-works" className="border-t border-border/80 bg-card/30 px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-6xl">
           <h2 className="font-display text-center text-3xl font-bold">
-            How Does Igunfollow Tool Works?
+            How Does{" "}
+            <Link
+              to="/blog/recent-followers"
+              className="text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              Igunfollow Tool
+            </Link>{" "}
+            Works?
           </h2>
           <p className="mx-auto mt-4 max-w-3xl text-center text-muted">
             Our Unfollow Tracker tool analysis data given by you & give you 100% accurate results.
