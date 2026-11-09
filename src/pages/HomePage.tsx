@@ -261,7 +261,17 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center">
+          <p className="mt-8 text-center text-sm text-muted">
+            Want pinned stories from a public profile? Try the{" "}
+            <Link
+              to="/instagram-highlights-viewer"
+              className="font-semibold text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              Instagram Highlights Viewer
+            </Link>
+            .
+          </p>
+          <p className="mt-4 text-center">
             <Link to="/guide" className="text-sm font-semibold text-primary hover:underline">
               Full export guide →
             </Link>

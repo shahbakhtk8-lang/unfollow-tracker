@@ -40,6 +40,15 @@ export const tools: ToolEntry[] = [
     status: "live",
     icon: "type",
   },
+  {
+    slug: "instagram-highlights-viewer",
+    name: "Instagram Highlights Viewer",
+    shortDescription:
+      "View public Instagram Highlights anonymously — browse covers, stories, and download photos.",
+    href: "/instagram-highlights-viewer",
+    status: "live",
+    icon: "sparkles",
+  },
   // PLACEHOLDER — do not uncomment until the tool is ready.
   // {
   //   slug: "example-tool-three",

@@ -7,9 +7,18 @@ const ArticleSection = lazy(() =>
   import("@/components/content/ArticleSection").then((mod) => ({ default: mod.ArticleSection })),
 );
 
+export type ArticleFeaturedImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
 interface ToolPageLayoutProps {
   articleSlug?: string;
   toolSlug: string;
+  /** Shown directly above the article (below the tool UI). */
+  articleFeaturedImage?: ArticleFeaturedImage;
   children: ReactNode;
 }
 
@@ -56,7 +65,12 @@ function useIdleMount(enabled: boolean, timeoutMs = 2000): boolean {
   return ready;
 }
 
-export function ToolPageLayout({ articleSlug, toolSlug, children }: ToolPageLayoutProps) {
+export function ToolPageLayout({
+  articleSlug,
+  toolSlug,
+  articleFeaturedImage,
+  children,
+}: ToolPageLayoutProps) {
   const showArticle = useIdleMount(Boolean(articleSlug), 1600);
   const showRelated = useIdleMount(true, 1200);
 
@@ -66,9 +80,23 @@ export function ToolPageLayout({ articleSlug, toolSlug, children }: ToolPageLayo
       <main className="flex-1">
         {children}
         {articleSlug && showArticle ? (
-          <Suspense fallback={null}>
-            <ArticleSection slug={articleSlug} />
-          </Suspense>
+          <>
+            {articleFeaturedImage ? (
+              <figure className="mx-auto max-w-3xl px-4 pt-12 sm:px-6">
+                <img
+                  src={articleFeaturedImage.src}
+                  alt={articleFeaturedImage.alt}
+                  width={articleFeaturedImage.width}
+                  height={articleFeaturedImage.height}
+                  className="h-auto w-full overflow-hidden rounded-2xl border border-border bg-card object-cover shadow-sm"
+                  decoding="async"
+                />
+              </figure>
+            ) : null}
+            <Suspense fallback={null}>
+              <ArticleSection slug={articleSlug} />
+            </Suspense>
+          </>
         ) : null}
         {showRelated ? <RelatedTools toolSlug={toolSlug} /> : null}
       </main>

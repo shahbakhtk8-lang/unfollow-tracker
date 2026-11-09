@@ -31,11 +31,26 @@ describe("tools registry", () => {
     expect(relatedLiveTools("instagram-font-generator").map((t) => t.slug)).toEqual([
       "unfollow-tracker",
       "pending-requests",
+      "instagram-highlights-viewer",
     ]);
     expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
       "instagram-font-generator",
     );
     expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain("pending-requests");
+    expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
+      "instagram-highlights-viewer",
+    );
+  });
+
+  it("registers Instagram Highlights Viewer as live", () => {
+    const highlights = tools.find((tool) => tool.slug === "instagram-highlights-viewer");
+    expect(highlights).toMatchObject({
+      href: "/instagram-highlights-viewer",
+      status: "live",
+      name: "Instagram Highlights Viewer",
+      icon: "sparkles",
+    });
+    expect(isToolActive(highlights!, "/instagram-highlights-viewer")).toBe(true);
   });
 
   it("treats /instagram-font-generator as the Font Generator tool", () => {

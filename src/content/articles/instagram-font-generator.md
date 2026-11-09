@@ -8,7 +8,7 @@ Turning plain text into a stylish bio, name or caption takes three quick steps:
 
 > **Tip:** Stick to one or two styles. Style the part you want people to notice and keep the rest of your message in plain text so it stays clear.
 
-Once your profile looks right, you can also check who doesn't follow you back with our free [Unfollow Tracker](/), or review [pending follow requests](/pending-requests) from the same official Instagram data export. The file stays in your browser.
+Once your profile looks right, you can also check who doesn't follow you back with our free [Unfollow Tracker](/), review [pending follow requests](/pending-requests) from the same official Instagram data export, or browse someone’s pinned stories with the [Instagram Highlights Viewer](/instagram-highlights-viewer). The export file stays in your browser.
 
 # Best Instagram Fonts to Copy and Paste
 

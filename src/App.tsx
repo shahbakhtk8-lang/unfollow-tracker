@@ -8,6 +8,7 @@ import HomePage from "@/pages/HomePage";
 
 const PendingRequestsPage = lazy(() => import("@/pages/PendingRequestsPage"));
 const FontGeneratorPage = lazy(() => import("@/pages/FontGeneratorPage"));
+const HighlightsViewerPage = lazy(() => import("@/pages/HighlightsViewerPage"));
 const AnalyzePage = lazy(() => import("@/pages/AnalyzePage"));
 const GuidePage = lazy(() => import("@/pages/GuidePage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
@@ -70,6 +71,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <FontGeneratorPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/instagram-highlights-viewer"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <HighlightsViewerPage />
             </Suspense>
           }
         />

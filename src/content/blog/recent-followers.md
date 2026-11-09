@@ -30,7 +30,7 @@ Keep the obvious limit in mind: this is only a snapshot of your export at the mo
 
 A profile’s visible list only shows current order, not when accounts were actually added. Our [igunfollowed.com](/) tool only reads files you upload yourself, so it can’t pull someone else’s private export from a username. Before paying for a following viewer, check if it shows the real follow date or just when the tool noticed the account, since those aren’t the same thing.
 
-If you also need to clean up outgoing requests that never got accepted, try the [pending follow requests](/pending-requests) checker with the same export.
+If you also need to clean up outgoing requests that never got accepted, try the [pending follow requests](/pending-requests) checker with the same export. To browse a public account’s pinned stories instead, open the [Instagram Highlights Viewer](/instagram-highlights-viewer).
 
 ## Frequently Asked Questions
 

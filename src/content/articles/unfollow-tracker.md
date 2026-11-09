@@ -39,7 +39,7 @@ The safest way to track your non-followers. Official exports, local analysis, an
 - Check how healthy your account is.
 - You don't need to login or provide your insta password.
 
-The same export can also show [pending follow requests](/pending-requests) that are still waiting, and you can style a bio or caption with our free [Instagram font generator](/instagram-font-generator).
+The same export can also show [pending follow requests](/pending-requests) that are still waiting, you can style a bio or caption with our free [Instagram font generator](/instagram-font-generator), or browse a public profile’s pinned stories with the [Instagram Highlights Viewer](/instagram-highlights-viewer).
 
 ## How Unfollow Tracker Increase Your Account Growth
 
