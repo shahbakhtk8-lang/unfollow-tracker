@@ -46,11 +46,11 @@ node scripts/build-demo-zip.mjs
 
 ## Deploy
 
-Static hosting only (no backend):
-
-- **Vercel:** connect repo; `vercel.json` SPA rewrite included
-- **Cloudflare Pages:** build command `npm run build`, output `dist`
-- **Netlify:** `public/_redirects` for SPA
+- **Cloudflare Pages (primary):** build `npm run build`, output `dist`.  
+  Highlights API lives in `functions/api/highlights.ts`.  
+  Set secret **`APIFY_TOKEN`** in Pages → Settings → Environment variables (Production + Preview), then redeploy.
+- **Vercel:** `api/highlights.ts` + `vercel.json` SPA rewrite; set `APIFY_TOKEN` the same way.
+- **Netlify:** `public/_redirects` for SPA (Highlights API needs a Netlify Function if you host there).
 
 ## Privacy
 
