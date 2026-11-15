@@ -44,7 +44,9 @@ export default function PrivacyPage() {
         <p className="mt-2 text-muted">
           On the Instagram Font Generator, favorite style ids are saved in localStorage on this
           device only. The text you type is never stored or sent anywhere — it stays in memory for
-          the session and is discarded when you leave or clear the field.
+          the session and is discarded when you leave or clear the field. On the Instagram Grid
+          Maker, the photo you choose is decoded and split with canvas in this browser only. It is
+          not uploaded, and closing the tab discards it.
         </p>
       </section>
 

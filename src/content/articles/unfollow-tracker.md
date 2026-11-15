@@ -39,6 +39,8 @@ The safest way to track your non-followers. Official exports, local analysis, an
 - Check how healthy your account is.
 - You don't need to login or provide your insta password.
 
+When someone new lands on your profile, the grid is what they judge first, and a messy one can cost you the follows this tool is meant to protect. The [Instagram Grid Maker](/instagram-grid-maker) splits one photo into a 3×3 feed layout in your browser.
+
 The same export can also show [pending follow requests](/pending-requests) that are still waiting, you can style a bio or caption with our free [Instagram font generator](/instagram-font-generator), or browse a public profile’s pinned stories with the [Instagram Highlights Viewer](/instagram-highlights-viewer).
 
 ## How Unfollow Tracker Increase Your Account Growth

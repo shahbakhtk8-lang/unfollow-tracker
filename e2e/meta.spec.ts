@@ -56,6 +56,11 @@ const ROUTES: Array<{ path: string; title: string; canonical: string }> = [
     title: "Instagram Pending Follow Requests Checker",
     canonical: "https://igunfollowed.com/pending-requests",
   },
+  {
+    path: "/instagram-grid-maker",
+    title: "Instagram Grid Maker: Split Photos for Profile & Carousel",
+    canonical: "https://igunfollowed.com/instagram-grid-maker",
+  },
 ];
 
 for (const route of ROUTES) {

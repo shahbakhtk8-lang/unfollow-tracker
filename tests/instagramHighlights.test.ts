@@ -103,6 +103,7 @@ describe("instagram-highlights-viewer article", () => {
     expect(source).toContain("](/)");
     expect(source).toContain("](/pending-requests)");
     expect(source).toContain("](/instagram-font-generator)");
+    expect(source).toContain("](/instagram-grid-maker)");
     expect(source).toContain("](/blog/recent-followers)");
     const { faqItems } = splitArticleFaq(source!);
     expect(faqItems.length).toBeGreaterThanOrEqual(5);

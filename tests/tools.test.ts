@@ -32,6 +32,7 @@ describe("tools registry", () => {
       "unfollow-tracker",
       "pending-requests",
       "instagram-highlights-viewer",
+      "instagram-grid-maker",
     ]);
     expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
       "instagram-font-generator",
@@ -40,6 +41,21 @@ describe("tools registry", () => {
     expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
       "instagram-highlights-viewer",
     );
+    expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
+      "instagram-grid-maker",
+    );
+  });
+
+  it("registers Instagram Grid Maker as live", () => {
+    const grid = tools.find((tool) => tool.slug === "instagram-grid-maker");
+    expect(grid).toMatchObject({
+      href: "/instagram-grid-maker",
+      status: "live",
+      name: "Instagram Grid Maker",
+      icon: "layout-grid",
+    });
+    expect(isToolActive(grid!, "/instagram-grid-maker")).toBe(true);
+    expect(isToolActive(grid!, "/")).toBe(false);
   });
 
   it("registers Instagram Highlights Viewer as live", () => {

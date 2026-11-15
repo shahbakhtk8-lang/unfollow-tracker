@@ -12,7 +12,7 @@ A Story is temporary. It appears at the top of the Instagram app for 24 hours an
 
 # What Is a Highlight Cover
 
-Each Highlight shows a round cover image on the profile, and that cover is usually just the first story inside it unless the account picked a custom image. Many brands design a matching set of covers so their profile looks organized and on-brand. When you use a Highlights viewer, the cover shown in the tool may differ slightly from the one on Instagram itself, since some tools display the first story rather than any custom artwork the account uploaded. This is normal and does not affect the actual content inside the Highlight.
+Each Highlight shows a round cover image on the profile, and that cover is usually just the first story inside it unless the account picked a custom image. Many brands design a matching set of covers so their profile looks organized and on-brand. The feed grid is the other half of that first look. The [Instagram Grid Maker](/instagram-grid-maker) can split one image across those profile squares without uploading the file. When you use a Highlights viewer, the cover shown in the tool may differ slightly from the one on Instagram itself, since some tools display the first story rather than any custom artwork the account uploaded. This is normal and does not affect the actual content inside the Highlight.
 
 # How to View and Download Instagram Highlights
 

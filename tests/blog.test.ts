@@ -20,6 +20,7 @@ describe("blog recent-followers post", () => {
     expect(source).toContain("](/)");
     expect(source).toContain("](/analyze)");
     expect(source).toContain("](/pending-requests)");
+    expect(source).not.toContain("](/instagram-grid-maker)");
     expect(source?.toLowerCase()).toContain("recent followers");
 
     const { body, faqItems } = splitArticleFaq(source!);

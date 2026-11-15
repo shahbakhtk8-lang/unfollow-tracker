@@ -6,6 +6,8 @@ Turning plain text into a stylish bio, name or caption takes three quick steps:
 2. **Choose a style** you like. The preview shows how it will look on a profile.
 3. **Copy it and paste** it into Instagram, in your bio, display name or caption.
 
+If you are lining up the photos on that same profile, the [Instagram Grid Maker](/instagram-grid-maker) splits one image into a 3×3 feed layout in the browser so the squares match when you post.
+
 > **Tip:** Stick to one or two styles. Style the part you want people to notice and keep the rest of your message in plain text so it stays clear.
 
 Once your profile looks right, you can also check who doesn't follow you back with our free [Unfollow Tracker](/), review [pending follow requests](/pending-requests) from the same official Instagram data export, or browse someone’s pinned stories with the [Instagram Highlights Viewer](/instagram-highlights-viewer). The export file stays in your browser.

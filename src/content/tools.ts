@@ -1,7 +1,7 @@
 export type ToolStatus = "live" | "coming-soon";
 
 /** Lucide icon names used by related-tool cards. Add names here when a new tool needs a new icon. */
-export type ToolIconName = "shield" | "users" | "file-text" | "sparkles" | "type";
+export type ToolIconName = "shield" | "users" | "file-text" | "sparkles" | "type" | "layout-grid";
 
 export interface ToolEntry {
   slug: string;
@@ -48,6 +48,15 @@ export const tools: ToolEntry[] = [
     href: "/instagram-highlights-viewer",
     status: "live",
     icon: "sparkles",
+  },
+  {
+    slug: "instagram-grid-maker",
+    name: "Instagram Grid Maker",
+    shortDescription:
+      "Split one photo into a profile grid or carousel — crop, preview 3:4 thumbnails, download tiles in your browser.",
+    href: "/instagram-grid-maker",
+    status: "live",
+    icon: "layout-grid",
   },
   // PLACEHOLDER — do not uncomment until the tool is ready.
   // {
