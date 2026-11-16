@@ -30,7 +30,7 @@ export default function AboutPage() {
       </section>
 
       <section>
-        <h2 className="font-display text-xl font-bold">How it works</h2>
+        <h2 className="font-display text-xl font-bold">Private local analysis</h2>
         <p className="mt-2 text-muted">
           You request your official data export from Instagram, upload the ZIP file here, and
           everything — reading the file, comparing your followers and following lists, and showing

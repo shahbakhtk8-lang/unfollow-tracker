@@ -20,12 +20,12 @@ function renderArticleSection(slug: string): string {
 describe("article content", () => {
   it("loads the Unfollow Tracker markdown by slug and renders a demoted heading", () => {
     const source = loadArticle("unfollow-tracker");
-    expect(source).toContain("# How Does Igunfollow Tool Works?");
-    expect(source).toContain("Why Use Unfollow Tracker Tool?");
+    expect(source).toContain("# Why Use Unfollow Tracker Tool?");
+    expect(source).not.toContain("How Does Igunfollow Tool Works?");
     const html = renderArticleHtml(source ?? "");
     expect(html).toMatch(/<h2\b/);
     expect(html).not.toMatch(/<h1\b/);
-    expect(html).toContain("How Does Igunfollow Tool Works?");
+    expect(html).toContain("Why Use Unfollow Tracker Tool?");
     expect(html).toContain("<table>");
     expect(html).toContain("<thead>");
     expect(html).toContain("<tbody>");

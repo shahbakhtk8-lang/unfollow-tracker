@@ -71,10 +71,12 @@ export function ToolsNavItems({
   role?: "menuitem";
 }) {
   const { pathname } = useLocation();
+  // Hide the tool the visitor is already on (avoids Unfollow Tracker showing twice on home).
+  const visibleTools = tools.filter((tool) => !isToolActive(tool, pathname));
 
   return (
     <ul className="flex list-none flex-col gap-1 p-0">
-      {tools.map((tool) => (
+      {visibleTools.map((tool) => (
         <li key={tool.slug}>
           <ToolRow tool={tool} pathname={pathname} onNavigate={onNavigate} role={role} />
         </li>

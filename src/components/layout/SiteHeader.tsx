@@ -6,7 +6,6 @@ import { ToolsDropdown, ToolsMobileSection } from "@/components/layout/ToolsNav"
 import { cn } from "@/lib/utils";
 
 const links = [
-  { to: "/#how-it-works", label: "How it works", hash: true },
   { to: "/guide", label: "Export guide" },
   { to: "/analyze", label: "Analyze" },
 ];
@@ -90,7 +89,7 @@ export function SiteHeader() {
               to={l.to}
               className={cn(
                 "rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                !l.hash && location.pathname === l.to && "text-foreground bg-border/40",
+                location.pathname === l.to && "text-foreground bg-border/40",
               )}
             >
               {l.label}

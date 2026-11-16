@@ -27,10 +27,10 @@ describe("home SEO", () => {
       "WebPage",
       "ImageObject",
       "SoftwareApplication",
-      "HowTo",
       "VideoObject",
       "FAQPage",
     ]);
+    expect(types).not.toContain("HowTo");
 
     const video = graph.find((node) => node["@type"] === "VideoObject");
     expect(video?.embedUrl).toBe(`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}`);
@@ -57,6 +57,8 @@ describe("home SEO", () => {
     expect(html).toContain("VideoObject");
     expect(html).toContain("FAQPage");
     expect(html).toContain("SoftwareApplication");
+    expect(html).not.toContain("HowTo");
+    expect(html).not.toContain("How Does Igunfollow Tool Works?");
     expect(html).toContain(YOUTUBE_VIDEO_ID);
     // Canonical / og:url are set per-route by useDocumentMeta (not static in HTML).
     expect(html).not.toMatch(/rel=["']canonical["']/);

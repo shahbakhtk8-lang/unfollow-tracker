@@ -1,17 +1,4 @@
-# How Does Igunfollow Tool Works?
-
-Our Unfollow Tracker tool analysis data given by you & give you 100% accurate results. There is no risk, completely free, just upload your zip file in the top box & you'll get the results of who didn't follow you back. Here are three simple steps to follow.
-
-### Request Zip File
-Go to Your Instagram Account Settings, Click on Meta Account, then click on Personal details, after that click on Your Information & Permissions, & then Request the Export Your Information in the form of a Zip file.
-
-### Download Zip File
-When the file is ready to download, you'll get notification from instagram & then download your zip file.
-
-### Upload Zip File
-Upload the downloaded file in the top box & you'll get the results.
-
-## Why Use Unfollow Tracker Tool?
+# Why Use Unfollow Tracker Tool?
 
 ### Why Choose Our Unfollower Tool?
 

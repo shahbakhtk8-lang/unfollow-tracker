@@ -39,7 +39,6 @@ import {
   SITE_URL,
   buildHomeJsonLd,
   homeFaqs,
-  howItWorksSteps,
 } from "@/content/seo";
 
 const features = [
@@ -229,59 +228,9 @@ export default function HomePage() {
         </figure>
       </section>
 
-      <section id="how-it-works" className="border-t border-border/80 bg-card/30 px-4 py-20 sm:px-6">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="font-display text-center text-3xl font-bold">
-            How Does{" "}
-            <Link
-              to="/blog/recent-followers"
-              className="text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              Igunfollow Tool
-            </Link>{" "}
-            Works?
-          </h2>
-          <p className="mx-auto mt-4 max-w-3xl text-center text-muted">
-            Our Unfollow Tracker tool analysis data given by you & give you 100% accurate results.
-            There is no risk, completely free, just upload your zip file in the top box & you&apos;ll
-            get the results of who didn&apos;t follow you back. Here are three simple steps to follow.
-          </p>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {howItWorksSteps.map((item) => (
-              <div key={item.step}>
-                <Card className="h-full border-border/80 bg-card/90">
-                  <CardContent className="p-6">
-                    <span className="font-display text-4xl font-extrabold text-primary/40">
-                      {item.step}
-                    </span>
-                    <h3 className="font-display mt-2 text-xl font-bold">{item.title}</h3>
-                    <p className="mt-2 text-sm text-muted">{item.body}</p>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-          </div>
-          <p className="mt-8 text-center text-sm text-muted">
-            Want pinned stories from a public profile? Try the{" "}
-            <Link
-              to="/instagram-highlights-viewer"
-              className="font-semibold text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              Instagram Highlights Viewer
-            </Link>
-            .
-          </p>
-          <p className="mt-4 text-center">
-            <Link to="/guide" className="text-sm font-semibold text-primary hover:underline">
-              Full export guide →
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      <section id="video" className="px-4 py-20 sm:px-6">
+      <section id="video" className="border-t border-border/80 px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-4xl">
-          <h2 className="font-display text-center text-3xl font-bold">Watch how it works</h2>
+          <h2 className="font-display text-center text-3xl font-bold">Watch the demo</h2>
           <div className="relative mt-10 aspect-video overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
             <YouTubeEmbed />
           </div>

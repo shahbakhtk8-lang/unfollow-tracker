@@ -20,24 +20,6 @@ export const YOUTUBE_EMBED_URL = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_
 export const YOUTUBE_VIDEO_TITLE = "See Who Doesn't Follow You Back on Instagram | IGUnfollowed.com";
 export const YOUTUBE_THUMBNAIL_URL = `https://i.ytimg.com/vi/${YOUTUBE_VIDEO_ID}/hqdefault.jpg`;
 
-export const howItWorksSteps = [
-  {
-    step: "1",
-    title: "Request Zip File",
-    body: "Go to Your Instagram Account Settings, Click on Meta Account, then click on Personal details, after that click on Your Information & Permissions, & then Request the Export Your Information in the form of a Zip file.",
-  },
-  {
-    step: "2",
-    title: "Download Zip File",
-    body: "When the file is ready to download, you'll get notification from instagram & then download your zip file.",
-  },
-  {
-    step: "3",
-    title: "Upload Zip File",
-    body: "Upload the downloaded file in the top box & you'll get the results.",
-  },
-] as const;
-
 export const homeFaqs = [
   {
     question: "How can we see who unfollowed you on instagram?",
@@ -119,20 +101,6 @@ export function buildHomeJsonLd(): Record<string, unknown> {
           "See who doesn't follow you back",
           "Free to use",
         ],
-      },
-      {
-        "@type": "HowTo",
-        "@id": `${SITE_URL}/#howto`,
-        name: "How Does Igunfollow Tool Works?",
-        description:
-          "Our Unfollow Tracker tool analysis data given by you & give you 100% accurate results. There is no risk, completely free, just upload your zip file in the top box & you'll get the results of who didn't follow you back.",
-        image: FEATURED_IMAGE_URL,
-        step: howItWorksSteps.map((item) => ({
-          "@type": "HowToStep",
-          position: Number(item.step),
-          name: item.title,
-          text: item.body,
-        })),
       },
       {
         "@type": "VideoObject",
