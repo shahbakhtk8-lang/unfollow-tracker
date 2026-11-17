@@ -17,7 +17,7 @@ export const tools: ToolEntry[] = [
     slug: "unfollow-tracker",
     name: "Unfollow Tracker",
     shortDescription:
-      "See who doesn’t follow you back from your official Instagram export — 100% in your browser.",
+      "See who doesn’t follow you back from your official Instagram export. ZIP analysis runs in your browser.",
     href: "/",
     status: "live",
     icon: "shield",
@@ -44,7 +44,7 @@ export const tools: ToolEntry[] = [
     slug: "instagram-highlights-viewer",
     name: "Instagram Highlights Viewer",
     shortDescription:
-      "View public Instagram Highlights anonymously — browse covers, stories, and download photos.",
+      "View public Instagram Highlights by username — browse covers, stories, and download photos. No Instagram login.",
     href: "/instagram-highlights-viewer",
     status: "live",
     icon: "sparkles",

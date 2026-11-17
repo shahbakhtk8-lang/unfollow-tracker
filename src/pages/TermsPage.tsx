@@ -21,10 +21,11 @@ export default function TermsPage() {
       <section>
       <h2 className="font-display text-xl font-bold">Service description</h2>
       <p className="mt-2 text-muted">
-        Unfollow Tracker is a browser-based tool that helps you analyze follower and following lists
-        from your official Meta (Instagram) data export. The tool displays information for your
-        review; any follow or unfollow actions must be performed by you in the official Instagram
-        app. Details on how we handle your file are in our{" "}
+        Unfollow Tracker helps you analyze follower and following lists from your official Meta
+        (Instagram) data export in this browser. The Highlights Viewer looks up publicly visible
+        Highlights for a username you type; that lookup goes through our server API and a third-party
+        provider. The tools display information for your review; any follow or unfollow actions must
+        be performed by you in the official Instagram app. Details on how we handle data are in our{" "}
         <Link to="/privacy" className={linkClass}>
           Privacy Policy
         </Link>

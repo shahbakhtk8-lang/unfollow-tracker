@@ -24,12 +24,12 @@ export const homeFaqs = [
   {
     question: "How can we see who unfollowed you on instagram?",
     answer:
-      "It is very easy to detect who stopped following me on instagram, use our Unfollow Tracker tool by uploading your zip file.",
+      "A single Instagram export shows who does not follow you back in that file. To see who left since last time, compare an older export with a newer one on Analyze. Igunfollowed does not log into Instagram.",
   },
   {
     question: "Is igunfollowed safe to use?",
     answer:
-      "Yes, it's completely safe to use, because you don't need to login or provide your instagram password.",
+      "No Instagram password is required. ZIP and JSON analysis runs in your browser and is not uploaded to our servers. The Highlights Viewer is separate: it looks up a public username through our API.",
   },
   {
     question: "Can I check non followers of multiple accounts?",

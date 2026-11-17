@@ -2,7 +2,7 @@
 Before using this tool, it helps to know what this list actually means. Here's a quick answer.
 
 ## How Our Tool Reads Your Pending Requests
-When you export your data from Instagram as a ZIP file, it includes a record of every follow request you've sent that the other person hasn't accepted yet. Our tool reads that data directly from your ZIP file, with no manual digging through Instagram's activity log.
+When you export your data from Instagram as a ZIP file, it includes a record of every follow request you've sent that the other person hasn't accepted yet. Request that official download with the [Instagram export guide](/guide) if you do not have it yet. Our tool reads `pending_follow_requests` directly from your ZIP file, with no manual digging through Instagram's activity log.
 
 ## Your Data Stays Safe in Your Browser
 Many similar tools ask for your private information, like your username and password, but our tool works differently. We never ask for your login details, we never access your Instagram account, and your file never goes anywhere else. Everything is read directly in your browser. With the same ZIP you can also check who doesn't follow you back on our [Unfollow Tracker](/), tidy up your profile text with the [Instagram font generator](/instagram-font-generator), or open public [Instagram Highlights](/instagram-highlights-viewer) without logging in.

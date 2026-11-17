@@ -20,18 +20,18 @@ function renderArticleSection(slug: string): string {
 describe("article content", () => {
   it("loads the Unfollow Tracker markdown by slug and renders a demoted heading", () => {
     const source = loadArticle("unfollow-tracker");
-    expect(source).toContain("# Why Use Unfollow Tracker Tool?");
+    expect(source).toContain("# How Analyze reads your Instagram export");
     expect(source).not.toContain("How Does Igunfollow Tool Works?");
     const html = renderArticleHtml(source ?? "");
     expect(html).toMatch(/<h2\b/);
     expect(html).not.toMatch(/<h1\b/);
-    expect(html).toContain("Why Use Unfollow Tracker Tool?");
+    expect(html).toContain("How Analyze reads your Instagram export");
     expect(html).toContain("<table>");
     expect(html).toContain("<thead>");
     expect(html).toContain("<tbody>");
     expect(html.match(/<table>/g)?.length).toBe(2);
     expect(html.match(/class="article-table-wrap[^"]*"/g)?.length).toBe(2);
-    expect(html).toContain("Safe &amp; secure");
+    expect(html).toContain("No Instagram password");
     expect(html).toContain("Follower Health Ranges");
     expect(html).toContain("Account size");
     expect(html).toContain("scope=\"col\"");
@@ -78,29 +78,27 @@ describe("article content", () => {
     const { body, faqHeading, faqItems } = splitArticleFaq(source ?? "");
     expect(faqHeading).toBe("Frequently Asked Questions");
     expect(faqItems).toHaveLength(5);
-    expect(faqItems[0]?.question).toBe("How can we see who unfollowed you on instagram?");
-    expect(faqItems[1]?.question).toBe("Is igunfollowed safe to use?");
-    expect(faqItems[3]?.question).toBe(
-      "Difference between unfollowers and users who don't follow you back",
-    );
-    expect(faqItems[4]?.question).toBe("Can I see who blocked me on Instagram?");
+    expect(faqItems[0]?.question).toBe("Does one ZIP show who recently unfollowed me?");
+    expect(faqItems[1]?.question).toBe("What files does Analyze need?");
+    expect(faqItems[3]?.question).toBe("Can I upload JSON files instead of a ZIP?");
+    expect(faqItems[4]?.question).toBe("What if the ZIP is huge or fails to parse?");
     expect(faqItems.every((item) => item.answer.length > 0)).toBe(true);
     expect(body).not.toMatch(/frequently asked questions/i);
-    expect(body).toContain("Why Use Unfollow Tracker Tool?");
+    expect(body).toContain("How Analyze reads your Instagram export");
     expect(body).toContain("Igunfollow");
   });
 
   it("renders the article FAQ as a collapsed accordion with five items", () => {
     const markup = renderArticleSection("unfollow-tracker");
     expect(markup).toContain("Frequently Asked Questions");
-    expect(markup).toContain("How can we see who unfollowed you on instagram?");
-    expect(markup).toContain("Can I see who blocked me on Instagram?");
+    expect(markup).toContain("Does one ZIP show who recently unfollowed me?");
+    expect(markup).toContain("What if the ZIP is huge or fails to parse?");
     // First FAQ item opens by default; the other four stay collapsed.
     expect(markup.match(/aria-expanded="true"/g)?.length).toBe(1);
     expect(markup.match(/aria-expanded="false"/g)?.length).toBe(4);
     expect(markup).toContain('data-orientation="vertical"');
     expect(markup.match(/<table>/g)?.length).toBe(2);
-    expect(markup).not.toContain("**How can we see who unfollowed you");
+    expect(markup).not.toContain("**Does one ZIP show who recently unfollowed me?");
   });
 
   it("parses and renders the Pending Requests article FAQ accordion", () => {

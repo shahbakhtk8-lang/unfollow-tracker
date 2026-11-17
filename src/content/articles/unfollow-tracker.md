@@ -1,64 +1,58 @@
-# Why Use Unfollow Tracker Tool?
+# How Analyze reads your Instagram export
 
-### Why Choose Our Unfollower Tool?
+Igunfollowed Analyze is the upload page for your official Instagram ZIP. It compares the followers list with the following list in that file so you can see who you follow that is not following you back. It does not log into Instagram and it does not read your password.
 
-The safest way to track your non-followers. Official exports, local analysis, and a clearer view of who you follow.
+A **single current export** answers “who doesn’t follow me back right now.” It does **not** prove who recently unfollowed you. Accounts on that list may never have followed you. To see who left between two dates, save a snapshot or upload an older ZIP and a newer ZIP and use Compare.
 
-| Feature | Details |
+## What the ZIP must contain
+
+Look for `connections/followers_and_following/`. Analyze reads `following.json` (or `.html`) and `followers_1.json` (plus `followers_2.json` and so on if Instagram split a large list). JSON is easiest. HTML exports from the same Connections category also work.
+
+If those files are missing, request a new export with **Followers and following** selected. The [export guide](/guide) walks through Accounts Center.
+
+## What you can do on this page
+
+| Feature | What it actually does |
 |---|---|
-| Safe & secure | No login and password required. Manual checks only need your official ZIP. We never ask for your Instagram or Threads password, and signing in is optional. Your data is protected and secure at all times. |
-| 100% accurate rate | The system compares your data with high precision to accurately reveal unfollowers. |
-| Fast results | Get instant results with one click. You don't need to wait to check followers' status. |
-| Improve 50% growth | The unfollower tracker can increase your growth ratio by 50% by filtering out fake or inactive followers from your account. |
-| Auto deletion of data | Your data is analyzed securely. After you get your results, the uploaded data is auto-deleted from our system. |
-| All-in-one tracking | Use both methods, username analysis and Instagram data export (ZIP file), for a more accurate and deeper comparison. |
-| Analysis in your browser | Analysis starts when you choose the ZIP. Your browser reads the file locally, so the archive itself is not uploaded to our servers. |
-| Clear follower lists | Spot non-mutual follows and compare exports from different dates. Search the lists and decide for yourself who to keep following. |
-| Optimize your social circle | Adjust your follower list easily. Identify those who no longer follow you and make informed decisions about who to follow. |
+| No Instagram password | You upload an official export. The site never asks for your login. |
+| In-browser ZIP analysis | Your browser reads the archive in a background worker. The ZIP is not sent to our servers. |
+| Not-follow-back list | People you follow who are not on your followers list in this export. |
+| Mutuals and fans | Mutuals follow you and you follow them. Fans follow you and you do not follow them. |
+| Compare two exports | Differences between an older and a newer followers list: who disappeared and who appeared. |
+| Snapshots on this device | Optional copies of username lists in IndexedDB on this browser, so you can compare later. You can delete them here or by clearing site data. |
+| CSV download | Saves the visible username list as a file on your device. |
 
-## Benefits of Using Our Unfollow Tracker Tool
+## How comparison works
 
-- Losing followers without knowing who left? You could be missing out on up to 30% of your reach.
-- Our free Igunfollow tracker reads your exported data.
-- It scans your username and matches your followers against who you follow.
-- Spot recent unfollowers.
-- Find accounts that don't follow you back.
-- Check how healthy your account is.
-- You don't need to login or provide your insta password.
-
-When someone new lands on your profile, the grid is what they judge first, and a messy one can cost you the follows this tool is meant to protect. The [Instagram Grid Maker](/instagram-grid-maker) splits one photo into a 3×3 feed layout in your browser.
-
-The same export can also show [pending follow requests](/pending-requests) that are still waiting, you can style a bio or caption with our free [Instagram font generator](/instagram-font-generator), or browse a public profile’s pinned stories with the [Instagram Highlights Viewer](/instagram-highlights-viewer).
-
-## How Unfollow Tracker Increase Your Account Growth
-
-On May 7, 2026, Instagram removed millions of bot and inactive accounts, so many users lose their follower count drop. Meta said the accounts that got banned or penalized were mostly fake or unused. A lower number is not always bad, because bots don't like, comment or share, and your real audience now makes up a bigger share. Real people can still unfollow you, and Instagram won't tell you who they are. Our Unfollow Tracker tool compares your followers and following lists, so you can see who left and decide who is important to keep.
+Use **Compare** with a saved snapshot, or turn on two-ZIP mode and drop an older export and a newer one. The Unfollowed tab is only filled when two lists exist. Username changes, deactivated accounts, and incomplete exports can look like unfollows even when they are not.
 
 ## Instagram Follower Health Ranges
 
-After checking your account with our free Unfollow Tracker tool, compare your numbers with these recommended unfollow and follow-back ranges. They help you tell whether your unfollow rate is normal or a warning sign.
+These rows are informal examples, not official Instagram statistics and not a growth forecast. Use them only as a rough sense of scale after you have real counts from your own export.
 
-| Account size | Normal daily unfollows | Healthy follow-back range |
+| Account size | Informal daily unfollow example | Informal follow-back example |
 |---|---|---|
 | Followers under 1k | 1 – 2 per day | 10% – 20% |
 | Followers 5k – 10k | 3 – 4 per day | 15% – 25% |
 | Followers 10k – 50k | 5 – 10 per day | 20% – 30% |
 
-How to read it: if your daily unfollows are close to the range for your account size, that is normal. If they are much higher, take it as a warning sign and check who is leaving.
+If your daily unfollows are far above the example for your size, look at who is leaving in a two-export comparison rather than treating the table as a diagnosis.
+
+The same ZIP can also list [pending follow requests](/pending-requests) you sent that were never accepted.
 
 ## Frequently Asked Questions
 
-**How can we see who unfollowed you on instagram?**
-It is very easy to detect who stopped following me on instagram, use our Unfollow Tracker tool by uploading your zip file.
+**Does one ZIP show who recently unfollowed me?**
+No. One file shows who does not follow you back in that export. Recent unfollows need an older list and a newer list to compare.
 
-**Is igunfollowed safe to use?**
-Yes, it's completely safe to use, because you don't need to login or provide your instagram password.
+**What files does Analyze need?**
+`following.json` and `followers_1.json` (and extra follower parts if present) under Connections. JSON or HTML from that category both work.
 
-**Can I check non followers of multiple accounts?**
-Yes, by exporting multiple zip files you can analyze their data separately.
+**Why is the Unfollowed tab empty?**
+That tab stays empty until you compare two exports or a snapshot plus a newer ZIP. A single upload fills Not back, Mutuals, and Fans instead.
 
-**Difference between unfollowers and users who don't follow you back**
-"Not following back" means you follow an account that isn't on your followers list and may never have followed you, while an unfollower is someone who was on your older list but is missing from your newer one.
+**Can I upload JSON files instead of a ZIP?**
+Yes, if they are the official followers and following files. A full ZIP from Accounts Center is usually simpler.
 
-**Can I see who blocked me on Instagram?**
-No there is not any app or software to see this, when someone blocked you on instagram, you cannot see their profile from any other sources.
+**What if the ZIP is huge or fails to parse?**
+Keep the file zipped, do not rename folders inside it, and confirm Followers and following were included. Invalid or unrelated ZIPs show an error on this page. Step-by-step export help is on the [guide](/guide).

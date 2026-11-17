@@ -15,8 +15,9 @@ export default function AboutPage() {
       <h1 className="font-display text-4xl font-bold">About Unfollow Tracker</h1>
       <p className="text-muted">
         Unfollow Tracker is a small, independent tool built to answer one simple question: who
-        doesn&apos;t follow you back on Instagram — without ever asking for your password or
-        uploading your data anywhere.
+        doesn&apos;t follow you back on Instagram — without ever asking for your password. Instagram
+        ZIP and JSON exports are read in your browser. The Highlights Viewer is a separate tool that
+        looks up a public username through our API.
       </p>
 
       <section>
@@ -32,10 +33,10 @@ export default function AboutPage() {
       <section>
         <h2 className="font-display text-xl font-bold">Private local analysis</h2>
         <p className="mt-2 text-muted">
-          You request your official data export from Instagram, upload the ZIP file here, and
-          everything — reading the file, comparing your followers and following lists, and showing
-          results — happens entirely in your browser. Nothing is uploaded to any server. You can
-          read the full details in our{" "}
+          You request your official data export from Instagram, choose the ZIP or JSON here, and
+          reading the file, comparing followers and following, and showing results happens in your
+          browser. That export is not uploaded to our servers. Other tools on this site work
+          differently: Highlights lookups go through our API. You can read the full details in our{" "}
           <Link
             to="/privacy"
             className="font-semibold text-primary underline underline-offset-2 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"

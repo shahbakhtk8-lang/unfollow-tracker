@@ -1,6 +1,6 @@
 # Unfollow Tracker
 
-Privacy-first Instagram unfollow checker. Upload your official Meta data export (ZIP) — analysis runs **100% in your browser**. No Instagram password. No server upload.
+Privacy-first Instagram unfollow checker. Upload your official Meta data export (ZIP) — ZIP analysis runs in your browser. No Instagram password. Export files are not uploaded to our servers.
 
 **Live demo:** [https://unfollow-tracker.pages.dev/](https://unfollow-tracker.pages.dev/)
 

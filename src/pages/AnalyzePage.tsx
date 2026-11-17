@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArticleSection } from "@/components/content/ArticleSection";
 import { ZipDropzone } from "@/components/analyzer/ZipDropzone";
 import { AnalyzeErrorBoundary } from "@/components/analyzer/AnalyzeErrorBoundary";
 import { StatCard } from "@/components/analyzer/StatCard";
@@ -501,7 +502,16 @@ function AnalyzePage() {
           Analyze your export
         </h1>
         <p className="mt-2 max-w-2xl text-muted">
-          Upload your official Instagram ZIP. Processing runs in a background worker on your device.
+          Upload your official Instagram ZIP or JSON. Processing runs in a background worker on your
+          device. One export lists who does not follow you back. Comparing two exports is required
+          to see who left since last time. Need the file first? Follow the{" "}
+          <Link
+            to="/guide"
+            className="font-semibold text-primary underline underline-offset-2 hover:text-accent"
+          >
+            export guide
+          </Link>
+          .
         </p>
       </div>
 
@@ -853,6 +863,7 @@ function AnalyzePage() {
           )}
         </section>
       </div>
+      <ArticleSection slug="unfollow-tracker" />
     </div>
   );
 }

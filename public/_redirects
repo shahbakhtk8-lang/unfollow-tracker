@@ -1,1 +1,18 @@
+# Pretty URLs for prerendered HTML. Keep these above the SPA fallback so
+# existing public routes are not rewritten to the homepage shell.
+/analyze /analyze/index.html 200
+/guide /guide/index.html 200
+/pending-requests /pending-requests/index.html 200
+/privacy /privacy/index.html 200
+/terms /terms/index.html 200
+/about /about/index.html 200
+/disclaimer /disclaimer/index.html 200
+/contact /contact/index.html 200
+/blog /blog/index.html 200
+/blog/recent-followers /blog/recent-followers/index.html 200
+/instagram-font-generator /instagram-font-generator/index.html 200
+/instagram-highlights-viewer /instagram-highlights-viewer/index.html 200
+/instagram-grid-maker /instagram-grid-maker/index.html 200
+
+# Unknown paths keep the SPA shell. Valid prerendered routes above are not deleted.
 /*    /index.html   200

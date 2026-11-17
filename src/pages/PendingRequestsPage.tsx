@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { Download, ExternalLink, Hourglass } from "lucide-react";
 import { ZipDropzone } from "@/components/analyzer/ZipDropzone";
 import { ParseProgressBar } from "@/components/analyzer/ParseProgressBar";
@@ -99,7 +100,15 @@ export default function PendingRequestsPage() {
               </h1>
               <p className="mt-5 max-w-lg text-lg text-muted">
                 Upload your official Instagram data export to see which follow requests you sent are
-                still waiting — including ones from years ago. Everything runs on your device.
+                still waiting — including ones from years ago. Everything runs on your device. Need
+                the ZIP first? Follow the export steps on the{" "}
+                <Link
+                  to="/guide"
+                  className="font-semibold text-primary underline underline-offset-2 hover:text-accent"
+                >
+                  Instagram export guide
+                </Link>
+                .
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button type="button" size="lg" variant="secondary" onClick={() => void tryDemo()}>

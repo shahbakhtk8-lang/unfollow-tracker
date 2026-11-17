@@ -8,7 +8,7 @@ const ROUTES: Array<{ path: string; title: string; canonical: string }> = [
   },
   {
     path: "/analyze",
-    title: "Analyze — Unfollow Tracker",
+    title: "Analyze Instagram Export — Unfollow Tracker",
     canonical: "https://igunfollowed.com/analyze",
   },
   {
@@ -47,6 +47,11 @@ const ROUTES: Array<{ path: string; title: string; canonical: string }> = [
     canonical: "https://igunfollowed.com/blog",
   },
   {
+    path: "/blog/recent-followers",
+    title: "How to See Recent Followers on Instagram (No Login)",
+    canonical: "https://igunfollowed.com/blog/recent-followers",
+  },
+  {
     path: "/instagram-font-generator",
     title: "Instagram Font Generator: 60+ Styles to Copy & Paste",
     canonical: "https://igunfollowed.com/instagram-font-generator",
@@ -60,6 +65,11 @@ const ROUTES: Array<{ path: string; title: string; canonical: string }> = [
     path: "/instagram-grid-maker",
     title: "Instagram Grid Maker: Split Photos for Profile & Carousel",
     canonical: "https://igunfollowed.com/instagram-grid-maker",
+  },
+  {
+    path: "/instagram-highlights-viewer",
+    title: "Instagram Highlights Viewer: View & Download Free (No Login)",
+    canonical: "https://igunfollowed.com/instagram-highlights-viewer",
   },
 ];
 

@@ -19,7 +19,7 @@ export default function GuidePage() {
   useDocumentMeta({
     title: "How to download your Instagram export — Unfollow Tracker",
     description:
-      "Step-by-step guide to request and download your official Instagram data export ZIP for Unfollow Tracker.",
+      "Step-by-step: request Instagram information, choose Followers and following, pick JSON, download the ZIP, and upload it to Analyze.",
     canonical: `${SITE_URL}/guide`,
   });
 
@@ -29,8 +29,19 @@ export default function GuidePage() {
         How to download your Instagram export
       </h1>
       <p className="mt-4 text-lg text-muted">
-        Unfollow Tracker needs the official Meta export that includes follower and following lists.
-        Follow these steps once — then reuse the same ZIP anytime.
+        This page is only about requesting your official Instagram information. After you have the
+        ZIP, upload it on{" "}
+        <Link
+          to="/analyze"
+          className="font-semibold text-primary underline underline-offset-2 hover:text-accent"
+        >
+          Analyze
+        </Link>
+        . The{" "}
+        <Link to="/" className="font-semibold text-primary underline underline-offset-2 hover:text-accent">
+          homepage
+        </Link>{" "}
+        explains what a non-followback is.
       </p>
 
       <ol className="mt-10 space-y-6">
@@ -59,6 +70,91 @@ export default function GuidePage() {
           with Followers and following selected.
         </p>
       </div>
+
+      <section className="mt-12 space-y-4">
+        <h2 className="font-display text-2xl font-bold">How to select JSON and locate the files</h2>
+        <p className="text-muted">
+          Choose JSON unless you already have an HTML export. JSON is easier for Analyze to read.
+          Keep the download as a ZIP; do not rename folders inside it. After download, you do not
+          need to unzip it for Analyze. If you do unzip, the files live under{" "}
+          <code className="rounded bg-border/50 px-1.5 py-0.5 text-xs">
+            connections/followers_and_following/
+          </code>
+          .
+        </p>
+        <p className="text-muted">
+          The Pending Requests Checker reads{" "}
+          <code className="rounded bg-border/50 px-1.5 py-0.5 text-xs">pending_follow_requests</code>{" "}
+          from the same Connections export. Request that category once, then use{" "}
+          <Link
+            to="/analyze"
+            className="font-semibold text-primary underline underline-offset-2 hover:text-accent"
+          >
+            Analyze
+          </Link>{" "}
+          or{" "}
+          <Link
+            to="/pending-requests"
+            className="font-semibold text-primary underline underline-offset-2 hover:text-accent"
+          >
+            pending requests
+          </Link>{" "}
+          depending on what you want to see.
+        </p>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="font-display text-2xl font-bold">Common export problems</h2>
+        <dl className="mt-6 space-y-4 text-sm">
+          <div>
+            <dt className="font-semibold">The ZIP uploads but lists are empty</dt>
+            <dd className="mt-1 text-muted">
+              The export often omitted Followers and following. Request a new download with that
+              Connections category selected and date range All time.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold">Instagram emailed HTML instead of JSON</dt>
+            <dd className="mt-1 text-muted">
+              HTML from the same category still works. JSON is recommended because it is simpler to
+              parse. You can request another export and pick JSON.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold">The file is huge or the browser stalls</dt>
+            <dd className="mt-1 text-muted">
+              Keep the archive zipped. Do not add extra folders. If the ZIP is unrelated media, it
+              will fail on Analyze with an error instead of a fake result.
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="font-display text-2xl font-bold">Frequently Asked Questions</h2>
+        <dl className="mt-6 space-y-4 text-sm">
+          <div>
+            <dt className="font-semibold">Which Instagram format should I choose?</dt>
+            <dd className="mt-1 text-muted">
+              JSON. HTML also works if that is what you already downloaded.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold">Do I need messages, photos, or the full account dump?</dt>
+            <dd className="mt-1 text-muted">
+              No. Select Followers and following under Connections. Extra categories make a larger
+              ZIP and are not used for unfollow checks.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold">Where do I upload the ZIP after it downloads?</dt>
+            <dd className="mt-1 text-muted">
+              Use Analyze for not-follow-back lists and two-export comparison. Use Pending Requests
+              if you only want outgoing requests that were never accepted.
+            </dd>
+          </div>
+        </dl>
+      </section>
 
       <div className="mt-10 flex flex-wrap gap-3">
         <Button asChild size="lg">

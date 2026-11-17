@@ -46,9 +46,9 @@ function SiteShell() {
 /** Document meta for /analyze without editing AnalyzePage.tsx */
 function AnalyzeRoute() {
   useDocumentMeta({
-    title: "Analyze — Unfollow Tracker",
+    title: "Analyze Instagram Export — Unfollow Tracker",
     description:
-      "Upload your Instagram export ZIP and see who doesn’t follow you back. Private, in-browser analysis.",
+      "Upload an Instagram ZIP or JSON export to list accounts that do not follow you back. Compare two exports to see who left. Processing stays in your browser.",
     canonical: `${SITE_URL}/analyze`,
   });
   return <AnalyzePage />;

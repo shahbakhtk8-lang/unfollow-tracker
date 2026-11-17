@@ -44,33 +44,33 @@ import {
 const features = [
   {
     icon: ShieldCheck,
-    title: "Safe & secure",
-    desc: "No login and password required. Manual checks only need your official ZIP. We never ask for your Instagram or Threads password, and signing in is optional. Your data is protected and secure at all times.",
+    title: "No Instagram password",
+    desc: "Igunfollowed never asks for your Instagram login. You use the official data export Instagram already gives you.",
   },
   {
     icon: Target,
-    title: "100% accurate rate",
-    desc: "The system compares your data with high precision to accurately reveal unfollowers.",
+    title: "Not-follow-back lists",
+    desc: "Analyze your Instagram export to identify accounts that do not follow you back, plus mutuals and fans from the same file.",
   },
   {
     icon: Zap,
     title: "Fast results",
-    desc: "Get instant results with one click. You don't need to wait to check followers' status.",
+    desc: "After you choose a ZIP or JSON export, a background worker on this device reads the lists so you can review them here.",
   },
   {
     icon: TrendingUp,
-    title: "Improve 50% growth",
-    desc: "The unfollower tracker can increase your growth ratio by 50% by filtering out fake or inactive followers from your account.",
+    title: "Compare two exports",
+    desc: "A single export cannot prove who recently unfollowed you. Save a snapshot or upload an older ZIP and a newer ZIP to see who left.",
   },
   {
     icon: Trash2,
-    title: "Auto deletion of data",
-    desc: "Your data is analyzed securely. After you get your results, the uploaded data is auto-deleted from our system.",
+    title: "Optional snapshots on this device",
+    desc: "If you save a snapshot, username lists stay in IndexedDB in this browser until you delete them or clear site data. ZIP files are not uploaded to our servers.",
   },
   {
     icon: Layers,
-    title: "All-in-one tracking",
-    desc: "Use both methods, username analysis and Instagram data export (ZIP file), for a more accurate and deeper comparison.",
+    title: "ZIP or JSON export",
+    desc: "Upload a full Instagram ZIP or the official followers and following JSON files. There is no username lookup for unfollow checks.",
   },
   {
     icon: Monitor,
@@ -84,19 +84,19 @@ const features = [
   },
   {
     icon: Users,
-    title: "Optimize your social circle",
-    desc: "Adjust your follower list easily. Identify those who no longer follow you and make informed decisions about who to follow.",
+    title: "Review who you follow",
+    desc: "Use the lists to decide who to keep following. Igunfollowed does not unfollow anyone for you and does not change your Instagram account.",
   },
 ];
 
 const benefits = [
-  "Losing followers without knowing who left? You could be missing out on up to 30% of your reach.",
-  "Our free Igunfollow tracker reads your exported data.",
-  "It scans your username and matches your followers against who you follow.",
-  "Spot recent unfollowers.",
+  "A non-followback is an account you follow that is not on your followers list in this export.",
+  "Igunfollowed reads followers and following from your official Instagram export.",
+  "Compare those two lists in this browser — no Instagram password.",
+  "Compare two exports when you want to see who disappeared from your followers list.",
   "Find accounts that don't follow you back.",
-  "Check how healthy your account is.",
-  "You don't need to login or provide your insta password.",
+  "Optional snapshots stay on this device so you can compare later.",
+  "Need the file first? Follow the export guide, then upload it on Analyze.",
 ];
 
 const healthRanges = [
@@ -193,8 +193,26 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="mt-5 max-w-lg text-lg text-muted">
-              Upload your official Instagram data export. Unfollow Tracker compares followers and
-              following on your device — fast, free, and modern.
+              Igunfollowed is an Instagram unfollow tracker. Upload your official data export and
+              compare followers with following on this device. A non-followback means you follow
+              someone who is not following you in that file.
+            </p>
+            <p className="mt-3 max-w-lg text-sm text-muted">
+              Need the ZIP first? Read the{" "}
+              <Link
+                to="/guide"
+                className="font-semibold text-primary underline underline-offset-2 hover:text-accent"
+              >
+                Instagram export guide
+              </Link>
+              . The same export can also list{" "}
+              <Link
+                to="/pending-requests"
+                className="font-semibold text-primary underline underline-offset-2 hover:text-accent"
+              >
+                pending follow requests
+              </Link>
+              .
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
@@ -244,8 +262,8 @@ export default function HomePage() {
             Why Choose Our Unfollower Tool?
           </p>
           <p className="mx-auto mt-3 max-w-2xl text-center text-muted">
-            The safest way to track your non-followers. Official exports, local analysis, and a
-            clearer view of who you follow.
+            Official Instagram exports, ZIP analysis in this browser, and a clearer view of who you
+            follow — without an Instagram password.
           </p>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f) => (
@@ -284,18 +302,18 @@ export default function HomePage() {
       <section className="px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <h2 className="font-display text-center text-3xl font-bold">
-            How Unfollow Tracker Increase Your Account Growth
+            What a follower drop can mean
           </h2>
           <Card className="mt-10 border-border/80 bg-card/90">
             <CardContent className="p-6 sm:p-8">
               <p className="text-sm leading-relaxed text-muted">
                 On May 7, 2026, Instagram removed millions of bot and inactive accounts, so many
-                users lose their follower count drop. Meta said the accounts that got banned or
+                users saw their follower count drop. Meta said the accounts that got banned or
                 penalized were mostly fake or unused. A lower number is not always bad, because bots
                 don&apos;t like, comment or share, and your real audience now makes up a bigger
-                share. Real people can still unfollow you, and Instagram won&apos;t tell you who they
-                are. Our Unfollow Tracker tool compares your followers and following lists, so you
-                can see who left and decide who is important to keep.
+                share. Real people can still unfollow you, and Instagram won&apos;t name them. One
+                Igunfollowed export shows who does not follow you back in that file. Comparing two
+                exports shows who disappeared from your followers list between those dates.
               </p>
             </CardContent>
           </Card>
@@ -308,9 +326,9 @@ export default function HomePage() {
             Instagram Follower Health Ranges
           </h2>
           <p className="mx-auto mt-4 max-w-3xl text-center text-muted">
-            After checking your account with our free Unfollow Tracker tool, compare your numbers
-            with these recommended unfollow and follow-back ranges. They help you tell whether your
-            unfollow rate is normal or a warning sign.
+            These rows are informal illustrations, not official Instagram statistics and not a
+            growth forecast. After you have real counts from your own export, use them only as a
+            rough sense of scale.
           </p>
           <div className="article-prose mx-auto mt-10" style={{ maxWidth: "72rem" }}>
             <div className="article-table-wrap">
@@ -318,8 +336,8 @@ export default function HomePage() {
                 <thead>
                   <tr>
                     <th scope="col">Account size</th>
-                    <th scope="col">Normal daily unfollows</th>
-                    <th scope="col">Healthy follow-back range</th>
+                    <th scope="col">Informal daily unfollow example</th>
+                    <th scope="col">Informal follow-back example</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -335,9 +353,9 @@ export default function HomePage() {
             </div>
           </div>
           <p className="mx-auto mt-6 max-w-3xl text-center text-sm text-muted">
-            How to read it: if your daily unfollows are close to the range for your account size,
-            that is normal. If they are much higher, take it as a warning sign and check who is
-            leaving.
+            How to read it: if your daily unfollows are close to the example for your account size,
+            that is only a rough comparison. If they are much higher, look at who is leaving in a
+            two-export comparison rather than treating this table as a diagnosis.
           </p>
         </div>
       </section>

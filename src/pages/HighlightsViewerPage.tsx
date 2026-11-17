@@ -16,7 +16,7 @@ import {
 
 const META_TITLE = "Instagram Highlights Viewer: View & Download Free (No Login)";
 const META_DESCRIPTION =
-  "Free Instagram Highlights viewer — open any public profile’s Highlights anonymously, step through stories, and download photos or videos. No Instagram login required.";
+  "Open public Instagram Highlights by username, step through stories, and download media. No Instagram login. Lookups go through our server API.";
 const FEATURED_IMAGE_PATH = "/images/instagram-highlights-viewer-featured.webp";
 const FEATURED_IMAGE_ALT =
   "Instagram Highlights Viewer — browse public highlight covers and download stories without login";

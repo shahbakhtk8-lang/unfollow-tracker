@@ -24,7 +24,7 @@ Type the account's Instagram handle into the search box above, with or without t
 
 ## Wait a Few Seconds
 
-The tool reaches out to Instagram's public profile data and pulls in every Highlight the account has pinned. A first-time lookup usually takes 10 to 20 seconds, and a repeat search of the same account loads faster.
+Your browser asks this site's `/api/highlights` endpoint for that public username. The server uses a third-party lookup to fetch publicly visible Highlight metadata. A first-time lookup often takes several seconds.
 
 ## Open and Save the Highlight
 
@@ -32,11 +32,11 @@ Click on any Highlight to step through its stories in order, exactly as they wou
 
 # Is This Tool Anonymous?
 
-Yes. This tool loads Highlights through its own servers rather than through your personal Instagram account, so nothing about your visit ever touches Instagram's systems under your name. You do not need to log in, and the account whose Highlights you are viewing has no way of knowing that you looked. This is different from opening someone's Highlights directly inside the Instagram app, where, depending on your own privacy settings, your profile can sometimes appear in a viewer list.
+You do not log into Instagram here, so this site does not open Highlights under your Instagram username. The public username you type is sent to our `/api/highlights` endpoint and then to a third-party lookup so publicly visible Highlights can load. That is different from opening Highlights in the Instagram app, where your own profile might appear in a viewer list for an active Story.
 
 # Can the Account Owner See Who Viewed?
 
-No. Instagram does not currently show a viewer list for Highlights the way it does for an active Story that is still within its first 24 hours. Since this tool never logs into Instagram on your behalf, there is no account, no username, and no activity tied back to you that the profile owner could ever see.
+Instagram does not currently show a viewer list for Highlights the way it does for an active Story that is still within its first 24 hours. This tool does not log into your Instagram account, so it does not create an in-app view from your profile. We cannot speak for Instagram's own server logs.
 
 # We Don't Store Your Data
 
