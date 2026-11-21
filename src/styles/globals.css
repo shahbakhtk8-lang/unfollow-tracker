@@ -163,6 +163,18 @@ body {
   margin: 0 0 1.25rem;
 }
 
+.article-prose img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-card);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
 .article-prose ul {
   padding-left: 1.35rem;
   list-style-type: disc;

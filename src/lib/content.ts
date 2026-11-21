@@ -52,6 +52,17 @@ markdown.renderer.rules.link_open = (tokens, idx, options, env, self) => {
   return defaultLinkOpen(tokens, idx, options, env, self);
 };
 
+const defaultImage =
+  markdown.renderer.rules.image ??
+  ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options));
+
+markdown.renderer.rules.image = (tokens, idx, options, env, self) => {
+  const token = tokens[idx]!;
+  if (!token.attrGet("loading")) token.attrSet("loading", "lazy");
+  if (!token.attrGet("decoding")) token.attrSet("decoding", "async");
+  return defaultImage(tokens, idx, options, env, self);
+};
+
 export function slugifyHeading(text: string): string {
   const slug = text
     .normalize("NFKD")
