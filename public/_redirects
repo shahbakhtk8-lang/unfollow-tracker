@@ -13,6 +13,7 @@
 /instagram-font-generator /instagram-font-generator/index.html 200
 /instagram-highlights-viewer /instagram-highlights-viewer/index.html 200
 /instagram-grid-maker /instagram-grid-maker/index.html 200
+/threads-unfollow-tracker /threads-unfollow-tracker/index.html 200
 
 # Unknown paths keep the SPA shell. Valid prerendered routes above are not deleted.
 /*    /index.html   200

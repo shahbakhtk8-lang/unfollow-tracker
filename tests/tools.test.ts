@@ -33,6 +33,7 @@ describe("tools registry", () => {
       "pending-requests",
       "instagram-highlights-viewer",
       "instagram-grid-maker",
+      "threads-unfollow-tracker",
     ]);
     expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
       "instagram-font-generator",
@@ -44,6 +45,21 @@ describe("tools registry", () => {
     expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
       "instagram-grid-maker",
     );
+    expect(relatedLiveTools("unfollow-tracker").map((t) => t.slug)).toContain(
+      "threads-unfollow-tracker",
+    );
+  });
+
+  it("registers Threads Unfollow Tracker as live", () => {
+    const threads = tools.find((tool) => tool.slug === "threads-unfollow-tracker");
+    expect(threads).toMatchObject({
+      href: "/threads-unfollow-tracker",
+      status: "live",
+      name: "Threads Unfollow Tracker",
+      icon: "at-sign",
+    });
+    expect(isToolActive(threads!, "/threads-unfollow-tracker")).toBe(true);
+    expect(isToolActive(threads!, "/")).toBe(false);
   });
 
   it("registers Instagram Grid Maker as live", () => {

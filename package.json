@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "lighthouse:home": "lighthouse http://127.0.0.1:4173 --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --screenEmulation.mobile --output=json --output=html --output-path=lighthouse-reports/home --chrome-flags=\"--headless=new --no-sandbox\"",
-    "lighthouse:path": "node scripts/lighthouse-path.mjs"
+    "lighthouse:path": "node scripts/lighthouse-path.mjs",
+    "og:threads": "node scripts/generate-threads-og-image.mjs"
   },
 
   "dependencies": {

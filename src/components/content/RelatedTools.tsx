@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FileText, LayoutGrid, Shield, Sparkles, Type, Users } from "lucide-react";
+import { AtSign, FileText, LayoutGrid, Shield, Sparkles, Type, Users } from "lucide-react";
 import { relatedLiveTools, type ToolIconName } from "@/content/tools";
 
 const icons: Record<ToolIconName, typeof Shield> = {
@@ -9,6 +9,7 @@ const icons: Record<ToolIconName, typeof Shield> = {
   sparkles: Sparkles,
   type: Type,
   "layout-grid": LayoutGrid,
+  "at-sign": AtSign,
 };
 
 export function RelatedTools({ toolSlug }: { toolSlug: string }) {

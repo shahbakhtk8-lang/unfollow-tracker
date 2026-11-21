@@ -46,6 +46,25 @@ export async function parsePendingRequestsFile(
   return remote.parsePendingRequests(file, progressProxy);
 }
 
+export async function parseThreadsZipFile(
+  file: File,
+  onProgress?: (p: ParseProgress) => void,
+): Promise<ParseResult> {
+  const remote = getWorker();
+  const progressProxy = onProgress ? Comlink.proxy(onProgress) : undefined;
+  return remote.parseThreadsFile(file, progressProxy);
+}
+
+export async function parseThreadsZipWithDiff(
+  newFile: File,
+  oldFollowerUsernames: string[],
+  onProgress?: (p: ParseProgress) => void,
+) {
+  const remote = getWorker();
+  const progressProxy = onProgress ? Comlink.proxy(onProgress) : undefined;
+  return remote.parseThreadsFileAndDiff(newFile, oldFollowerUsernames, progressProxy);
+}
+
 export function computeDiffLocal(oldFollowers: string[], newFollowers: string[]) {
   return diffSnapshots(oldFollowers, newFollowers);
 }

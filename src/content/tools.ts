@@ -1,7 +1,14 @@
 export type ToolStatus = "live" | "coming-soon";
 
 /** Lucide icon names used by related-tool cards. Add names here when a new tool needs a new icon. */
-export type ToolIconName = "shield" | "users" | "file-text" | "sparkles" | "type" | "layout-grid";
+export type ToolIconName =
+  | "shield"
+  | "users"
+  | "file-text"
+  | "sparkles"
+  | "type"
+  | "layout-grid"
+  | "at-sign";
 
 export interface ToolEntry {
   slug: string;
@@ -57,6 +64,15 @@ export const tools: ToolEntry[] = [
     href: "/instagram-grid-maker",
     status: "live",
     icon: "layout-grid",
+  },
+  {
+    slug: "threads-unfollow-tracker",
+    name: "Threads Unfollow Tracker",
+    shortDescription:
+      "See who doesn’t follow you back on Threads from your official Meta export — local ZIP analysis, no login.",
+    href: "/threads-unfollow-tracker",
+    status: "live",
+    icon: "at-sign",
   },
   // PLACEHOLDER — do not uncomment until the tool is ready.
   // {

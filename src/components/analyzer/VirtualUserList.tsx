@@ -12,6 +12,9 @@ interface VirtualUserListProps {
   onReviewedChange?: (username: string, reviewed: boolean) => void;
   onIgnore?: (username: string) => void;
   onRestore?: (username: string) => void;
+  /** Profile URL builder. Defaults to Instagram so existing callers stay unchanged. */
+  profileUrl?: (username: string) => string;
+  profileLabel?: string;
 }
 
 function UserRow({
@@ -21,6 +24,8 @@ function UserRow({
   onReviewedChange,
   onIgnore,
   onRestore,
+  profileUrl,
+  profileLabel,
 }: {
   user: ListedUser;
   index: number;
@@ -28,6 +33,8 @@ function UserRow({
   onReviewedChange?: (username: string, reviewed: boolean) => void;
   onIgnore?: (username: string) => void;
   onRestore?: (username: string) => void;
+  profileUrl: (username: string) => string;
+  profileLabel: string;
 }) {
   const [copyState, setCopyState] = useState<"idle" | "ok" | "fail">("idle");
   const followed = formatFollowDate(user.timestamp);
@@ -96,10 +103,10 @@ function UserRow({
         </Button>
         <Button type="button" variant="ghost" size="icon" className="h-8 w-8" asChild>
           <a
-            href={`https://www.instagram.com/${user.username}/`}
+            href={profileUrl(user.username)}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Open ${user.username} on Instagram`}
+            aria-label={`Open ${user.username} on ${profileLabel}`}
           >
             <ExternalLink className="h-4 w-4" />
           </a>
@@ -109,6 +116,8 @@ function UserRow({
   );
 }
 
+const defaultProfileUrl = (username: string) => `https://www.instagram.com/${username}/`;
+
 export function VirtualUserList({
   users,
   emptyMessage = "No accounts in this list.",
@@ -116,6 +125,8 @@ export function VirtualUserList({
   onReviewedChange,
   onIgnore,
   onRestore,
+  profileUrl = defaultProfileUrl,
+  profileLabel = "Instagram",
 }: VirtualUserListProps) {
   const parentRef = useRef<HTMLDivElement>(null);
   const extras = Boolean(onReviewedChange || onIgnore || onRestore);
@@ -168,6 +179,8 @@ export function VirtualUserList({
                 onReviewedChange={onReviewedChange}
                 onIgnore={onIgnore}
                 onRestore={onRestore}
+                profileUrl={profileUrl}
+                profileLabel={profileLabel}
               />
             </div>
           );

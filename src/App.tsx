@@ -10,6 +10,7 @@ const PendingRequestsPage = lazy(() => import("@/pages/PendingRequestsPage"));
 const FontGeneratorPage = lazy(() => import("@/pages/FontGeneratorPage"));
 const HighlightsViewerPage = lazy(() => import("@/pages/HighlightsViewerPage"));
 const GridMakerPage = lazy(() => import("@/pages/GridMakerPage"));
+const ThreadsUnfollowTrackerPage = lazy(() => import("@/pages/ThreadsUnfollowTrackerPage"));
 const AnalyzePage = lazy(() => import("@/pages/AnalyzePage"));
 const GuidePage = lazy(() => import("@/pages/GuidePage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
@@ -88,6 +89,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <GridMakerPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/threads-unfollow-tracker"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ThreadsUnfollowTrackerPage />
             </Suspense>
           }
         />

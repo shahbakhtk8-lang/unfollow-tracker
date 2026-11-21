@@ -137,6 +137,20 @@ const ROUTES = [
     imageWidth: "1280",
     imageHeight: "720",
   },
+  {
+    path: "/threads-unfollow-tracker",
+    title: "Threads Unfollow Tracker: See Who Unfollowed You (2026)",
+    description:
+      "Find out who unfollowed you on Threads using your official Meta export. Free, no login — comparison runs fully in your browser.",
+    h1: "Threads Unfollow Tracker",
+    summary:
+      "Upload a Threads export ZIP to see who doesn’t follow back. Compare two exports for unfollow history — all in this browser.",
+    image: `${SITE}/images/threads-unfollow-tracker-featured.webp`,
+    imageAlt: "Threads Unfollow Tracker: See Who Unfollowed You (2026)",
+    imageWidth: "1280",
+    imageHeight: "850",
+    imageType: "image/webp",
+  },
 ];
 
 function escapeHtml(value) {
@@ -206,6 +220,20 @@ function applyMeta(html, route) {
       /(property="og:image:height"\s+content=")[^"]*(")/,
       `$1${escapeHtml(route.imageHeight)}$2`,
     );
+  }
+  if (route.imageType) {
+    const imageType = escapeHtml(route.imageType);
+    if (out.includes('property="og:image:type"')) {
+      out = out.replace(
+        /(property="og:image:type"\s+content=")[^"]*(")/,
+        `$1${imageType}$2`,
+      );
+    } else {
+      out = out.replace(
+        /(property="og:image:height"\s+content="[^"]*"\s*\/?>)/,
+        `$1\n    <meta property="og:image:type" content="${imageType}" />`,
+      );
+    }
   }
   if (route.path !== "/") {
     out = out.replace(/<script id="home-jsonld"[\s\S]*?<\/script>/, "");

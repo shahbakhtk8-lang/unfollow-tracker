@@ -1,0 +1,21 @@
+# Unfollow Tracker (igunfollowed.com)
+
+> Client-side tools for analyzing official Meta data exports in your browser. No login or password required for ZIP analysis — those files are not uploaded to a server.
+
+## Follower and unfollow tools
+
+- [Unfollow Tracker](https://igunfollowed.com/): See who doesn’t follow you back from your official Instagram export. ZIP analysis runs in your browser.
+- [Threads Unfollow Tracker](https://igunfollowed.com/threads-unfollow-tracker): See who doesn’t follow you back on Threads from your official Meta export — local ZIP analysis, no login.
+- [Pending Requests Checker](https://igunfollowed.com/pending-requests): See which Instagram follow requests you sent are still waiting — even from years ago.
+
+## Instagram utilities
+
+- [Instagram Font Generator](https://igunfollowed.com/instagram-font-generator): Style bio, display name, or caption text with Unicode lettering — free, in your browser.
+- [Instagram Highlights Viewer](https://igunfollowed.com/instagram-highlights-viewer): View public Instagram Highlights by username — browse covers, stories, and download photos. No Instagram login.
+- [Instagram Grid Maker](https://igunfollowed.com/instagram-grid-maker): Split one photo into a profile grid or carousel — crop, preview 3:4 thumbnails, download tiles in your browser.
+
+## Guides
+
+- [How to download your Instagram export](https://igunfollowed.com/guide): Step-by-step request of Followers and following from Meta Accounts Center, then upload the ZIP on Analyze.
+- [How to See Recent Followers on Instagram](https://igunfollowed.com/blog/recent-followers): Check recent followers manually or with your official export — no login required.
+- [Blog](https://igunfollowed.com/blog): Articles on Instagram export workflows and related tools.

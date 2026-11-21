@@ -1,0 +1,22 @@
+{
+  "text_post_app_text_post_app_followers": [
+    {
+      "title": "mutual_one",
+      "string_list_data": [{ "value": "mutual_one", "href": "https://www.threads.net/@mutual_one", "timestamp": 1 }]
+    },
+    {
+      "title": "fan_only",
+      "string_list_data": [{ "value": "fan_only", "href": "https://www.threads.net/@fan_only", "timestamp": 2 }]
+    }
+  ],
+  "text_post_app_text_post_app_following": [
+    {
+      "title": "mutual_one",
+      "string_list_data": [{ "value": "mutual_one", "href": "https://www.threads.net/@mutual_one", "timestamp": 3 }]
+    },
+    {
+      "title": "not_back",
+      "string_list_data": [{ "value": "not_back", "href": "https://www.threads.net/@not_back", "timestamp": 4 }]
+    }
+  ]
+}
