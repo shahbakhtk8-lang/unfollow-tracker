@@ -60,6 +60,18 @@ markdown.renderer.rules.image = (tokens, idx, options, env, self) => {
   const token = tokens[idx]!;
   if (!token.attrGet("loading")) token.attrSet("loading", "lazy");
   if (!token.attrGet("decoding")) token.attrSet("decoding", "async");
+
+  const src = String(token.attrGet("src") ?? "");
+  // Threads article walkthrough assets are landscape (Accounts Center desktop + tool UI).
+  const roleClass = /threads-step[1-6]-/i.test(src)
+    ? "article-img article-img--wide"
+    : "article-img";
+  const existing = token.attrGet("class");
+  token.attrSet(
+    "class",
+    existing != null && String(existing).length > 0 ? `${String(existing)} ${roleClass}` : roleClass,
+  );
+
   return defaultImage(tokens, idx, options, env, self);
 };
 
@@ -268,7 +280,49 @@ function renderTableHtml(block: string[]): string {
   return `<div class="article-table-wrap${colsClass}"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>\n`;
 }
 
-/** Render markdown, turning GFM tables into HTML without enabling raw HTML. */
+const STEP_ROW_OPEN = /^:::step(?:-row)?(?:\s+(phone|wide))?\s*$/i;
+const STEP_ROW_CLOSE = /^:::\s*$/;
+const STEP_IMAGE_LINE = /^!\[[^\]]*]\([^)]+\)\s*$/;
+
+/**
+ * Custom article block (same pre-pass style as GFM tables):
+ *
+ * :::step phone
+ * Left-column guidance text. Markdown inline links OK.
+ *
+ * ![Alt text](/images/...)
+ * :::
+ *
+ * Renders a 2-column text | screenshot row (stacks on small screens).
+ */
+function renderStepRowHtml(blockLines: string[], variant: "phone" | "wide"): string {
+  const imageIndex = blockLines.findIndex((line) => STEP_IMAGE_LINE.test(line.trim()));
+  const textSource =
+    imageIndex === -1
+      ? blockLines.join("\n").trim()
+      : blockLines.slice(0, imageIndex).join("\n").trim();
+  const imageSource =
+    imageIndex === -1 ? "" : blockLines.slice(imageIndex).join("\n").trim();
+
+  const textHtml = textSource
+    ? markdown.render(textSource).trim()
+    : "";
+  const imageHtml = imageSource
+    ? markdown.render(imageSource).trim()
+    : "";
+
+  const variantClass =
+    variant === "phone" ? " article-step-row--phone" : " article-step-row--wide";
+
+  return (
+    `<div class="article-step-row${variantClass}">` +
+    `<div class="article-step-text">${textHtml}</div>` +
+    `<div class="article-step-media">${imageHtml}</div>` +
+    `</div>\n`
+  );
+}
+
+/** Render markdown, turning GFM tables + :::step rows into HTML without enabling raw HTML. */
 function renderMarkdownWithTables(source: string): string {
   const lines = source.split(/\r?\n/);
   const htmlParts: string[] = [];
@@ -283,6 +337,22 @@ function renderMarkdownWithTables(source: string): string {
   };
 
   while (i < lines.length) {
+    const stepOpen = (lines[i] ?? "").match(STEP_ROW_OPEN);
+    if (stepOpen) {
+      flushMarkdown();
+      const variant = (stepOpen[1]?.toLowerCase() === "wide" ? "wide" : "phone") as
+        | "phone"
+        | "wide";
+      i += 1;
+      const block: string[] = [];
+      while (i < lines.length && !STEP_ROW_CLOSE.test(lines[i] ?? "")) {
+        block.push(lines[i] ?? "");
+        i += 1;
+      }
+      if (i < lines.length && STEP_ROW_CLOSE.test(lines[i] ?? "")) i += 1;
+      htmlParts.push(renderStepRowHtml(block, variant));
+      continue;
+    }
     if (isTableBlockStart(lines, i)) {
       flushMarkdown();
       const block = [lines[i], lines[i + 1]];

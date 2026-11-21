@@ -8,6 +8,7 @@ import { ParseProgressBar } from "@/components/analyzer/ParseProgressBar";
 import { StatCard } from "@/components/analyzer/StatCard";
 import { TwoZipPanel } from "@/components/analyzer/TwoZipPanel";
 import { VirtualUserList } from "@/components/analyzer/VirtualUserList";
+import { YouTubeEmbed } from "@/components/content/YouTubeEmbed";
 import { ToolPageLayout } from "@/components/layout/ToolPageLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +25,8 @@ import {
   THREADS_FEATURED_IMAGE_WIDTH,
   THREADS_META_DESCRIPTION,
   THREADS_META_TITLE,
+  THREADS_YOUTUBE_VIDEO_ID,
+  THREADS_YOUTUBE_VIDEO_TITLE,
 } from "@/content/threadsSeo";
 import {
   deleteThreadsSnapshot,
@@ -572,6 +575,19 @@ export default function ThreadsUnfollowTrackerPage() {
           </div>
         </section>
       </div>
+
+      <section id="video" className="border-t border-border/80 px-4 py-16 sm:px-6 sm:py-20">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="font-display text-center text-3xl font-bold">Watch the demo</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-center text-muted">
+            See how to export Threads data and find who doesn&apos;t follow you back — no login
+            required.
+          </p>
+          <div className="relative mt-10 aspect-video overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+            <YouTubeEmbed videoId={THREADS_YOUTUBE_VIDEO_ID} title={THREADS_YOUTUBE_VIDEO_TITLE} />
+          </div>
+        </div>
+      </section>
     </ToolPageLayout>
   );
 }

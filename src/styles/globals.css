@@ -163,16 +163,89 @@ body {
   margin: 0 0 1.25rem;
 }
 
+/* Inline article screenshots — never force full-bleed width (portrait phones blow up). */
 .article-prose img {
   display: block;
-  width: 100%;
+  box-sizing: border-box;
+  width: auto;
   max-width: 100%;
   height: auto;
-  margin: 0 0 1.25rem;
+  margin: 0 auto 1.25rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   background: var(--color-card);
   box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+/* Tall phone screenshots: phone-frame width, centered in the reading column. */
+.article-prose img.article-img--phone {
+  max-width: min(100%, 22.5rem); /* ~360px; shrinks further on narrow viewports */
+}
+
+/* Landscape tool UI captures: fill the article column like tables/cards. */
+.article-prose img.article-img--wide {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Text | screenshot feature rows (:::step phone|wide … :::) */
+.article-prose .article-step-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin: 0 0 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-card) 92%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+.article-prose .article-step-text > :first-child {
+  margin-top: 0;
+}
+
+.article-prose .article-step-text > :last-child {
+  margin-bottom: 0;
+}
+
+.article-prose .article-step-media {
+  min-width: 0;
+}
+
+.article-prose .article-step-media img {
+  margin: 0 auto;
+}
+
+.article-prose .article-step-row--wide .article-step-media img {
+  width: 100%;
+  max-width: 100%;
+}
+
+.article-prose .article-step-row--phone .article-step-media img {
+  max-width: min(100%, 20rem);
+}
+
+@media (min-width: 768px) {
+  .article-prose .article-step-row {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 1.5rem 1.75rem;
+    padding: 1.15rem 1.25rem;
+  }
+
+  .article-prose .article-step-row--wide {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+
+  .article-prose .article-step-media img {
+    margin-inline: 0 0;
+  }
+
+  .article-prose .article-step-row--phone .article-step-media {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .article-prose ul {

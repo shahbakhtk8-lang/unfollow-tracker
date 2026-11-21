@@ -15,6 +15,13 @@ export const THREADS_FEATURED_IMAGE_HEIGHT = 850;
 export const THREADS_FEATURED_IMAGE_WIDTH_800 = 800;
 export const THREADS_FEATURED_IMAGE_HEIGHT_800 = 531;
 
+export const THREADS_YOUTUBE_VIDEO_ID = "3F87NQ8hf-8";
+export const THREADS_YOUTUBE_WATCH_URL = `https://www.youtube.com/watch?v=${THREADS_YOUTUBE_VIDEO_ID}`;
+export const THREADS_YOUTUBE_EMBED_URL = `https://www.youtube.com/embed/${THREADS_YOUTUBE_VIDEO_ID}`;
+export const THREADS_YOUTUBE_THUMBNAIL_URL = `https://i.ytimg.com/vi/${THREADS_YOUTUBE_VIDEO_ID}/hqdefault.jpg`;
+export const THREADS_YOUTUBE_VIDEO_TITLE =
+  "Threads Unfollow Tracker — See Who Unfollowed You | IGUnfollowed.com";
+
 export const THREADS_FAQS = [
   {
     question: "Does this work for private Threads accounts?",
@@ -52,6 +59,7 @@ export function buildThreadsJsonLd(): Record<string, unknown> {
         isPartOf: { "@id": `${SITE_URL}/#website` },
         primaryImageOfPage: { "@id": `${pageUrl}#featured-image` },
         about: { "@id": `${pageUrl}#app` },
+        video: { "@id": `${pageUrl}#video` },
         inLanguage: "en",
       },
       {
@@ -80,6 +88,21 @@ export function buildThreadsJsonLd(): Record<string, unknown> {
           "Not following back and two-export unfollow compare",
           "Free to use",
         ],
+      },
+      {
+        "@type": "VideoObject",
+        "@id": `${pageUrl}#video`,
+        name: THREADS_YOUTUBE_VIDEO_TITLE,
+        description: THREADS_META_DESCRIPTION,
+        thumbnailUrl: THREADS_YOUTUBE_THUMBNAIL_URL,
+        embedUrl: THREADS_YOUTUBE_EMBED_URL,
+        contentUrl: THREADS_YOUTUBE_WATCH_URL,
+        uploadDate: "2026-11-01",
+        publisher: {
+          "@type": "Organization",
+          name: "Unfollow Tracker",
+          url: `${SITE_URL}/`,
+        },
       },
       {
         "@type": "FAQPage",

@@ -26,21 +26,31 @@ Open Threads, go to your profile, tap the menu, then Settings, then Account, the
 
 ### Method 2: Through Instagram's Accounts Center
 
-Open Instagram, either the app or instagram.com on a computer, then go to Settings, Accounts Center, Your information and permissions, and Download your information.
+This is the route most people should use. Open Instagram (app or browser), go to Settings → Accounts Center → Your information and permissions, then start an export. Each step below pairs the action with the matching screen.
 
-![Instagram Accounts Center – Export your information menu](/images/articles/threads-unfollow-tracker/threads-step1-export-info.webp)
+:::step wide
+**Step 1 — Open Your information and permissions.** In Accounts Center, open **Your information and permissions**, then choose **Export your information** (some screens say Download).
 
-From here you can select your Threads profile specifically.
+![Instagram Accounts Center – Your information and permissions](/images/articles/threads-unfollow-tracker/threads-step1-export-info.webp)
+:::
+
+:::step wide
+**Step 2 — Choose your Threads profile.** When Meta asks which profile to export, select your **Threads** account specifically — not only Instagram — so follower data for Threads is included.
 
 ![Choosing the Threads profile to export](/images/articles/threads-unfollow-tracker/threads-step2-choose-profile.webp)
+:::
 
-On Customize information, keep Threads checked and choose JSON as the format.
+:::step wide
+**Step 3 — Pick JSON format.** Under export options / customize information, keep the Threads-related data you need and set the format to **JSON** (recommended for this tool). HTML also works, but JSON is cleaner.
 
-![Customize information screen with Threads selected and JSON format](/images/articles/threads-unfollow-tracker/threads-step3-customize.webp)
+![Customize information with JSON format selected](/images/articles/threads-unfollow-tracker/threads-step3-customize.webp)
+:::
 
-Then request the download. This route works from a computer browser too, not just a phone, which makes it easier if you want to open and inspect the files on a laptop. The same Accounts Center flow is covered step-by-step in our [Instagram export guide](/guide) when you are downloading Instagram relationship data.
+:::step wide
+**Step 4 — Request, then download the ZIP.** Submit the export. When Meta emails you (or shows Available downloads), open the ready export and download the ZIP to your device. Same flow works on desktop if you prefer a laptop — see also our [Instagram export guide](/guide).
 
-![Threads export ready to download screen](/images/articles/threads-unfollow-tracker/threads-step4-download.webp)
+![Download your Threads export files](/images/articles/threads-unfollow-tracker/threads-step4-download.webp)
+:::
 
 | Method | Where you request it | What you get | Works on desktop? |
 |---|---|---|---|
@@ -76,9 +86,13 @@ A tool built properly should always lead with the username, since that's the one
 
 ## How Do You Actually Find Your Threads Unfollowers?
 
-Once you have the ZIP, open the [Threads Unfollow Tracker](/threads-unfollow-tracker) and drop the file on the upload area (or use Try demo to preview sample results without your own export).
+Once the ZIP is on your device, you can either compare lists by hand or let the tool do it in your browser.
+
+:::step wide
+**Upload the export.** Open the [Threads Unfollow Tracker](/threads-unfollow-tracker) and drop your Meta ZIP on the upload area (or tap **Try demo** to preview sample results without your own file). Analysis stays on this device — the ZIP is not uploaded to a server.
 
 ![Threads Unfollow Tracker dropzone for uploading a Meta export ZIP](/images/articles/threads-unfollow-tracker/threads-step5-upload-real.webp)
+:::
 
 Once you have two exports from two different dates, the actual comparison is simple in principle. You're only looking for names that were present before and are missing now. The tricky part is doing this accurately once your follower count gets into the hundreds or thousands, where a manual scan starts missing names.
 
@@ -87,7 +101,11 @@ Once you have two exports from two different dates, the actual comparison is sim
 3. Check each of those usernames against the newer file.
 4. Anyone present in the old list but missing from the new one has unfollowed you in that window.
 
+:::step wide
+**Read the results.** After analysis you get stats (followers, following, not following back) plus tabs like Not back, Mutuals, and Fans. Two exports unlock Unfollowed / New history. Search, sort, and CSV export stay local.
+
 ![Threads Unfollow Tracker results with follower stats and Not back tab](/images/articles/threads-unfollow-tracker/threads-step6-results-real.webp)
+:::
 
 Doing this by hand works fine if you only have a few hundred followers. It gets tedious fast once the list grows into the thousands, and it's easy to miss a name or mistype one while scrolling. A free tool that reads both files and runs the comparison automatically in your browser saves that manual work, and keeps your files on your own device instead of uploading them anywhere.
 
