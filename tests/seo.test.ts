@@ -78,7 +78,8 @@ describe("home SEO", () => {
     expect(xml).toContain("<loc>https://igunfollowed.com</loc>");
     expect(xml).not.toContain("<loc>https://igunfollowed.com/</loc>");
     expect(xml).not.toContain("pages.dev");
-    expect(xml).toContain("<loc>https://igunfollowed.com/analyze</loc>");
+    expect(xml).not.toContain("<loc>https://igunfollowed.com/analyze</loc>");
+    expect(xml).toContain("<lastmod>2026-11-25</lastmod>");
     expect(xml).toContain("<loc>https://igunfollowed.com/guide</loc>");
     expect(xml).toContain("<loc>https://igunfollowed.com/privacy</loc>");
     expect(xml).toContain("<loc>https://igunfollowed.com/instagram-highlights-viewer</loc>");

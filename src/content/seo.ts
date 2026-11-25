@@ -3,7 +3,7 @@ export const SITE_URL = "https://igunfollowed.com";
 export const HOME_META_TITLE = "Instagram Unfollow Tracker Free online - Without Login 2026";
 
 export const HOME_META_DESCRIPTION =
-  "Instagram Unfollow Tracker Free online - Without Login 2026. Upload your official ZIP and see who doesn't follow you back. Private in-browser analysis, no Instagram password required.";
+  "Upload your official Instagram ZIP and see who doesn't follow you back. Private in-browser analysis — no Instagram password required.";
 
 export const FEATURED_IMAGE_PATH = "/images/instagram-unfollow-tracker-featured.jpg";
 export const FEATURED_IMAGE_PATH_800 = "/images/instagram-unfollow-tracker-featured-800.jpg";

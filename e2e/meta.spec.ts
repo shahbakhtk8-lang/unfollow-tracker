@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-const ROUTES: Array<{ path: string; title: string; canonical: string }> = [
+const ROUTES: Array<{
+  path: string;
+  title: string;
+  canonical: string;
+  robots?: string;
+}> = [
   {
     path: "/",
     title: "Instagram Unfollow Tracker Free online - Without Login 2026",
@@ -10,10 +15,11 @@ const ROUTES: Array<{ path: string; title: string; canonical: string }> = [
     path: "/analyze",
     title: "Analyze Instagram Export — Unfollow Tracker",
     canonical: "https://igunfollowed.com/analyze",
+    robots: "noindex, follow",
   },
   {
     path: "/guide",
-    title: "How to download your Instagram export — Unfollow Tracker",
+    title: "How to Download Your Instagram Export (Followers & Following)",
     canonical: "https://igunfollowed.com/guide",
   },
   {
@@ -43,7 +49,7 @@ const ROUTES: Array<{ path: string; title: string; canonical: string }> = [
   },
   {
     path: "/blog",
-    title: "Blog — Unfollow Tracker",
+    title: "Blog — IGUnfollowed",
     canonical: "https://igunfollowed.com/blog",
   },
   {
@@ -86,6 +92,10 @@ for (const route of ROUTES) {
     await expect(ogUrl).toHaveCount(1);
     await expect(ogUrl).toHaveAttribute("content", route.canonical);
 
-    await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
+    if (route.robots) {
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", route.robots);
+    } else {
+      await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
+    }
   });
 }

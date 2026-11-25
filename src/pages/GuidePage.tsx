@@ -17,7 +17,7 @@ const steps = [
 
 export default function GuidePage() {
   useDocumentMeta({
-    title: "How to download your Instagram export — Unfollow Tracker",
+    title: "How to Download Your Instagram Export (Followers & Following)",
     description:
       "Step-by-step: request Instagram information, choose Followers and following, pick JSON, download the ZIP, and upload it to Analyze.",
     canonical: `${SITE_URL}/guide`,

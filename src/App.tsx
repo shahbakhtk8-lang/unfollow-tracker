@@ -51,6 +51,7 @@ function AnalyzeRoute() {
     description:
       "Upload an Instagram ZIP or JSON export to list accounts that do not follow you back. Compare two exports to see who left. Processing stays in your browser.",
     canonical: `${SITE_URL}/analyze`,
+    robots: "noindex, follow",
   });
   return <AnalyzePage />;
 }

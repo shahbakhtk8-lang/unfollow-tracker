@@ -1,7 +1,7 @@
 import { SITE_URL } from "@/content/seo";
 
 export const THREADS_META_TITLE =
-  "Threads Unfollow Tracker: See Who Unfollowed You (2026)";
+  "Threads Unfollow Tracker — See Who Unfollowed You";
 
 export const THREADS_META_DESCRIPTION =
   "Find out who unfollowed you on Threads using your official Meta export. Free, no login — comparison runs fully in your browser.";

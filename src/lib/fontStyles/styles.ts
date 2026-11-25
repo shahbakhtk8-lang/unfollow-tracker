@@ -1,7 +1,7 @@
 import type { StyleMeta } from "./types";
 
 /**
- * Style registry (~65 styles). Compatibility is conservative:
+ * Style registry (~60+ styles). Compatibility is conservative:
  * - high = plain Mathematical Alphanumeric / common punctuation transforms that IG usually keeps
  * - medium = decorative / less common blocks that often degrade on some clients
  */
@@ -189,13 +189,6 @@ export const STYLES: StyleMeta[] = [
     compatibilityNote: "Enclosed Alphanumerics; commonly retained.",
   },
   {
-    id: "bubble",
-    name: "Bubble",
-    category: "Fun lettering",
-    compatibility: "high",
-    compatibilityNote: "Same circled Latin set; familiar in bios.",
-  },
-  {
     id: "squared",
     name: "Squared",
     category: "Fun lettering",
@@ -208,13 +201,6 @@ export const STYLES: StyleMeta[] = [
     category: "Fun lettering",
     compatibility: "medium",
     compatibilityNote: "Uses lookalike flips; incomplete alphabet.",
-  },
-  {
-    id: "vaporwave",
-    name: "Vaporwave",
-    category: "Fun lettering",
-    compatibility: "high",
-    compatibilityNote: "Fullwidth spacing aesthetic; ASCII-based.",
   },
   {
     id: "wide-spaced",

@@ -5,7 +5,7 @@ import { SITE_URL } from "@/content/seo";
 
 export default function BlogPage() {
   useDocumentMeta({
-    title: "Blog — Unfollow Tracker",
+    title: "Blog — IGUnfollowed",
     description:
       "Guides on recent followers, private unfollow tracking, and Instagram data exports — no password required.",
     canonical: `${SITE_URL}/blog`,

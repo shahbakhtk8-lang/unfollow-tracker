@@ -12,7 +12,7 @@ const ROUTES = [
     path: "/",
     title: "Instagram Unfollow Tracker Free online - Without Login 2026",
     description:
-      "Instagram Unfollow Tracker Free online - Without Login 2026. Upload your official ZIP and see who doesn't follow you back. Private in-browser analysis, no Instagram password required.",
+      "Upload your official Instagram ZIP and see who doesn't follow you back. Private in-browser analysis — no Instagram password required.",
     h1: "Instagram Unfollow Tracker",
     summary:
       "IGUnfollowed compares followers and following from your official Instagram export in this browser.",
@@ -29,12 +29,13 @@ const ROUTES = [
     h1: "Analyze your export",
     summary:
       "One export shows who does not follow you back. Comparing two exports is required to see who unfollowed since last time.",
+    robots: "noindex, follow",
   },
   {
     path: "/guide",
-    title: "How to download your Instagram export — Unfollow Tracker",
+    title: "How to Download Your Instagram Export (Followers & Following)",
     description:
-      "Step-by-step: request Instagram information, choose Followers and following, pick JSON, download the ZIP, and upload it to Analyze.",
+      "Step-by-step: request Instagram information, choose Followers and following, pick JSON, download the ZIP, and upload it on Analyze.",
     h1: "How to download your Instagram export",
     summary: "Request an official Meta export with Followers and following, then upload the ZIP on Analyze.",
   },
@@ -86,7 +87,7 @@ const ROUTES = [
   },
   {
     path: "/blog",
-    title: "Blog — Unfollow Tracker",
+    title: "Blog — IGUnfollowed",
     description:
       "Guides on recent followers, private unfollow tracking, and Instagram data exports — no password required.",
     h1: "Blog",
@@ -139,14 +140,14 @@ const ROUTES = [
   },
   {
     path: "/threads-unfollow-tracker",
-    title: "Threads Unfollow Tracker: See Who Unfollowed You (2026)",
+    title: "Threads Unfollow Tracker — See Who Unfollowed You",
     description:
       "Find out who unfollowed you on Threads using your official Meta export. Free, no login — comparison runs fully in your browser.",
     h1: "Threads Unfollow Tracker",
     summary:
       "Upload a Threads export ZIP to see who doesn’t follow back. Compare two exports for unfollow history — all in this browser.",
     image: `${SITE}/images/threads-unfollow-tracker-featured.webp`,
-    imageAlt: "Threads Unfollow Tracker: See Who Unfollowed You (2026)",
+    imageAlt: "Threads Unfollow Tracker — See Who Unfollowed You",
     imageWidth: "1280",
     imageHeight: "850",
     imageType: "image/webp",
@@ -233,6 +234,14 @@ function applyMeta(html, route) {
         /(property="og:image:height"\s+content="[^"]*"\s*\/?>)/,
         `$1\n    <meta property="og:image:type" content="${imageType}" />`,
       );
+    }
+  }
+  if (route.robots) {
+    const robots = escapeHtml(route.robots);
+    if (out.includes('name="robots"')) {
+      out = out.replace(/(name="robots"\s+content=")[^"]*(")/, `$1${robots}$2`);
+    } else {
+      out = out.replace("</head>", `    <meta name="robots" content="${robots}" />\n  </head>`);
     }
   }
   if (route.path !== "/") {
