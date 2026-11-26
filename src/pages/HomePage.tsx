@@ -367,7 +367,7 @@ export default function HomePage() {
             {homeFaqs.map((item, index) => (
               <AccordionItem key={item.question} value={`home-faq-${String(index)}`}>
                 <AccordionTrigger>{item.question}</AccordionTrigger>
-                <AccordionContent>{item.answer}</AccordionContent>
+                <AccordionContent forceMount>{item.answer}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>

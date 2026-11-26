@@ -6,7 +6,7 @@
   "description": "Privacy-first Instagram unfollow tracker — ZIP analysis runs in your browser",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/prerender-routes.mjs",
+    "build": "tsc -b && vite build && node scripts/prerender-routes.mjs && node scripts/prerender-spa.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:e2e": "node scripts/make-test-zips.mjs && playwright test",
