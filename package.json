@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build && node scripts/prerender-routes.mjs && node scripts/prerender-spa.mjs",
     "preview": "vite preview",
+    "prerender:spa": "node scripts/prerender-spa.mjs",
     "test": "vitest run",
     "test:e2e": "node scripts/make-test-zips.mjs && playwright test",
     "test:watch": "vitest",
