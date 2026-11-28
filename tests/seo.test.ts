@@ -79,11 +79,12 @@ describe("home SEO", () => {
     expect(xml).not.toContain("<loc>https://igunfollowed.com/</loc>");
     expect(xml).not.toContain("pages.dev");
     expect(xml).not.toContain("<loc>https://igunfollowed.com/analyze</loc>");
+    expect(xml).not.toContain("<loc>https://igunfollowed.com/analyze/</loc>");
     expect(xml).toContain("<lastmod>2026-11-25</lastmod>");
-    expect(xml).toContain("<loc>https://igunfollowed.com/guide</loc>");
-    expect(xml).toContain("<loc>https://igunfollowed.com/privacy</loc>");
-    expect(xml).toContain("<loc>https://igunfollowed.com/instagram-highlights-viewer</loc>");
-    expect(xml).toContain("<loc>https://igunfollowed.com/instagram-grid-maker</loc>");
-    expect(xml).toContain("<loc>https://igunfollowed.com/blog/recent-followers</loc>");
+    expect(xml).toContain("<loc>https://igunfollowed.com/guide/</loc>");
+    expect(xml).toContain("<loc>https://igunfollowed.com/privacy/</loc>");
+    expect(xml).toContain("<loc>https://igunfollowed.com/instagram-highlights-viewer/</loc>");
+    expect(xml).toContain("<loc>https://igunfollowed.com/instagram-grid-maker/</loc>");
+    expect(xml).toContain("<loc>https://igunfollowed.com/blog/recent-followers/</loc>");
   });
 });
